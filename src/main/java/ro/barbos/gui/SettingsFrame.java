@@ -1,16 +1,14 @@
 package ro.barbos.gui;
 
-import java.awt.Image;
-
-import javax.swing.ImageIcon;
-import javax.swing.JTabbedPane;
-
 import ro.barbos.gater.dao.BladeDAO;
 import ro.barbos.gater.dao.GaterSettingDAO;
-import ro.barbos.gater.model.GaterSetting;
 import ro.barbos.gui.settings.AlgorithmSettingsPanel;
 import ro.barbos.gui.settings.BladeSettingsPanel;
 import ro.barbos.gui.settings.GaterSettingsPanel;
+import ro.barbos.gui.settings.GeneralSettingsPanel;
+
+import javax.swing.*;
+import java.awt.*;
 
 public class SettingsFrame extends GeneralFrame {
 	
@@ -24,6 +22,8 @@ public class SettingsFrame extends GeneralFrame {
 		setClosable(true);
 		
 		JTabbedPane tab = new JTabbedPane();
+        GeneralSettingsPanel generalSettingsPanel = new GeneralSettingsPanel();
+        tab.add("General", generalSettingsPanel);
 		BladeSettingsPanel bladeSettings = new BladeSettingsPanel(BladeDAO.getBlades());
 		tab.add("Lame", bladeSettings);
 		GaterSettingsPanel gaterSettings = new GaterSettingsPanel(GaterSettingDAO.getSettings());

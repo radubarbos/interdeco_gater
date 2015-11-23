@@ -1,26 +1,5 @@
 package ro.barbos.gui;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JComboBox;
-import javax.swing.JFormattedTextField;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-
 import ro.barbos.gater.dao.LumberStackDAO;
 import ro.barbos.gater.data.IDPlateManager;
 import ro.barbos.gater.data.LumberLogUtil;
@@ -30,6 +9,17 @@ import ro.barbos.gater.model.LumberLog;
 import ro.barbos.gater.model.LumberStack;
 import ro.barbos.gater.stock.StockSettings;
 import ro.barbos.gui.exswing.SuggestionJComboBox;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+import java.util.List;
 
 public class AddLogLumberPanel extends JPanel implements ActionListener, PropertyChangeListener, ItemListener {
 	
@@ -83,10 +73,20 @@ public class AddLogLumberPanel extends JPanel implements ActionListener, Propert
 		
 		middleRadiusPanel = new JPanel();
 		middleRadiusPanel.setLayout(new BoxLayout(middleRadiusPanel, BoxLayout.Y_AXIS));
-		if(lumberLog != null && lumberLog.getMediumRadius() != null) {
+
+        if(lumberLog == null && StockSettings.MEASURE_MIDDLE_ONCE) {
+            panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+            panel.add(GUIFactory.createLabel(createMiddleRadiusLabel(0, false), 180));
+            panel.add(GUIFactory.createNumberInput(null, 0L, 1000000L, 80));
+            mCombo = new JComboBox<String>(GUIUtil.metric);
+            mCombo.setPreferredSize(new Dimension(50, mCombo.getPreferredSize().height));
+            panel.add(mCombo);
+            middleRadiusPanel.add(panel);
+        }
+        else if(lumberLog != null && lumberLog.getMediumRadius() != null) {
 			for(int index =0; index < lumberLog.getMediumRadius().size(); index++) {
     			JPanel panelMiddle = new JPanel(new FlowLayout(FlowLayout.LEFT));
-    			panelMiddle.add(GUIFactory.createLabel("Diametru "+(index+1)+"m:", 180));
+    			panelMiddle.add(GUIFactory.createLabel(createMiddleRadiusLabel(index, lumberLog.getMediumRadius().size()>1), 180));
     			JFormattedTextField middleVal = GUIFactory.createNumberInput(null, 0L, 1000000L, 80);
     			middleVal.setValue(lumberLog.getMediumRadius().get(index).longValue());
     			panelMiddle.add(middleVal);
@@ -97,6 +97,8 @@ public class AddLogLumberPanel extends JPanel implements ActionListener, Propert
     		}
 		}
 		add(middleRadiusPanel);
+
+
 		
 		panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		panel.add(GUIFactory.createLabel("Diametru mare:", 180));
@@ -166,6 +168,9 @@ public class AddLogLumberPanel extends JPanel implements ActionListener, Propert
 	}
 
     private void lengthChanged(Long length, int lengthMetricIndex) {
+        if(StockSettings.MEASURE_MIDDLE_ONCE) {
+            return;
+        }
     	if(length != null) {
         	double lengthValue = getMilimetricNumericValue(length, lengthMetricIndex);
         	int meters = (int)lengthValue/1000;
@@ -175,7 +180,7 @@ public class AddLogLumberPanel extends JPanel implements ActionListener, Propert
         	if(meters>0) {
         		for(int index =0; index < meters; index++) {
         			JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        			panel.add(GUIFactory.createLabel("Diametru "+(index+1)+"m:", 180));
+        			panel.add(GUIFactory.createLabel(createMiddleRadiusLabel(index, true), 180));
         			panel.add(GUIFactory.createNumberInput(null, 0L, 1000000L, 80));
         			JComboBox<String> mCombo = new JComboBox<String>(GUIUtil.metric);
         			mCombo.setPreferredSize(new Dimension(50, mCombo.getPreferredSize().height));
@@ -186,6 +191,14 @@ public class AddLogLumberPanel extends JPanel implements ActionListener, Propert
         	middleRadiusPanel.revalidate();
         	middleRadiusPanel.repaint();
         }
+    }
+
+    private String createMiddleRadiusLabel(int index, boolean force) {
+      String label = "Diametru "+(index+1)+"m:";
+      if(StockSettings.MEASURE_MIDDLE_ONCE && index == 0 && !force) {
+          label = "Diametru mijlociu";
+      }
+      return label;
     }
 
 	public LumberLog validateData() {
@@ -218,6 +231,18 @@ public class AddLogLumberPanel extends JPanel implements ActionListener, Propert
 			status = false;
 			smallLabel.setForeground(Color.red);
 		}
+
+        JLabel bigLabel = (JLabel)((JPanel)getComponent(4)).getComponent(0);
+        JFormattedTextField bigRadius = (JFormattedTextField)((JPanel)getComponent(4)).getComponent(1);
+        JComboBox<String> bigRadiusMetric = (JComboBox<String>)((JPanel)getComponent(4)).getComponent(2);
+        bigLabel.setForeground(Color.black);
+        if(bigRadius.getValue() == null) {
+            status = false;
+            bigLabel.setForeground(Color.red);
+        }
+
+        double minimumValue = getMilimetricNumericValue((Long)smallRadius.getValue(), smallRadiusMetric.getSelectedIndex());
+        double maxmimumValue = getMilimetricNumericValue((Long)bigRadius.getValue(), bigRadiusMetric.getSelectedIndex());
 		
 		List<Double> middleRadius = new ArrayList<>();
 		for(int index = 0; index < middleRadiusPanel.getComponentCount(); index++) {
@@ -225,24 +250,22 @@ public class AddLogLumberPanel extends JPanel implements ActionListener, Propert
 			JFormattedTextField radius = (JFormattedTextField)((JPanel)middleRadiusPanel.getComponent(index)).getComponent(1);
 			JComboBox<String> radiusMetric = (JComboBox<String>)((JPanel)middleRadiusPanel.getComponent(index)).getComponent(2);
 			label.setForeground(Color.black);
-			if(radius.getValue() == null) {
+            Long radValue = (Long)radius.getValue();
+			if(radValue == null) {
 				status = false;
 				label.setForeground(Color.red);
 			}
 			else {
 				double mediumValue = getMilimetricNumericValue((Long)radius.getValue(), radiusMetric.getSelectedIndex());
+                if(mediumValue < minimumValue || mediumValue>maxmimumValue) {
+                    status = false;
+                    label.setForeground(Color.red);
+                }
 				middleRadius.add(mediumValue);
 			}
 		}
 		
-		JLabel bigLabel = (JLabel)((JPanel)getComponent(4)).getComponent(0);
-		JFormattedTextField bigRadius = (JFormattedTextField)((JPanel)getComponent(4)).getComponent(1);
-		JComboBox<String> bigRadiusMetric = (JComboBox<String>)((JPanel)getComponent(4)).getComponent(2);
-		bigLabel.setForeground(Color.black);
-		if(bigRadius.getValue() == null) {
-			status = false;
-			bigLabel.setForeground(Color.red);
-		}
+
 		
 		JLabel typeLabel = (JLabel)((JPanel)getComponent(5)).getComponent(0);
 		JComboBox<String> typeValue = (JComboBox<String>)((JPanel)getComponent(5)).getComponent(1);
@@ -264,8 +287,7 @@ public class AddLogLumberPanel extends JPanel implements ActionListener, Propert
 			return null;
 		}
 		
-		double minimumValue = getMilimetricNumericValue((Long)smallRadius.getValue(), smallRadiusMetric.getSelectedIndex());
-		double maxmimumValue = getMilimetricNumericValue((Long)bigRadius.getValue(), bigRadiusMetric.getSelectedIndex());
+
 		
 		if(minimumValue > maxmimumValue) {
 			smallLabel.setForeground(Color.red);

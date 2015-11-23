@@ -1,8 +1,9 @@
 package ro.barbos.gater.data;
 
-import java.util.List;
-
 import ro.barbos.gater.model.LumberLog;
+import ro.barbos.gater.stock.StockSettings;
+
+import java.util.List;
 
 /**
  * http://www.mateonline.net/geometrie.htm
@@ -19,14 +20,20 @@ public class LumberLogUtil {
 		long lengthProcessed = 0;
 		long meter = 1000L;
 		List<Double> middleRadius = lumberLog.getMediumRadius();
-		if(middleRadius != null && !middleRadius.isEmpty()) {
+		if(middleRadius != null && !middleRadius.isEmpty() && middleRadius.size()>1) {
 			for(int index =0; index < middleRadius.size(); index++) {
 				double middleRadiusDiameter = middleRadius.get(index)/2;
 				volume += calculateVolume(minimum, middleRadiusDiameter, meter);
 				lengthProcessed+= meter;
 				minimum = middleRadiusDiameter;
 			}
-		}
+		} else if(middleRadius != null && !middleRadius.isEmpty() && StockSettings.MEASURE_MIDDLE_ONCE) {
+            long middle = lumberLog.getLength().longValue()/2;
+            double middleRadiusDiameter = middleRadius.get(0)/2;
+            volume += calculateVolume(minimum, middleRadiusDiameter, meter);
+            lengthProcessed+= middle;
+            minimum = middleRadiusDiameter;
+        }
 		volume+= calculateVolume(minimum, maximum, lumberLog.getLength() - lengthProcessed);
 		lumberLog.setVolume(volume);
 	}

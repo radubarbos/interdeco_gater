@@ -1,8 +1,15 @@
 package ro.barbos.gui;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.Toolkit;
+import ro.barbos.gater.cutprocessor.CutterSettings;
+import ro.barbos.gater.dao.*;
+import ro.barbos.gater.data.IDPlateManager;
+import ro.barbos.gater.model.Blade;
+import ro.barbos.gater.model.GaterSetting;
+import ro.barbos.gater.model.User;
+import ro.barbos.gater.stock.StockSettings;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
@@ -14,28 +21,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.JInternalFrame;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
-import javax.swing.Timer;
-import javax.swing.UIManager;
-
-import ro.barbos.gater.cutprocessor.CutterSettings;
-import ro.barbos.gater.dao.BladeDAO;
-import ro.barbos.gater.dao.CutPlanDAO;
-import ro.barbos.gater.dao.DataAccess;
-import ro.barbos.gater.dao.GaterSettingDAO;
-import ro.barbos.gater.dao.IDPlateDAO;
-import ro.barbos.gater.dao.LoginDAO;
-import ro.barbos.gater.dao.StockDAO;
-import ro.barbos.gater.data.IDPlateManager;
-import ro.barbos.gater.model.Blade;
-import ro.barbos.gater.model.GaterSetting;
-import ro.barbos.gater.model.User;
 
 public class MainFrame extends JFrame implements WindowListener, ActionListener {
 	
@@ -183,6 +168,9 @@ public class MainFrame extends JFrame implements WindowListener, ActionListener 
 				else if(setting.getName().startsWith("Tol")) {
 					CutterSettings.EDGE_TOLERANCE = setting.getValue().doubleValue();
 				}
+                else if(setting.getName().equals("MEASURE_MIDDLE_ONCE")) {
+                    StockSettings.MEASURE_MIDDLE_ONCE = setting.getValue() == 1;
+                }
 			}
 		}
 		
