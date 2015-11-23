@@ -148,6 +148,7 @@ public class GeneralAbstractTableModel extends AbstractTableModel {
 			}
 			BufferedWriter writer = new BufferedWriter(new FileWriter(file));
 			csvWriter = new CsvWriter(writer, ',');
+            csvWriter.setForceQualifier(true);
 			List<String> record = new ArrayList<>();
 			for (int col = 0; col < cols; col++) {
 				record.add(getColumnName(col));
