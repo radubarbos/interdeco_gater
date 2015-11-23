@@ -15,45 +15,38 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JInternalFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
 import javax.swing.SwingConstants;
 
 import ro.barbos.gater.dao.StockDAO;
 import ro.barbos.gater.data.DataSearchResult;
 import ro.barbos.gater.dto.ProcessedLumberLogFilterDTO;
+import ro.barbos.gater.gui.grid.DefaultGrid;
 import ro.barbos.gater.model.ProcessedLumberLog;
-import ro.barbos.gui.renderer.GeneralTableRenderer;
 import ro.barbos.gui.tablemodel.ProcessedHistoryModel;
 
 public class ProcessedHistoryFilterFrame extends JInternalFrame implements ActionListener {
 
-	private SimpleDateFormat format = new SimpleDateFormat("dd, MM yyyy");
-	private NumberFormat numberFormatter = NumberFormat.getInstance(new Locale("ro"));
-	
-	JTable historyTable;
 	ProcessedHistoryModel historyData;
+    ProcessedHistoryGridInfoPanel gridInfoPanel;
+
+    DefaultGrid grid;
 	
 	private Date startDate;
 	private Date endDate;
 	
 	private double volume = 0;
-	private JLabel volumeLabel = new JLabel();
+    private int lumberCount = 0;
 	
 	public ProcessedHistoryFilterFrame(Date startDate, Date endDate) {
-super();
+        super();
 		this.startDate = startDate;
 		this.endDate = endDate;
-		setTitle("Istoric busteni procesati din data de " + format.format(startDate) + " pana in " + format.format(endDate));
+		setTitle("Istoric busteni procesati din data de " + ConfigLocalManager.format.format(startDate) + " pana in " + ConfigLocalManager.format.format(endDate));
 		setResizable(true);
 		setMaximizable(true);
 		setIconifiable(true);
 		setClosable(true);
-		
-		numberFormatter.setMaximumFractionDigits(2);
-		numberFormatter.setMinimumFractionDigits(2);
 		
 		JPanel toolbar = new JPanel(new FlowLayout(FlowLayout.LEADING));
 		
@@ -79,21 +72,17 @@ super();
 		print.setFocusPainted(false);
 		print.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		toolbar.add(print);
-		
-		toolbar.add(volumeLabel);
+
 			
 		 historyData = new ProcessedHistoryModel();
-	     historyTable = new JTable(historyData);	
-	     
-	 
-			GeneralTableRenderer renderer = new GeneralTableRenderer();
-			for(int i=0;i<historyTable.getColumnModel().getColumnCount();i++)
-			{
-				historyTable.getColumnModel().getColumn(i).setCellRenderer(renderer);
-			}
+        grid = new DefaultGrid(historyData);
+        JPanel infoPanel = (JPanel)((BorderLayout)grid.getLayout()).getLayoutComponent(BorderLayout.SOUTH);
+        infoPanel.removeAll();
+        gridInfoPanel = new ProcessedHistoryGridInfoPanel(grid);
+        infoPanel.add(gridInfoPanel);
 	     
 		 getContentPane().add(toolbar, BorderLayout.NORTH);
-		 getContentPane().add(new JScrollPane(historyTable), BorderLayout.CENTER);
+        getContentPane().add(grid, BorderLayout.CENTER);
 		 
 		 setLocation(0, 0);
 		 setSize(GUIUtil.container.getSize());
@@ -113,8 +102,10 @@ super();
 		for(ProcessedLumberLog processedLog: lumbersProcessed.getData()) {
 			double lumberVolume = (processedLog.getLumberLog().getVolume()/1000000000L);
 			volume += lumberVolume;
+            lumberCount++;
 		}
-		volumeLabel.setText("Total cubaj: " + numberFormatter.format(volume) + " metri cubi");
+        gridInfoPanel.setInfo(volume, lumberCount);
+
 	}
 	
 	@Override
@@ -132,7 +123,7 @@ super();
 		}
 		else if (command.equals("PRINT")) {
 			try {
-				historyTable.print();
+				grid.getTable().print();
 			} catch (Exception ex) {
 				ex.printStackTrace();
 			}

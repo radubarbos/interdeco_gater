@@ -37,6 +37,10 @@ public class ProcessedHistoryFrame extends GeneralFrame implements ActionListene
 	DefaultGrid grid;
 	
 	private ProcessedHistoryFilterPanel filterPanel;
+
+    private double volume = 0;
+    private int lumberCount = 0;
+    ProcessedHistoryGridInfoPanel gridInfoPanel;
 	
 	public ProcessedHistoryFrame()
 	{
@@ -85,6 +89,10 @@ public class ProcessedHistoryFrame extends GeneralFrame implements ActionListene
 			
 		 historyData = new ProcessedHistoryModel();
 		 grid = new DefaultGrid(historyData);
+         JPanel infoPanel = (JPanel)((BorderLayout)grid.getLayout()).getLayoutComponent(BorderLayout.SOUTH);
+         infoPanel.removeAll();
+         gridInfoPanel = new ProcessedHistoryGridInfoPanel(grid);
+         infoPanel.add(gridInfoPanel);
 	     
 		 getContentPane().add(toolbar, BorderLayout.NORTH);
 		 getContentPane().add(grid, BorderLayout.CENTER);
@@ -98,7 +106,12 @@ public class ProcessedHistoryFrame extends GeneralFrame implements ActionListene
 		if(lumbersProcessed != null) {
 			historyData.setHistoryData(lumbersProcessed);
 		}
-		
+        for(ProcessedLumberLog processedLog: lumbersProcessed.getData()) {
+            double lumberVolume = (processedLog.getLumberLog().getVolume()/1000000000L);
+            volume += lumberVolume;
+            lumberCount++;
+        }
+        gridInfoPanel.setInfo(volume, lumberCount);
 	}
 	
 	
