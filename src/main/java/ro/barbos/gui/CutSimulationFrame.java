@@ -1,28 +1,17 @@
 package ro.barbos.gui;
 
-import java.awt.BorderLayout;
-import java.awt.Cursor;
-import java.awt.FlowLayout;
-import java.awt.Image;
-import java.awt.Window;
+import ro.barbos.gater.cutprocessor.CuterProcessor;
+import ro.barbos.gater.cutprocessor.diagram.CutDiagram;
+import ro.barbos.gater.model.LumberLog;
+import ro.barbos.gater.model.Product;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.print.Printable;
 import java.awt.print.PrinterJob;
 import java.util.List;
-
-import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.SwingUtilities;
-
-import ro.barbos.gater.cutprocessor.CuterProcessor;
-import ro.barbos.gater.cutprocessor.diagram.CutDiagram;
-import ro.barbos.gater.model.LumberLog;
-import ro.barbos.gater.model.Product;
 
 public class CutSimulationFrame extends GeneralFrame implements ActionListener {
 	
@@ -94,6 +83,16 @@ public void actionPerformed(ActionEvent eve) {
 		List<Integer> pieces = simulation.getPieces();
 		Window w = SwingUtilities.getWindowAncestor((JButton)eve.getSource());
 		if(w!=null) w.dispose();
+        boolean valid = products.isEmpty();
+        for(Product product: products) {
+            if(product.getLength() <= lumberLog.getLength().longValue()) {
+                valid = true;
+            }
+        }
+        if(!valid) {
+            JOptionPane.showMessageDialog(GUIUtil.container, "Nu se poate taia busteanul cu aceste produse.\n Sunt mai lungi ca busteanul.");
+            return;
+        }
 		List<CutDiagram> diagrams = new CuterProcessor().cutLumberLog(lumberLog, products, pieces);
 		painterDiagrams.removeAll();
 		for(CutDiagram diagram: diagrams) {
