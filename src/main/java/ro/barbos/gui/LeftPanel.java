@@ -1,25 +1,5 @@
 package ro.barbos.gui;
 
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.print.PrinterJob;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-
 import ro.barbos.gater.cutprocessor.diagram.CutDiagram;
 import ro.barbos.gater.dao.CutPlanDAO;
 import ro.barbos.gater.dao.IDPlateDAO;
@@ -31,11 +11,15 @@ import ro.barbos.gater.model.IDPlate;
 import ro.barbos.gater.model.LumberLog;
 import ro.barbos.gater.model.LumberLogStockEntry;
 import ro.barbos.gui.exswing.SuggestionJComboBox;
-import ro.barbos.gui.stock.CurrentClassStockFrame;
-import ro.barbos.gui.stock.CurrentStackStockFrame;
-import ro.barbos.gui.stock.CurrentStockFrame;
-import ro.barbos.gui.stock.CurrentTypeStockFrame;
-import ro.barbos.gui.stock.ReceiceFrame;
+import ro.barbos.gui.stock.*;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.print.PrinterJob;
+import java.util.ArrayList;
+import java.util.List;
 
 public class LeftPanel extends JPanel implements ActionListener {
 	
@@ -159,12 +143,7 @@ public class LeftPanel extends JPanel implements ActionListener {
 		users.addActionListener(this);
 		users.setAlignmentX(0);
 		users.setMaximumSize(buttonDimension);
-		
-		JButton stoc = new JButton("Fix stoc");
-		stoc.setActionCommand("STOK");
-		stoc.addActionListener(this);
-		stoc.setAlignmentX(0);
-		stoc.setMaximumSize(buttonDimension);
+
 		
 		if(rights == 0 || rights == 1) {
 			add(receptie);
@@ -212,7 +191,6 @@ if(rights == 0) {
 			
 		}
 
-		add(stoc);
 		add(logout);
 		
 	}
@@ -402,16 +380,6 @@ print.addActionListener(new ActionListener() {
 				UsersFrame frame = new UsersFrame();
 				parent.addFrame(frame, GUIUtil.USERS_KEY);
 			} 
-		}
-		else if(command.equals("STOK")) {
-			JDialog dialog = new JDialog(GUIUtil.main);
-			dialog.getContentPane().add(new JLabel("Asteptati"));
-			dialog.setSize(300, 50);
-			dialog.setLocationRelativeTo(null);
-			dialog.setVisible(true);
-			int count = StockDAO.adjustStock();
-			System.out.println("lumbers updated: "+count);
-			dialog.dispose();
 		}
 		else if(command.equals("SEE_CUT_OPTION_DIAGRAM")) {
 			CutOptionsTargetPanel.showDialog();

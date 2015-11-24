@@ -1,42 +1,21 @@
 package ro.barbos.gui.stock;
 
-import java.awt.BorderLayout;
-import java.awt.Cursor;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Font;
-import java.awt.Image;
-import java.awt.Window;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
-import java.text.NumberFormat;
-import java.util.List;
-
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JFileChooser;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
-
 import ro.barbos.gater.dao.LumberLogDAO;
 import ro.barbos.gater.dao.StockDAO;
 import ro.barbos.gater.data.LumberLogUtil;
 import ro.barbos.gater.model.LumberLog;
 import ro.barbos.gater.model.LumberLogStockEntry;
-import ro.barbos.gui.AddLogLumberPanel;
-import ro.barbos.gui.ConfigLocalManager;
-import ro.barbos.gui.GUITools;
-import ro.barbos.gui.GUIUtil;
-import ro.barbos.gui.GeneralFrame;
-import ro.barbos.gui.MarkProcessedLumberPanel;
+import ro.barbos.gui.*;
 import ro.barbos.gui.renderer.GeneralTableRenderer;
 import ro.barbos.gui.tablemodel.FullStockModel;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.text.NumberFormat;
+import java.util.List;
 
 public class CurrentStockFrame extends GeneralFrame implements ActionListener {
 
@@ -98,6 +77,18 @@ public class CurrentStockFrame extends GeneralFrame implements ActionListener {
 		 edit.setFocusPainted(false);
 		 edit.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 			toolbar.add(edit);
+
+        edit = new JButton("Fix stoc", new ImageIcon(
+                GUITools.getImage("resources/new24.png")));
+        edit.setVerticalTextPosition(SwingConstants.BOTTOM);
+        edit.setHorizontalTextPosition(SwingConstants.CENTER);
+        edit.setToolTipText("Adjusteaza lungime busteni");
+        edit.setActionCommand("STOK");
+        edit.addActionListener(this);
+        edit.setFocusPainted(false);
+        edit.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        toolbar.add(edit);
+
 			JButton csvExport = new JButton("Exporta", new ImageIcon(
 					GUITools.getImage("resources/csv24.png")));
 			csvExport.setVerticalTextPosition(SwingConstants.BOTTOM);
@@ -280,6 +271,16 @@ public class CurrentStockFrame extends GeneralFrame implements ActionListener {
 				ex.printStackTrace();
 			}
 		}
+        else if(command.equals("STOK")) {
+            JDialog dialog = new JDialog(GUIUtil.main);
+            dialog.getContentPane().add(new JLabel("Asteptati"));
+            dialog.setSize(300, 50);
+            dialog.setLocationRelativeTo(null);
+            dialog.setVisible(true);
+            int count = StockDAO.adjustStock();
+            System.out.println("lumbers updated: "+count);
+            dialog.dispose();
+        }
 	}
 	
 	@Override

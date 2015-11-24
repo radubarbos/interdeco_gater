@@ -1,15 +1,12 @@
 package ro.barbos.gui;
 
+import ro.barbos.gater.cutprocessor.strategy.CutStrategyType;
+
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.swing.BoxLayout;
-import javax.swing.JCheckBox;
-import javax.swing.JPanel;
-
-import ro.barbos.gater.cutprocessor.strategy.CutStrategyType;
 
 public class CutPlanSettingsPanel extends JPanel {
 	
@@ -34,7 +31,7 @@ public class CutPlanSettingsPanel extends JPanel {
 		add(simple2VerticalCutStrategyChk);
 		oneRotateCutStrategyChk = new JCheckBox("Strategie cu o rotire", true);
 		add(oneRotateCutStrategyChk);
-		bestMultibladeMatchCutStrategyChk = new JCheckBox("Strategie cu multi analiza, 3 rotiri", true);
+		bestMultibladeMatchCutStrategyChk = new JCheckBox("Strategie cu multi analiza, 3 rotiri");
 		add(bestMultibladeMatchCutStrategyChk);
 		noMultibladeCutStrategyChk = new JCheckBox("Strategie fara prisme");
 		add(noMultibladeCutStrategyChk);
