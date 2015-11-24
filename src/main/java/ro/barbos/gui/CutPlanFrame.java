@@ -1,34 +1,5 @@
 package ro.barbos.gui;
 
-import java.awt.BorderLayout;
-import java.awt.Cursor;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Image;
-import java.awt.Window;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.swing.BoxLayout;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JProgressBar;
-import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
-import javax.swing.JTabbedPane;
-import javax.swing.JTable;
-import javax.swing.SwingUtilities;
-
 import ro.barbos.gater.cutprocessor.CutPlanCalculator;
 import ro.barbos.gater.cutprocessor.CutPlanSenquence;
 import ro.barbos.gater.dao.CutPlanDAO;
@@ -41,6 +12,13 @@ import ro.barbos.gui.tablemodel.CutPlanFoundInfoModel;
 import ro.barbos.gui.tablemodel.CutPlanFoundModel;
 import ro.barbos.gui.tablemodel.CutPlanTargetModel;
 import ro.barbos.gui.tablemodel.CutPlanTargetRecord;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.*;
+import java.util.List;
 
 public class CutPlanFrame extends GeneralFrame implements ActionListener {
 
@@ -60,7 +38,7 @@ public class CutPlanFrame extends GeneralFrame implements ActionListener {
 
 	private List<ProductCutTargetDTO> cutDataInfo;
 	private List<CutPlanSenquence> cutDiagrams;
-	private Map<Product, Double> volum;
+	private Map<Product, Long> pieces;
 
 	public CutPlanFrame() {
 		super();
@@ -227,28 +205,28 @@ public class CutPlanFrame extends GeneralFrame implements ActionListener {
 	}
 
 	private void calculateCutPlan(List<List<Object>> data) {
-		volum = new LinkedHashMap<>();
+		pieces = new LinkedHashMap<>();
 		for (List<Object> productData : data) {
 			Product product = (Product) productData.get(0);
-			Double vol = (Double) productData.get(1);
-			Double currentVolume = volum.get(product);
-			if (currentVolume == null)
-				currentVolume = 0D;
-			currentVolume += vol;
-			volum.put(product, currentVolume);
+			Long piecesEntry = (Long) productData.get(1);
+			Long currentPieces = pieces.get(product);
+			if (currentPieces == null)
+                currentPieces = 0L;
+            currentPieces += piecesEntry;
+			pieces.put(product, currentPieces);
 		}
 		List<CutPlanTargetRecord> records = new ArrayList<>();
-		Iterator<Map.Entry<Product, Double>> ite = volum.entrySet().iterator();
+		Iterator<Map.Entry<Product, Long>> ite = pieces.entrySet().iterator();
 		while (ite.hasNext()) {
-			Map.Entry<Product, Double> prod = ite.next();
+			Map.Entry<Product, Long> prod = ite.next();
 			Product product = prod.getKey();
-			Double totalVol = prod.getValue();
+			//Double totalVol = prod.getValue();
 			CutPlanTargetRecord record = new CutPlanTargetRecord();
 			record.setProduct(product);
-			record.setTargetMCub(totalVol);
 			long productVolume = product.getLength() * product.getWidth() * product.getThick();
-			long pieces = (long)((totalVol * 1000000000) / productVolume);
-			record.setPieces(pieces + 1);
+            record.setTargetMCub((productVolume / 1000000000D) * prod.getValue());
+			//long pieces = (long)((totalVol * 1000000000) / productVolume);
+			record.setPieces(prod.getValue());
 			records.add(record);
 		}
 		cutPlanTargetModel.setRecords(records);

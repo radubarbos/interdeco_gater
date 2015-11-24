@@ -1,27 +1,14 @@
 package ro.barbos.gui;
 
-import java.awt.Color;
-import java.awt.Container;
-import java.awt.Cursor;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JFormattedTextField;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.text.NumberFormatter;
-
 import ro.barbos.gater.dao.ProductDAO;
 import ro.barbos.gater.model.Product;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CutPlanTargetPanel extends JPanel implements ActionListener {
 
@@ -38,8 +25,8 @@ public class CutPlanTargetPanel extends JPanel implements ActionListener {
 		panel.add(GUIFactory.createLabel("Product"+(++productIndex)+":", 80));
 		JComboBox<Product> product1 = new JComboBox<Product>(products.toArray(new Product[0]));
 		panel.add(product1);
-		panel.add(GUIFactory.createLabel("M.cub", 40));
-		panel.add(GUIFactory.createDecimalNumberInput(0D, 0D, 10000D, 40));
+		panel.add(GUIFactory.createLabel("Bucati", 50));
+		panel.add(GUIFactory.createNumberInput(0L, 0L, 1000000L, 50));
 		panel.add(createRemove());
 		return panel;
 	}
@@ -88,7 +75,7 @@ public class CutPlanTargetPanel extends JPanel implements ActionListener {
 		for(int index =0; index< this.getComponentCount(); index++) {
 			JLabel label = (JLabel)((JPanel)getComponent(index)).getComponent(0);
 			JFormattedTextField quantity = (JFormattedTextField)((JPanel)getComponent(index)).getComponent(3);
-			if(quantity.getValue() == null || (Double)quantity.getValue() == 0) {
+			if(quantity.getValue() == null || (Long)quantity.getValue() == 0) {
 				label.setForeground(Color.red);
 				valid = false;
 			}
