@@ -25,7 +25,7 @@ public class CutPlanTargetPanel extends JPanel implements ActionListener {
 		panel.add(GUIFactory.createLabel("Product"+(++productIndex)+":", 80));
 		JComboBox<Product> product1 = new JComboBox<Product>(products.toArray(new Product[0]));
 		panel.add(product1);
-		panel.add(GUIFactory.createLabel("Bucati", 50));
+		panel.add(GUIFactory.createLabel("Bucati", 40));
 		panel.add(GUIFactory.createNumberInput(0L, 0L, 1000000L, 50));
 		panel.add(createRemove());
 		return panel;

@@ -1,27 +1,20 @@
 package ro.barbos.gater.dao;
 
-import java.io.ByteArrayInputStream;
-import java.io.ObjectInputStream;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import ro.barbos.gater.cutprocessor.CutPlanSenquence;
 import ro.barbos.gater.cutprocessor.diagram.CutDiagram;
 import ro.barbos.gater.dto.ProductCutTargetDTO;
 import ro.barbos.gater.model.CutPlan;
 import ro.barbos.gater.model.GeneralResponse;
 import ro.barbos.gater.model.IDPlate;
+
+import java.io.ByteArrayInputStream;
+import java.io.ObjectInputStream;
+import java.sql.*;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class CutPlanDAO {
 
@@ -144,7 +137,7 @@ public class CutPlanDAO {
 		List<CutPlan> plans = new ArrayList<>();
 		
 		Logger logger = Logger.getLogger("dao");
-		StringBuilder sql = new StringBuilder("select id, name, description, entrydate, status, complete from CutPlan order by id");
+		StringBuilder sql = new StringBuilder("select id, name, description, entrydate, status, complete from CutPlan order by id desc");
 		
 		Connection con =null;
 	    Statement stm =null;

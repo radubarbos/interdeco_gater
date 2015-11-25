@@ -1,14 +1,10 @@
 package ro.barbos.gui;
 
-import ro.barbos.gater.cutprocessor.diagram.CutDiagram;
-import ro.barbos.gater.dao.CutPlanDAO;
 import ro.barbos.gater.dao.IDPlateDAO;
 import ro.barbos.gater.dao.LumberLogDAO;
 import ro.barbos.gater.dao.StockDAO;
 import ro.barbos.gater.dto.LumberLogFilterDTO;
-import ro.barbos.gater.model.GeneralResponse;
 import ro.barbos.gater.model.IDPlate;
-import ro.barbos.gater.model.LumberLog;
 import ro.barbos.gater.model.LumberLogStockEntry;
 import ro.barbos.gui.exswing.SuggestionJComboBox;
 import ro.barbos.gui.stock.*;
@@ -17,7 +13,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.print.PrinterJob;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -89,13 +84,7 @@ public class LeftPanel extends JPanel implements ActionListener {
 		mprocessed.addActionListener(this);
 		mprocessed.setAlignmentX(0);
 		mprocessed.setMaximumSize(buttonDimension);
-		
-		JButton cutDiagram = new JButton("Diagrama taiere");
-		cutDiagram.setActionCommand("SEE_CUT_DIAGRAM");
-		cutDiagram.addActionListener(this);
-		cutDiagram.setAlignmentX(0);
-		cutDiagram.setMaximumSize(buttonDimension);
-		
+
 		JButton optionCutDiagram = new JButton("Optiuni taiere bustean");
 		optionCutDiagram.setActionCommand("SEE_CUT_OPTION_DIAGRAM");
 		optionCutDiagram.addActionListener(this);
@@ -114,13 +103,13 @@ public class LeftPanel extends JPanel implements ActionListener {
 		cut.setAlignmentX(0);
 		cut.setMaximumSize(buttonDimension);
 		
-		JButton cutPlan = new JButton("Plan taiere");
+		JButton cutPlan = new JButton("Crearea plan taiere");
 		cutPlan.setActionCommand("CUT_PLAN");
 		cutPlan.addActionListener(this);
 		cutPlan.setAlignmentX(0);
 		cutPlan.setMaximumSize(buttonDimension);
 		
-		JButton cutPlanHistory = new JButton("Istoric plan taieri");
+		JButton cutPlanHistory = new JButton("Plan taieri");
 		cutPlanHistory.setActionCommand("HISTORY_CUT_PLAN");
 		cutPlanHistory.addActionListener(this);
 		cutPlanHistory.setAlignmentX(0);
@@ -183,8 +172,6 @@ if(rights == 0) {
 		}
 		if(rights == 0 || rights == 2) {
 			add(mprocessed);
-			add(Box.createVerticalStrut(3));
-			add(cutDiagram);
 			add(Box.createVerticalStrut(3));
 			add(optionCutDiagram);
 			add(Box.createVerticalStrut(3));
@@ -320,39 +307,6 @@ if(rights == 0) {
 				}
 			}
 		}
-		else if(command.equals("SEE_CUT_DIAGRAM")) {
-			List<IDPlate> plates = IDPlateDAO.getUsedPlates();
-			plates.add(0, null);
-			JButton see = new JButton("Afisare");
-			JButton cancel = new JButton("Anuleaza");
-			cancel.setActionCommand("CANCEL_DIALOG");
-			cancel.addActionListener(GUIUtil.main);
-			JButton print = new JButton("Printeaza");
-			JButton[] buttons = new JButton[] {see, print, cancel}; 
-			final JComboBox<IDPlate> platesCombo = new JComboBox<IDPlate>(plates.toArray(new IDPlate[0]));
-			
-see.addActionListener(new ActionListener() {
-				
-				@Override
-				public void actionPerformed(ActionEvent arg0) {
-					GUITools.closeParentDialog((JComponent)arg0.getSource());
-					doDiagramAction(platesCombo, 0);
-				}
-			});
-
-print.addActionListener(new ActionListener() {
-	
-	@Override
-	public void actionPerformed(ActionEvent arg0) {
-		GUITools.closeParentDialog((JComponent)arg0.getSource());
-		doDiagramAction(platesCombo, 1);
-	}
-});
-			
-			int rasp = JOptionPane.showOptionDialog(GUIUtil.container, platesCombo, "Diagrama taiere bustean", 
-					JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, buttons, buttons[2]);
-			
-		}
 		else if(command.equals("CUT_PLAN")) {
 			if(!parent.isFrameSet(GUIUtil.CUT_PLAN_KEY))
 			{
@@ -393,44 +347,6 @@ print.addActionListener(new ActionListener() {
 		return label;
 	}
 	
-	private void doDiagramAction(JComboBox<IDPlate> platesCombo, int type) {
-		IDPlate plate = (IDPlate)platesCombo.getSelectedItem();
-		if(plate == null) {
-			JOptionPane.showMessageDialog(GUIUtil.container, "Nu a fost selectat nici o placuta");
-			return;
-		}
-		GeneralResponse response = CutPlanDAO.getCutDiagram(plate);
-		if(response.getCode() == 200) {
-			CutDiagram diagram = (CutDiagram)response.getData();
-			LumberLogFilterDTO filter = new LumberLogFilterDTO();
-			List<Long> platesFilter = new ArrayList<>();
-			platesFilter.add(plate.getId());
-			filter.setIdPlates(platesFilter);
-			List<LumberLog> lumberLogs = StockDAO.getJustCurrentLumbersLogs(filter);
-			if(type == 0) {
-			new SeeCutDiagramFrame(lumberLogs.get(0), diagram);
-			}
-			else if(type == 1) {
-				CutDiagramPaintPanel painter = new CutDiagramPaintPanel(lumberLogs.get(0), diagram);
-				PrinterJob job = PrinterJob.getPrinterJob();
-				job.setPrintable(painter);
-				if(job.printDialog())
-				{
-					try
-					{
-						job.print();
-					}
-					catch(Exception ex)
-					{
-						ex.printStackTrace();
-					}
-				}
 
-			}
-		}
-		else {
-			JOptionPane.showMessageDialog(GUIUtil.container, response.getMessage());
-		}
-	}
 	
 }

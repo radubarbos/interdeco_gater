@@ -220,12 +220,10 @@ public class CutPlanFrame extends GeneralFrame implements ActionListener {
 		while (ite.hasNext()) {
 			Map.Entry<Product, Long> prod = ite.next();
 			Product product = prod.getKey();
-			//Double totalVol = prod.getValue();
 			CutPlanTargetRecord record = new CutPlanTargetRecord();
 			record.setProduct(product);
 			long productVolume = product.getLength() * product.getWidth() * product.getThick();
             record.setTargetMCub((productVolume / 1000000000D) * prod.getValue());
-			//long pieces = (long)((totalVol * 1000000000) / productVolume);
 			record.setPieces(prod.getValue());
 			records.add(record);
 		}

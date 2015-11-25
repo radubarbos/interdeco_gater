@@ -1,15 +1,5 @@
 package ro.barbos.gater.cutprocessor;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Logger;
-
-import javax.swing.SwingWorker;
-
 import ro.barbos.gater.cutprocessor.diagram.CutDiagram;
 import ro.barbos.gater.dao.StockDAO;
 import ro.barbos.gater.dto.LumberLogFilterDTO;
@@ -18,6 +8,10 @@ import ro.barbos.gater.model.LumberLog;
 import ro.barbos.gater.model.Product;
 import ro.barbos.gui.CutPlanFrame;
 import ro.barbos.gui.tablemodel.CutPlanTargetRecord;
+
+import javax.swing.*;
+import java.util.*;
+import java.util.logging.Logger;
 
 public class CutPlanCalculator extends SwingWorker {
 	
@@ -64,7 +58,7 @@ public class CutPlanCalculator extends SwingWorker {
 		logger.info("Starting calculating cut plan");
 		LumberLogFilterDTO filter = new LumberLogFilterDTO();
 		filter.setMinLength(shortestProductLength);
-		filter.setAvailable(true);
+		filter.setAvailable(false);
 		List<LumberLog> lumberLogs = StockDAO.getJustCurrentLumbersLogs(filter);
 		logger.info("Cut plan processor: Number of lumber logs = " + lumberLogs.size());
 		CuterProcessor processor = new CuterProcessor();

@@ -1,35 +1,19 @@
 package ro.barbos.gater.dao;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.Statement;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import javax.swing.text.StyleContext.SmallAttributeSet;
-
 import ro.barbos.gater.data.DataSearchPagination;
 import ro.barbos.gater.data.DataSearchResult;
 import ro.barbos.gater.data.LumberLogUtil;
 import ro.barbos.gater.data.METRIC;
-import ro.barbos.gater.dto.ClassStockDTO;
-import ro.barbos.gater.dto.LumberLogFilterDTO;
-import ro.barbos.gater.dto.LumberStackDTO;
-import ro.barbos.gater.dto.LumberStackInfoDTO;
-import ro.barbos.gater.dto.ProcessedLumberLogFilterDTO;
-import ro.barbos.gater.dto.TypeStockDTO;
-import ro.barbos.gater.model.IDPlate;
-import ro.barbos.gater.model.LumberLog;
-import ro.barbos.gater.model.LumberLogStockEntry;
-import ro.barbos.gater.model.LumberStack;
-import ro.barbos.gater.model.ProcessedLumberLog;
-import ro.barbos.gater.model.User;
+import ro.barbos.gater.dto.*;
+import ro.barbos.gater.model.*;
+
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class StockDAO {
 	
@@ -355,9 +339,9 @@ public class StockDAO {
 		
 		List<LumberLog> lumberLogs = null;
 		StringBuilder sql = new StringBuilder("select l.id, l.idplate, i.label, l.small_diameter, l.big_diameter, l.length, l.volume, l.lumbertype, l.lumberclass, st.name, l.reallength, l.realvolume from lumberlog l left join idplate i on l.idplate = i.id left join lumberstack st on l.stack = st.id");
-		//StringBuilder sql = new StringBuilder("select l.id, l.idplate, i.label, l.small_diameter, l.big_diameter, l.length, l.volume, l.lumbertype, l.lumberclass, st.name, stoe.entryDate, u.FullName from lumberlog l left join idplate i on l.idplate = i.id left join lumberstack st on l.stack = st.id join lumberentry_to_lumberlog le on l.id = le.lumberlogid join lumberentry stoe on le.entryid = stoe.id join user u on stoe.user = u.ID");
 		if(filter != null) {
 			sql.append(" where ");
+            String operator = "";
 			if(filter.getStacks() != null && filter.getStacks().size() > 0) {
 				sql.append(" l.stack = ").append(filter.getStacks().get(0));
 			}
@@ -366,9 +350,10 @@ public class StockDAO {
 			}
 			if(filter.isAvailable()) {
 				sql.append(" l.planId is NULL ");
+                operator = " and ";
 			}
 			if(filter.getMinLength() != -1) {
-				sql.append(" and l.length >= ").append(filter.getMinLength());
+				sql.append(operator).append(" l.length >= ").append(filter.getMinLength());
 			}
 		}
 		
