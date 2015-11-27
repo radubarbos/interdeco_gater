@@ -18,6 +18,7 @@ public class CutPlanSettingsPanel extends JPanel {
 	JCheckBox oneRotateCutStrategyChk;
 	JCheckBox bestMultibladeMatchCutStrategyChk;
 	JCheckBox noMultibladeCutStrategyChk;
+    JCheckBox oneRotate180CutStrategyChk;
 	
 	public CutPlanSettingsPanel() {
 		this(false);
@@ -34,7 +35,9 @@ public class CutPlanSettingsPanel extends JPanel {
 		bestMultibladeMatchCutStrategyChk = new JCheckBox("Strategie cu multi analiza, 3 rotiri", CutStrategyType.BEST_MULTIBLADE_MATCH.isEnabled());
 		add(bestMultibladeMatchCutStrategyChk);
 		noMultibladeCutStrategyChk = new JCheckBox("Strategie fara prisme", CutStrategyType.NO_MULTI_BLADE.isEnabled());
-		add(noMultibladeCutStrategyChk);
+        add(noMultibladeCutStrategyChk);
+        oneRotate180CutStrategyChk = new JCheckBox("O singura rotire la 180", CutStrategyType.ROTATE_ONE_180.isEnabled());
+        add(oneRotate180CutStrategyChk);
 	}
 	
 	public Map<String, Boolean> getCutStrategySettings() {
@@ -59,6 +62,10 @@ public class CutPlanSettingsPanel extends JPanel {
 			cutStrategies.put(CutStrategyType.NO_MULTI_BLADE.name(), true);
 		}
         CutStrategyType.NO_MULTI_BLADE.setEnabled(noMultibladeCutStrategyChk.isSelected());
+        if(oneRotate180CutStrategyChk.isSelected()) {
+            cutStrategies.put(CutStrategyType.ROTATE_ONE_180.name(), true);
+        }
+        CutStrategyType.ROTATE_ONE_180.setEnabled(oneRotate180CutStrategyChk.isSelected());
 		return cutStrategies;
 	}
 	
@@ -76,6 +83,9 @@ public class CutPlanSettingsPanel extends JPanel {
 		if(bestMultibladeMatchCutStrategyChk.isSelected()) {
 			cutStrategiesIndexes.add(3);
 		}
+        if(oneRotate180CutStrategyChk.isSelected()) {
+            cutStrategiesIndexes.add(5);
+        }
 		return cutStrategiesIndexes;
 	}
 }

@@ -185,6 +185,7 @@ public class MainFrame extends JFrame implements WindowListener, ActionListener 
         CutStrategyType.SIMPLE_VERTICAL.setEnabled(true);
         CutStrategyType.BEST_MATCH_VERTICAL.setEnabled(true);
         CutStrategyType.ROTATE_ONE.setEnabled(true);
+        CutStrategyType.ROTATE_ONE_180.setEnabled(true);
 
 		UIManager.put("OptionPane.cancelButtonText", "Anuleaza");
 	    UIManager.put("OptionPane.noButtonText", "Nu");

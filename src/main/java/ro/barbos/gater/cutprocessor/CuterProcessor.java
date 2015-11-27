@@ -1,20 +1,13 @@
 package ro.barbos.gater.cutprocessor;
 
+import ro.barbos.gater.cutprocessor.diagram.CutDiagram;
+import ro.barbos.gater.cutprocessor.strategy.*;
+import ro.barbos.gater.model.LumberLog;
+import ro.barbos.gater.model.Product;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import ro.barbos.gater.cutprocessor.diagram.CutDiagram;
-import ro.barbos.gater.cutprocessor.strategy.AbstractCutStrategy;
-import ro.barbos.gater.cutprocessor.strategy.BestMatchVerticalCutStrategy;
-import ro.barbos.gater.cutprocessor.strategy.BestMultiBladeCutStrategy;
-import ro.barbos.gater.cutprocessor.strategy.CutStrategy;
-import ro.barbos.gater.cutprocessor.strategy.CutStrategyType;
-import ro.barbos.gater.cutprocessor.strategy.NoMultiBladeCutStrategy;
-import ro.barbos.gater.cutprocessor.strategy.RotateOneCutStrategy;
-import ro.barbos.gater.cutprocessor.strategy.SimpleVerticalCutStrategy;
-import ro.barbos.gater.model.LumberLog;
-import ro.barbos.gater.model.Product;
 
 public class CuterProcessor {
 	
@@ -55,6 +48,11 @@ public class CuterProcessor {
 			setCutStrategyLengthOptimization(cutStrategy);
 			strategies.add(cutStrategy);
 		}
+        if(cutStrategies == null || cutStrategies.containsKey(CutStrategyType.ROTATE_ONE_180.name())) {
+            AbstractCutStrategy cutStrategy = new RotateOne180CutStrategy();
+            setCutStrategyLengthOptimization(cutStrategy);
+            strategies.add(cutStrategy);
+        }
 		return strategies;
 	}
 	
