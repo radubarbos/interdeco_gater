@@ -6,6 +6,8 @@ import ro.barbos.gater.dto.ProductCutTargetDTO;
 import ro.barbos.gater.model.CutPlan;
 import ro.barbos.gater.model.GeneralResponse;
 import ro.barbos.gater.model.IDPlate;
+import ro.barbos.gater.model.Product;
+import ro.barbos.gui.tablemodel.CutPlanTargetRecord;
 
 import java.io.ByteArrayInputStream;
 import java.io.ObjectInputStream;
@@ -199,7 +201,6 @@ public class CutPlanDAO {
 	    		logger.info(sql.toString());
 		    	rs = stm.executeQuery(sql.toString());
 		    	if(rs.next()) {
-		    		//CutDiagram diagram = (CutDiagram)rs.getObject(2);
 		    		byte[] buf = rs.getBytes(2);
 		    	    ObjectInputStream objectIn = null;
 		    	    if (buf != null)
@@ -402,4 +403,179 @@ public class CutPlanDAO {
 	    
 	    return statistics;
 	}
+
+    public static CutPlan getActiveCutPlan() {
+        CutPlan activePlan = null;
+
+        Logger logger = Logger.getLogger("dao");
+        StringBuilder sql = new StringBuilder("select id, name, description, entrydate, status, complete from CutPlan where status = 0");
+
+        Connection con =null;
+        Statement stm =null;
+        ResultSet rs = null;
+        try {
+            con = DataAccess.getInstance().getDatabaseConnection();
+            con.setAutoCommit(true);
+            stm = con.createStatement();
+            logger.info(sql.toString());
+            rs = stm.executeQuery(sql.toString());
+            while(rs.next()) {
+                CutPlan plan = new CutPlan();
+                plan.setId(rs.getInt(1));
+                plan.setName(rs.getString(2));
+                plan.setDescription(rs.getString(3));
+                plan.setDate(new Date(rs.getTimestamp(4).getTime()));
+                plan.setStatus(rs.getInt(5));
+                plan.setCompleted(rs.getDouble(6));
+                activePlan = plan;
+            }
+        }
+        catch(Exception e)
+        {
+            logger.warning(e.getMessage());
+            logger.log(Level.INFO, "Error", e);
+        }
+        finally
+        {
+            if(rs!=null) try{rs.close();}catch(Exception e){}
+            if(stm!=null) try{stm.close();}catch(Exception e){}
+        }
+
+        return activePlan;
+    }
+
+    public static GeneralResponse getCutDiagram(IDPlate plate, Integer planId) {
+        GeneralResponse response = new GeneralResponse();
+        response.setCode(1);
+        Logger logger = Logger.getLogger("dao");
+
+        StringBuilder sql = new StringBuilder(" select PlanId,CutDiagram from  CutPlanLumberLogDiagram where LumberLogIDPlate = '").append(DataAccess.escapeString(plate.getLabel())).append("' and PlanId = ");
+
+        Connection con =null;
+        Statement stm =null;
+        ResultSet rs = null;
+        try {
+            con = DataAccess.getInstance().getDatabaseConnection();
+            con.setAutoCommit(true);
+            stm = con.createStatement();
+            if(planId != null) {
+                sql.append(planId);
+                logger.info(sql.toString());
+                rs = stm.executeQuery(sql.toString());
+                if(rs.next()) {
+                    byte[] buf = rs.getBytes(2);
+                    ObjectInputStream objectIn = null;
+                    if (buf != null)
+                        objectIn = new ObjectInputStream(new ByteArrayInputStream(buf));
+
+                    CutDiagram diagram = (CutDiagram)objectIn.readObject();
+                    response.setData(diagram);
+                    response.setCode(200);
+                }
+                else {
+                    response.setMessage("Busteanul nu face parte din planul activ.");
+                }
+            }
+            else {
+                response.setMessage("Busteanul nu face parte din nici un plan.");
+            }
+        }
+        catch(Exception e)
+        {
+            logger.warning(e.getMessage());
+            logger.log(Level.INFO, "Error", e);
+            response.setMessage("A aparut o accesul bazei de date.");
+        }
+        finally
+        {
+            if(rs!=null) try{rs.close();}catch(Exception e){}
+            if(stm!=null) try{stm.close();}catch(Exception e){}
+        }
+
+
+        return response;
+    }
+
+    public static List<CutPlanTargetRecord> getRemaining(Integer planId) {
+        List<CutPlanTargetRecord> records = new ArrayList<>();
+        Logger logger = Logger.getLogger("dao");
+
+        StringBuilder sql = new StringBuilder(" select ProductName,TargetPieces,ProcessedPieces  from cutplanproduct where PlanId = " + planId + " and ProcessedPieces<TargetPieces");
+
+        Connection con =null;
+        Statement stm =null;
+        ResultSet rs = null;
+        try {
+            con = DataAccess.getInstance().getDatabaseConnection();
+            con.setAutoCommit(true);
+            stm = con.createStatement();
+            rs = stm.executeQuery(sql.toString());
+            while(rs.next()) {
+                String productName = rs.getString(1);
+                int targetPieces = rs.getInt(2);
+                int processedPieces = rs.getInt(3);
+                CutPlanTargetRecord planTargetRecord = new CutPlanTargetRecord();
+                Product product = ProductDAO.getProduct(productName);
+                planTargetRecord.setProduct(product);
+                planTargetRecord.setPieces((long)targetPieces - processedPieces);
+                long productVolume = product.getLength() * product.getWidth() * product.getThick();
+                planTargetRecord.setTargetMCub((productVolume / 1000000000D) * planTargetRecord.getPieces());
+                records.add(planTargetRecord);
+            }
+        }
+        catch(Exception e)
+        {
+            logger.warning(e.getMessage());
+            logger.log(Level.INFO, "Error", e);
+        }
+        finally
+        {
+            if(rs!=null) try{rs.close();}catch(Exception e){}
+            if(stm!=null) try{stm.close();}catch(Exception e){}
+        }
+
+
+        return records;
+    }
+
+    public static boolean addLumberLog(CutPlanSenquence cutPlanSenquence, int planId) {
+        boolean status = false;
+        Logger logger = Logger.getLogger("dao");
+        StringBuilder sql = new StringBuilder("update lumberlog set planId=").append(planId).append(" where id = ").append(cutPlanSenquence.getLumberLog().getId());
+        StringBuilder insertDiagram = new StringBuilder("insert into CutPlanLumberLogDiagram(PlanId, LumberLogIDPlate, CutDiagramResult, CutDiagram, Percentage) values(?, ?, ? ,?, ?)");
+
+        Connection con =null;
+        Statement stm =null;
+        PreparedStatement pstm = null;
+        try {
+            con = DataAccess.getInstance().getDatabaseConnection();
+            con.setAutoCommit(true);
+            stm = con.createStatement();
+            logger.info(sql.toString());
+            stm.executeUpdate(sql.toString());
+            if(cutPlanSenquence.getCutDiagram() != null) {
+                pstm = con.prepareStatement(insertDiagram.toString());
+                logger.info("Save cut diagram for planid:" + planId + " lumber: "+cutPlanSenquence.getLumberLog().getPlate().getLabel());
+                pstm.setInt(1, planId);
+                pstm.setString(2, cutPlanSenquence.getLumberLog().getPlate().getLabel());
+                pstm.setString(3, "");
+                pstm.setObject(4, cutPlanSenquence.getCutDiagram());
+                pstm.setDouble(5, cutPlanSenquence.getPercentage());
+                pstm.executeUpdate();
+            }
+            status = true;
+        }
+        catch(Exception e)
+        {
+            logger.warning(e.getMessage());
+            logger.log(Level.INFO, "Error", e);
+        }
+        finally
+        {
+            if(stm!=null) try{stm.close();}catch(Exception e){}
+            if(pstm!=null) try{pstm.close();}catch(Exception e){}
+        }
+
+        return status;
+    }
 }

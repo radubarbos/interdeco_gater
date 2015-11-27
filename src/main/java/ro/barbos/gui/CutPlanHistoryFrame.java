@@ -1,16 +1,22 @@
 package ro.barbos.gui;
 
+import ro.barbos.gater.cutprocessor.CutPlanCalculator;
+import ro.barbos.gater.cutprocessor.CutPlanCalculatorListener;
+import ro.barbos.gater.cutprocessor.CutPlanSenquence;
 import ro.barbos.gater.cutprocessor.diagram.CutDiagram;
+import ro.barbos.gater.cutprocessor.strategy.CutStrategies;
 import ro.barbos.gater.dao.CutPlanDAO;
 import ro.barbos.gater.dao.IDPlateDAO;
 import ro.barbos.gater.dao.StockDAO;
 import ro.barbos.gater.dto.LumberLogFilterDTO;
+import ro.barbos.gater.dto.ProductCutTargetDTO;
 import ro.barbos.gater.model.CutPlan;
 import ro.barbos.gater.model.GeneralResponse;
 import ro.barbos.gater.model.IDPlate;
 import ro.barbos.gater.model.LumberLog;
 import ro.barbos.gui.renderer.GeneralTableRenderer;
 import ro.barbos.gui.tablemodel.CutPlanHistoryModel;
+import ro.barbos.gui.tablemodel.CutPlanTargetRecord;
 
 import javax.swing.*;
 import javax.swing.table.TableColumn;
@@ -22,10 +28,14 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CutPlanHistoryFrame extends GeneralFrame implements ActionListener {
+public class CutPlanHistoryFrame extends GeneralFrame implements ActionListener, CutPlanCalculatorListener {
 
 	private CutPlanHistoryModel cutPlansModel;
 	private JTable cutPlansTable;
+
+    private SeeCutDiagramFrame view;
+    private CutPlanSenquence addition;
+
 	
 	public CutPlanHistoryFrame() {
 		super();
@@ -77,6 +87,16 @@ public class CutPlanHistoryFrame extends GeneralFrame implements ActionListener 
         seeCutDiagram.setHorizontalTextPosition(SwingConstants.CENTER);
         seeCutDiagram.addActionListener(this);
         toolbar.add(seeCutDiagram);
+        JButton addLumberLog = new JButton("Adauda bustean",new ImageIcon(
+                GUITools.getImage("resources/add24.png")));
+        addLumberLog.setFocusPainted(false);
+        addLumberLog.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        addLumberLog.setToolTipText("Adauga bustean");
+        addLumberLog.setActionCommand("ADD_LUMBERLOG");
+        addLumberLog.setVerticalTextPosition(SwingConstants.BOTTOM);
+        addLumberLog.setHorizontalTextPosition(SwingConstants.CENTER);
+        addLumberLog.addActionListener(this);
+        toolbar.add(addLumberLog);
 		JButton csvExport = new JButton("Export",new ImageIcon(
 				GUITools.getImage("resources/csv24.png")));
 		csvExport.setToolTipText("Exporta tabelul in fisier csv");
@@ -228,6 +248,49 @@ public class CutPlanHistoryFrame extends GeneralFrame implements ActionListener 
             int rasp = JOptionPane.showOptionDialog(GUIUtil.container, platesCombo, "Diagrama taiere bustean",
                     JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, buttons, buttons[2]);
 
+        } else if(command.equals("ADD_LUMBERLOG")) {
+           final CutPlan plan = CutPlanDAO.getActiveCutPlan();
+           if(plan == null) {
+               JOptionPane.showMessageDialog(GUIUtil.container, "Nu exista nici un plan activ la care sa se adauge busteni.");
+               return;
+           }
+            if(plan.getCompleted()>=1) {
+                JOptionPane.showMessageDialog(GUIUtil.container, "Planul este complect.");
+                return;
+            }
+            List<IDPlate> plates = IDPlateDAO.getUsedPlates();
+            plates.add(0, null);
+            JButton see = new JButton("Adauga");
+            JButton cancel = new JButton("Anuleaza");
+            cancel.setActionCommand("CANCEL_DIALOG");
+            cancel.addActionListener(GUIUtil.main);
+            JButton[] buttons = new JButton[] {see, cancel};
+            final JComboBox<IDPlate> platesCombo = new JComboBox<IDPlate>(plates.toArray(new IDPlate[0]));
+
+            see.addActionListener(new ActionListener() {
+
+                @Override
+                public void actionPerformed(ActionEvent arg0) {
+                    GUITools.closeParentDialog((JComponent)arg0.getSource());
+                    cutLumberLogForTheCurrentActivePlan((IDPlate)platesCombo.getSelectedItem(), plan);
+                }
+            });
+
+            JOptionPane.showOptionDialog(GUIUtil.container, platesCombo, "Selecteaza bustean",
+                    JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, buttons, buttons[1]);
+        } else if(command.equals("ADDTOPLAN")) {
+            if(view!=null) {
+                view.dispose();
+            }
+            boolean status = CutPlanDAO.addLumberLog(addition, CutPlanDAO.getActiveCutPlan().getId());
+            if(status) {
+                JOptionPane.showMessageDialog(GUIUtil.container, "Sa atasat busteanul.");
+                return;
+            }
+            else {
+                JOptionPane.showMessageDialog(GUIUtil.container, "Eroare la atasarea buseanului.");
+                return;
+            }
         }
 	}
 	
@@ -264,7 +327,7 @@ public class CutPlanHistoryFrame extends GeneralFrame implements ActionListener 
             filter.setIdPlates(platesFilter);
             List<LumberLog> lumberLogs = StockDAO.getJustCurrentLumbersLogs(filter);
             if(type == 0) {
-                new SeeCutDiagramFrame(lumberLogs.get(0), diagram);
+                new SeeCutDiagramFrame(lumberLogs.get(0), diagram, null);
             }
             else if(type == 1) {
                 CutDiagramPaintPanel painter = new CutDiagramPaintPanel(lumberLogs.get(0), diagram);
@@ -287,5 +350,36 @@ public class CutPlanHistoryFrame extends GeneralFrame implements ActionListener 
         else {
             JOptionPane.showMessageDialog(GUIUtil.container, response.getMessage());
         }
+    }
+
+    private void cutLumberLogForTheCurrentActivePlan(IDPlate plate, CutPlan cutPlan) {
+        if(plate == null) {
+            return;
+        }
+        LumberLogFilterDTO filter = new LumberLogFilterDTO();
+        List<Long> platesFilter = new ArrayList<>();
+        platesFilter.add(plate.getId());
+        filter.setIdPlates(platesFilter);
+        List<LumberLog> lumberLogs = StockDAO.getJustCurrentLumbersLogs(filter);
+        if(lumberLogs.isEmpty()) {
+            JOptionPane.showMessageDialog(GUIUtil.container, "Nu exista bustean cu placuta selectata.");
+            return;
+        }
+        LumberLog lumberLog = lumberLogs.get(0);
+        if(lumberLog.getCutPlanId() != null && (lumberLog.getCutPlanId() == cutPlan.getId().intValue())) {
+            JOptionPane.showMessageDialog(GUIUtil.container, "Busteanul apartine planului deja.");
+            return;
+        }
+        List<CutPlanTargetRecord> remaining = CutPlanDAO.getRemaining(cutPlan.getId());
+        if(remaining.isEmpty()) {
+            JOptionPane.showMessageDialog(GUIUtil.container, "Planul nu mai are produse neacoperite.");
+            return;
+        }
+        new CutPlanCalculator(remaining, this, CutStrategies.getActiveStrategies()).execute();
+    }
+
+    public void showPlan(List<CutPlanSenquence> plan, List<ProductCutTargetDTO> cutDataInfo) {
+        addition = plan.get(0);
+        view = new SeeCutDiagramFrame(addition.getLumberLog(), addition.getCutDiagram(), this);
     }
 }

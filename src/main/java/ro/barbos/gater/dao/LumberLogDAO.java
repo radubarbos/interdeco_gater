@@ -1,20 +1,19 @@
 package ro.barbos.gater.dao;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-
+import ro.barbos.gater.cutprocessor.diagram.CutDiagram;
 import ro.barbos.gater.data.IDPlateManager;
+import ro.barbos.gater.model.GeneralResponse;
 import ro.barbos.gater.model.LumberLog;
 import ro.barbos.gater.model.LumberLogEntry;
 import ro.barbos.gater.model.LumberStack;
 import ro.barbos.gui.ConfigLocalManager;
+
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class LumberLogDAO {
 
@@ -159,11 +158,17 @@ public class LumberLogDAO {
 		StringBuilder cutPlan = new StringBuilder(" select PlanId, Percentage from  CutPlanLumberLogDiagram cp inner join CutPlan plan on  cp.PlanId = plan.id where plan.status = 0 and cp.LumberLogIDPlate = '").append(DataAccess.escapeString(lumberLog.getPlate().getLabel())).append("'");
 		StringBuilder checkLastFromPlan = new StringBuilder("select count(*) from lumberlog where planId = ");
 		StringBuilder updateCutPlan = new StringBuilder(" update CutPlan set ");
+
+        StringBuilder planPiecesUpdate = new StringBuilder("update cutplanproduct set ProcessedPieces = ProcessedPieces + ? where PlanId= ? and ProductName =?");
 		
 		Connection con =null;
 	    Statement stm =null;
 	    ResultSet rs = null;
 	    try {
+            GeneralResponse diagramResponse = null;
+            if(lumberLog.getCutPlanId() != null) {
+                diagramResponse = CutPlanDAO.getCutDiagram(lumberLog.getPlate(), lumberLog.getCutPlanId().intValue());
+            }
 	    	con = DataAccess.getInstance().getDatabaseConnection();
 	    	con.setAutoCommit(false);
 	    	stm = con.createStatement();
@@ -195,7 +200,7 @@ public class LumberLogDAO {
 	    		if(rs.next()) {
 	    			planId = rs.getInt(1);
 	    			Double percent = rs.getDouble(2);
-	    			updateCutPlan.append("complete = complete + ").append(percent);
+	    			updateCutPlan.append("complete = complete + ").append(percent).append(" where id=" + planId);
 	    		}
 	    		if(planId != null) {
 	    			rs = stm.executeQuery(checkLastFromPlan.append(planId).toString());
@@ -209,6 +214,23 @@ public class LumberLogDAO {
 	    			stm.executeUpdate(updateCutPlan.toString());
 	    		}
 	    		IDPlateManager.addAvailablePlate(lumberLog.getPlate());
+                if(diagramResponse != null) {
+                    if(diagramResponse.getCode() == 200) {
+                        CutDiagram diagram = (CutDiagram)diagramResponse.getData();
+                        PreparedStatement pstm = con.prepareStatement(planPiecesUpdate.toString());
+                        Iterator<Map.Entry<String, Integer>> cutInfo = diagram.cutInfo.cutPieces.entrySet().iterator();
+                        while(cutInfo.hasNext()) {
+                            Map.Entry<String, Integer> productInfo = cutInfo.next();
+                            String productName = productInfo.getKey();
+                            Integer pieces = productInfo.getValue();System.out.println(productName + " " + pieces);
+                            pstm.setInt(1, pieces);
+                            pstm.setInt(2, lumberLog.getCutPlanId().intValue());
+                            pstm.setString(3, productName);
+                            pstm.executeUpdate();
+                        }
+                        pstm.close();
+                    }
+                }
 	    	}
 	    	con.commit();
 	    }catch(Exception e){

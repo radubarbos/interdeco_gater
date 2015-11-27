@@ -338,7 +338,7 @@ public class StockDAO {
 		Logger logger = Logger.getLogger("dao");
 		
 		List<LumberLog> lumberLogs = null;
-		StringBuilder sql = new StringBuilder("select l.id, l.idplate, i.label, l.small_diameter, l.big_diameter, l.length, l.volume, l.lumbertype, l.lumberclass, st.name, l.reallength, l.realvolume from lumberlog l left join idplate i on l.idplate = i.id left join lumberstack st on l.stack = st.id");
+		StringBuilder sql = new StringBuilder("select l.id, l.idplate, i.label, l.small_diameter, l.big_diameter, l.length, l.volume, l.lumbertype, l.lumberclass, st.name, l.reallength, l.realvolume, l.planId from lumberlog l left join idplate i on l.idplate = i.id left join lumberstack st on l.stack = st.id");
 		if(filter != null) {
 			sql.append(" where ");
             String operator = "";
@@ -382,6 +382,7 @@ public class StockDAO {
 	    		lumberLog.setRealVolume(rs.getDouble(12));
 	    		lumberLog.setLumberType(rs.getLong(8));
 	    		lumberLog.setLumberClass(rs.getLong(9));
+                lumberLog.setCutPlanId(rs.getLong(13));
 	    		LumberStack stack = new LumberStack();
 	    		stack.setName(rs.getString(10));
 	    		lumberLog.setStack(stack);

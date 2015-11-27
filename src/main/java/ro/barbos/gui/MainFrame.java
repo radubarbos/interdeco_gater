@@ -1,6 +1,7 @@
 package ro.barbos.gui;
 
 import ro.barbos.gater.cutprocessor.CutterSettings;
+import ro.barbos.gater.cutprocessor.strategy.CutStrategyType;
 import ro.barbos.gater.dao.*;
 import ro.barbos.gater.data.IDPlateManager;
 import ro.barbos.gater.model.Blade;
@@ -181,6 +182,10 @@ public class MainFrame extends JFrame implements WindowListener, ActionListener 
 			logger.warning(e.getMessage());
 			logger.log(Level.WARNING, "Error", e);
 		}
+        CutStrategyType.SIMPLE_VERTICAL.setEnabled(true);
+        CutStrategyType.BEST_MATCH_VERTICAL.setEnabled(true);
+        CutStrategyType.ROTATE_ONE.setEnabled(true);
+
 		UIManager.put("OptionPane.cancelButtonText", "Anuleaza");
 	    UIManager.put("OptionPane.noButtonText", "Nu");
 	    UIManager.put("OptionPane.okButtonText", "Ok");

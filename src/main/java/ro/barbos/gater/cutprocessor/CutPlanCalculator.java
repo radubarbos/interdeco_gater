@@ -6,7 +6,6 @@ import ro.barbos.gater.dto.LumberLogFilterDTO;
 import ro.barbos.gater.dto.ProductCutTargetDTO;
 import ro.barbos.gater.model.LumberLog;
 import ro.barbos.gater.model.Product;
-import ro.barbos.gui.CutPlanFrame;
 import ro.barbos.gui.tablemodel.CutPlanTargetRecord;
 
 import javax.swing.*;
@@ -26,11 +25,11 @@ public class CutPlanCalculator extends SwingWorker {
 	
 	List<CutPlanSenquence> planSteps = new ArrayList<>();
 	
-	private CutPlanFrame frame;
+	private CutPlanCalculatorListener frame;
 	
 	private long shortestProductLength = 1111111110;
 	
-	public CutPlanCalculator(List<CutPlanTargetRecord> records, CutPlanFrame frame, Map<String, Boolean> cutStrategies) {
+	public CutPlanCalculator(List<CutPlanTargetRecord> records, CutPlanCalculatorListener frame, Map<String, Boolean> cutStrategies) {
 		this.records = records;
 		this.cutStrategies = cutStrategies;
 		cutDataInfo = new ArrayList<>(records.size() * 2);
@@ -142,7 +141,9 @@ public class CutPlanCalculator extends SwingWorker {
 	 */
 	@Override
 	protected void done() {
-		frame.showPlan(planSteps, cutDataInfo);
+		if(frame!=null){
+            frame.showPlan(planSteps, cutDataInfo);
+        }
 		super.done();
 	}
 

@@ -1,6 +1,7 @@
 package ro.barbos.gui;
 
 import ro.barbos.gater.cutprocessor.CutPlanCalculator;
+import ro.barbos.gater.cutprocessor.CutPlanCalculatorListener;
 import ro.barbos.gater.cutprocessor.CutPlanSenquence;
 import ro.barbos.gater.dao.CutPlanDAO;
 import ro.barbos.gater.dto.ProductCutTargetDTO;
@@ -20,7 +21,7 @@ import java.awt.event.ActionListener;
 import java.util.*;
 import java.util.List;
 
-public class CutPlanFrame extends GeneralFrame implements ActionListener {
+public class CutPlanFrame extends GeneralFrame implements ActionListener, CutPlanCalculatorListener {
 
 	
 	private static final long serialVersionUID = 1L;
