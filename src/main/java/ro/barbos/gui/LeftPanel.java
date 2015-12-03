@@ -1,5 +1,6 @@
 package ro.barbos.gui;
 
+import ro.barbos.gater.dao.DataAccess;
 import ro.barbos.gater.dao.IDPlateDAO;
 import ro.barbos.gater.dao.LumberLogDAO;
 import ro.barbos.gater.dao.StockDAO;
@@ -13,6 +14,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -133,6 +137,12 @@ public class LeftPanel extends JPanel implements ActionListener {
 		users.setAlignmentX(0);
 		users.setMaximumSize(buttonDimension);
 
+        JButton db = new JButton("Fix database");
+        db.setActionCommand("FIX");
+        db.addActionListener(this);
+        db.setAlignmentX(0);
+        db.setMaximumSize(buttonDimension);
+
 		
 		if(rights == 0 || rights == 1) {
 			add(receptie);
@@ -175,7 +185,8 @@ if(rights == 0) {
 			add(Box.createVerticalStrut(3));
 			add(optionCutDiagram);
 			add(Box.createVerticalStrut(3));
-			
+            add(db);
+            add(Box.createVerticalStrut(3));
 		}
 
 		add(logout);
@@ -337,7 +348,43 @@ if(rights == 0) {
 		}
 		else if(command.equals("SEE_CUT_OPTION_DIAGRAM")) {
 			CutOptionsTargetPanel.showDialog();
-		}
+		} else if(command.equals("FIX")) {
+            Connection con =null;
+            Statement stm =null;
+            ResultSet rs = null;
+            try {
+                con = DataAccess.getInstance().getDatabaseConnection();
+                con.setAutoCommit(true);
+                stm = con.createStatement();
+                rs = stm.executeQuery("select * from gatersetting where Name='MEASURE_MIDDLE_ONCE'");
+                if(!rs.next())
+                {
+                    stm.executeUpdate("INSERT INTO `gatersetting` VALUES (7,'MEASURE_MIDDLE_ONCE',1,1)");
+                }
+            }catch(Exception eee)
+            {
+            }
+            finally
+            {
+                if(rs!=null) try{rs.close();}catch(Exception er){}
+                if(stm!=null) try{stm.close();}catch(Exception er){}
+            }
+
+            try {
+                con = DataAccess.getInstance().getDatabaseConnection();
+                con.setAutoCommit(true);
+                stm = con.createStatement();
+                stm.executeUpdate("alter table cutplanproduct add ProcessedPieces int default 0");
+            }catch(Exception eee)
+            {
+            }
+            finally
+            {
+                if(rs!=null) try{rs.close();}catch(Exception er){}
+                if(stm!=null) try{stm.close();}catch(Exception er){}
+            }
+            JOptionPane.showMessageDialog(GUIUtil.container, "Baza de date a fost modificata.");
+        }
 	}
 	
 	private JLabel createLabel(String text) {
