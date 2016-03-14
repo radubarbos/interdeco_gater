@@ -1,29 +1,21 @@
 package ro.barbos.gui;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-
+import ro.barbos.gater.cutprocessor.DefaultCutOptionsCalculatorData;
 import ro.barbos.gater.dao.IDPlateDAO;
 import ro.barbos.gater.dao.ProductDAO;
+import ro.barbos.gater.dao.StockDAO;
+import ro.barbos.gater.dto.LumberLogFilterDTO;
 import ro.barbos.gater.model.IDPlate;
+import ro.barbos.gater.model.LumberLogStockEntry;
 import ro.barbos.gater.model.Product;
 import ro.barbos.gui.exswing.SuggestionJComboBox;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.*;
+import java.util.List;
 
 public class CutOptionsTargetPanel extends JPanel implements ActionListener {
 	
@@ -119,8 +111,23 @@ public class CutOptionsTargetPanel extends JPanel implements ActionListener {
 		Map<String, Object> targetData = new HashMap<String, Object>();
 		targetData.put("ALL_PRODUCTS", products);
 		targetData.put("IDPLATE", plate);
+		targetData.put("IDPLATE_LABEL", plate.getLabel());
 		targetData.put("SELECTED_PRODUCTS", selectedProducts);
-		new CutOptionsTargetFrame(targetData);
+        DefaultCutOptionsCalculatorData data = new DefaultCutOptionsCalculatorData();
+        data.setSelectedProducts(selectedProducts);
+        //one product
+        List<List<Product>> additionalWithJustOne = new ArrayList<>();
+        for(Product  product: products) {
+            List<Product> entry = new ArrayList<>();
+            entry.add(product);
+            additionalWithJustOne.add(entry);
+        }
+        data.setProducts(additionalWithJustOne);
+        LumberLogFilterDTO filter = new LumberLogFilterDTO();
+        filter.setIdPlates(Arrays.asList(new Long[]{plate.getId().longValue()}));
+        List<LumberLogStockEntry> lumbers = StockDAO.getCurrentLumbersLogs(filter);
+        data.setLumberLog(lumbers.get(0).getLumberLog());
+		new CutOptionsTargetFrame(targetData, data);
 		GUITools.closeParentDialog(this);
 	}
 

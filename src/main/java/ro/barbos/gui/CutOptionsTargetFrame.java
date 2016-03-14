@@ -1,43 +1,33 @@
 package ro.barbos.gui;
 
-import java.awt.BorderLayout;
-import java.awt.Image;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-
-import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
-import javax.swing.JPanel;
-import javax.swing.JProgressBar;
-import javax.swing.JScrollPane;
-
 import ro.barbos.gater.cutprocessor.CutOptionsCalculator;
 import ro.barbos.gater.cutprocessor.CutPlanSenquence;
-import ro.barbos.gater.dao.StockDAO;
-import ro.barbos.gater.dto.LumberLogFilterDTO;
+import ro.barbos.gater.cutprocessor.DefaultCutOptionsCalculatorData;
 import ro.barbos.gater.model.IDPlate;
-import ro.barbos.gater.model.LumberLog;
-import ro.barbos.gater.model.LumberLogStockEntry;
-import ro.barbos.gater.model.Product;
+
+import javax.swing.*;
+import java.awt.*;
+import java.util.List;
+import java.util.Map;
 
 public class CutOptionsTargetFrame extends GeneralFrame {
 	
 	private static final long serialVersionUID = 1L;
 	
 	private Map<String, Object> cutInfo;
+    private DefaultCutOptionsCalculatorData data;
 	
 	private JProgressBar progressBar;
 	
-	public CutOptionsTargetFrame(Map<String, Object> cutInfo) {
+	public CutOptionsTargetFrame(Map<String, Object> cutInfo, DefaultCutOptionsCalculatorData data) {
 		this.cutInfo = cutInfo;
+        this.data = data;
 		IDPlate plate = (IDPlate)cutInfo.get("IDPLATE");
-		setTitle("Optiuni taiere taiere pentru busteanul " + plate.getLabel());
+		setTitle("Optiuni taiere taiere pentru busteanul " + cutInfo.get("IDPLATE_LABEL"));
 		setResizable(true);
 		setMaximizable(true);
 		setIconifiable(true);
 		setClosable(true);
-		
 		
 		
 		GUIUtil.container.addFrame(this, getFrameCode());
@@ -49,14 +39,15 @@ public class CutOptionsTargetFrame extends GeneralFrame {
 		progressBar= new JProgressBar();
 		progressBar.setStringPainted(true);
 		getContentPane().add(progressBar, BorderLayout.NORTH);
-		IDPlate plate = (IDPlate)cutInfo.get("IDPLATE");
-		LumberLogFilterDTO filter = new LumberLogFilterDTO();
-		filter.setIdPlates(Arrays.asList(new Long[]{plate.getId().longValue()}));
-		List<LumberLogStockEntry> lumbers = StockDAO.getCurrentLumbersLogs(filter);
-		List<Product> selectedProducts = (List<Product>)(cutInfo.get("SELECTED_PRODUCTS"));
-		List<Product> allProducts = (List<Product>)(cutInfo.get("ALL_PRODUCTS")); 
-		LumberLog lumberLog = lumbers.get(0).getLumberLog();
-		CutOptionsCalculator calculator = new CutOptionsCalculator(lumberLog, selectedProducts, allProducts);
+		//IDPlate plate = (IDPlate)cutInfo.get("IDPLATE");
+		//LumberLogFilterDTO filter = new LumberLogFilterDTO();
+		//filter.setIdPlates(Arrays.asList(new Long[]{plate.getId().longValue()}));
+		//List<LumberLogStockEntry> lumbers = StockDAO.getCurrentLumbersLogs(filter);
+		//List<Product> selectedProducts = (List<Product>)(cutInfo.get("SELECTED_PRODUCTS"));
+		//List<Product> allProducts = (List<Product>)(cutInfo.get("ALL_PRODUCTS"));
+		//LumberLog lumberLog = lumbers.get(0).getLumberLog();
+
+		CutOptionsCalculator calculator = new CutOptionsCalculator(data.getLumberLog(), data);
 		calculator.setFrame(this);
 		calculator.execute();
 		progressBar.setValue(1);

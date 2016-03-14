@@ -7,6 +7,7 @@ import ro.barbos.gater.dao.StockDAO;
 import ro.barbos.gater.dto.LumberLogFilterDTO;
 import ro.barbos.gater.model.IDPlate;
 import ro.barbos.gater.model.LumberLogStockEntry;
+import ro.barbos.gui.cut.LumberLogCutAnalysisPanel;
 import ro.barbos.gui.exswing.SuggestionJComboBox;
 import ro.barbos.gui.stock.*;
 
@@ -137,8 +138,14 @@ public class LeftPanel extends JPanel implements ActionListener {
 		users.setAlignmentX(0);
 		users.setMaximumSize(buttonDimension);
 
-        JButton db = new JButton("Fix database");
+        /*JButton db = new JButton("Fix database");
         db.setActionCommand("FIX");
+        db.addActionListener(this);
+        db.setAlignmentX(0);
+        db.setMaximumSize(buttonDimension);*/
+
+        JButton db = new JButton("Analiza taiere produse");
+        db.setActionCommand("CUT_PRODUCTS_ANALYSIS");
         db.addActionListener(this);
         db.setAlignmentX(0);
         db.setMaximumSize(buttonDimension);
@@ -384,6 +391,8 @@ if(rights == 0) {
                 if(stm!=null) try{stm.close();}catch(Exception er){}
             }
             JOptionPane.showMessageDialog(GUIUtil.container, "Baza de date a fost modificata.");
+        } else if(command.equals("CUT_PRODUCTS_ANALYSIS")) {
+            LumberLogCutAnalysisPanel.showDialog();
         }
 	}
 	
