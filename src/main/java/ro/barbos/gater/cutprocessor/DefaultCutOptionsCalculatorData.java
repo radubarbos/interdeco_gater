@@ -17,6 +17,8 @@ public class DefaultCutOptionsCalculatorData {
 
     private LumberLog lumberLog;
 
+    private List<LumberLog> lumberLogs = new ArrayList<>();
+
     public List<Product> getSelectedProducts() {
         return selectedProducts;
     }
@@ -39,5 +41,13 @@ public class DefaultCutOptionsCalculatorData {
 
     public void setLumberLog(LumberLog lumberLog) {
         this.lumberLog = lumberLog;
+    }
+
+    public List<LumberLog> getLumberLogs() {
+        return lumberLogs;
+    }
+
+    public void setLumberLogs(List<LumberLog> lumberLogs) {
+        this.lumberLogs = lumberLogs;
     }
 }

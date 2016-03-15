@@ -166,8 +166,8 @@ public class LumberLogCutAnalysisPanel extends JPanel implements ActionListener,
             bigLabel.setForeground(Color.red);
         }
 
-        double minimumValue = getMilimetricNumericValue((Long)smallRadius.getValue(), smallRadiusMetric.getSelectedIndex());
-        double maxmimumValue = getMilimetricNumericValue((Long)bigRadius.getValue(), bigRadiusMetric.getSelectedIndex());
+        double minimumValue =  METRIC.toMilimeter((Long)smallRadius.getValue(), smallRadiusMetric.getSelectedIndex());
+        double maxmimumValue =  METRIC.toMilimeter((Long)bigRadius.getValue(), bigRadiusMetric.getSelectedIndex());
 
         if(!status) {
             return null;
@@ -182,22 +182,12 @@ public class LumberLogCutAnalysisPanel extends JPanel implements ActionListener,
         }
 
 
-        METRIC minimumMetric = null;
-        switch (smallRadiusMetric.getSelectedIndex()) {
-            case 0: minimumMetric = METRIC.MILIMETER;break;
-            case 1: minimumMetric = METRIC.CENTIMETER;break;
-            case 2: minimumMetric = METRIC.DECIMETER;break;
-            case 3: minimumMetric = METRIC.METER;break;
-        }
-
         if(!status) {
             return null;
         }
 
 
         LumberLog lumberLog = new LumberLog();
-      //  JComboBox<String> plateCombo = (JComboBox<String>)((JPanel)getComponent(0)).getComponent(1);
-        //lumberLog.setPlate((IDPlate)plateCombo.getSelectedItem());
         lumberLog.setSmallRadius(minimumValue);
         List<Double> middleRadius = new ArrayList<>();
         middleRadius.add(minimumValue);
@@ -205,7 +195,7 @@ public class LumberLogCutAnalysisPanel extends JPanel implements ActionListener,
         lumberLog.setBigRadius((double) maxmimumValue);
         lumberLog.setMetric(METRIC.MILIMETER);
 
-        double lengthValue = getMilimetricNumericValue((Long)lenRadius.getValue(), lenRadiusMetric.getSelectedIndex());
+        double lengthValue =  METRIC.toMilimeter((Long)lenRadius.getValue(), lenRadiusMetric.getSelectedIndex());
         lumberLog.setLength(lengthValue);
         lumberLog.setRealLength((long)lengthValue);
         IDPlate plate = new IDPlate();
@@ -240,15 +230,7 @@ public class LumberLogCutAnalysisPanel extends JPanel implements ActionListener,
         return lumberLog;
     }
 
-    private long getMilimetricNumericValue(long value, int metricIndex) {
-        switch(metricIndex) {
-            case 0: return value;
-            case 1: return value * 10;
-            case 2: return value * 100;
-            case 3: return value * 1000;
-        }
-        return value;
-    }
+
 
     private JButton[] getButtons() {
         return new JButton[]{see, cancel};

@@ -12,11 +12,6 @@ import java.util.*;
 public class CutOptionsCalculator extends SwingWorker<List<CutPlanSenquence>, Object>{
 	
 	private LumberLog lumberLog;
-	//private List<Product> products;
-	//private Map<Long, Boolean> selectedMap;
-	//private List<Product> allProducts;
-	
-	//private List<Integer> targetPieces;
 	private List<CutPlanSenquence> result;
 	
 	private CutOptionsTargetFrame frame;
@@ -26,7 +21,7 @@ public class CutOptionsCalculator extends SwingWorker<List<CutPlanSenquence>, Ob
 	private int combinations = 0;
 	private int combinationIndex = 0;
 
-    private List<Integer> targetPieces = null;//Arrays.asList(1111111111);
+    private List<Integer> targetPieces = null;
 
     public CutOptionsCalculator(LumberLog lumberLog, DefaultCutOptionsCalculatorData data) {
 		this.lumberLog = lumberLog;
@@ -35,12 +30,11 @@ public class CutOptionsCalculator extends SwingWorker<List<CutPlanSenquence>, Ob
 		targetPieces = new ArrayList<>();
         targetPieces.add(111111111);
 		result = new ArrayList<CutPlanSenquence>();
-		/*selectedMap = new HashMap<>();
-		for(Product product: products) {
-			selectedMap.put(product.getId(), true);
-		}*/
         this.data = data;
         combinations = data.getSelectedProducts().size() + data.getProducts().size();
+        if(lumberLog == null) {
+            combinations = data.getLumberLogs().size();
+        }
 	}
 
 	/* (non-Javadoc)
@@ -62,52 +56,40 @@ public class CutOptionsCalculator extends SwingWorker<List<CutPlanSenquence>, Ob
 		CuterProcessor processor = new CuterProcessor();
 
         CutDiagram selectedDiagram = null;
-        if(!data.getSelectedProducts().isEmpty()) {
-            selectedDiagram = processor.getBestCut(lumberLog, data.getSelectedProducts(), getTargetPieces(data.getSelectedProducts().size()), cutStrategies);
-            efficence = selectedDiagram.cutInfo.cutVolumeEfficency;
-        }
-
-		
-		//adding one to selected products
-		/*for(int index = 0; index < allProducts.size(); index++) {
-			if(selectedMap.containsKey(index)) {
-				continue;
-			}
-			CutDiagram alternativeDiagram = processor.getBestCut(lumberLog, getProductVariationOne(index), getTargetPieces(products.size()), cutStrategies);
-			if(alternativeDiagram != null && alternativeDiagram.cutInfo.cutVolumeEfficency > efficence) {//TODO check fara efience limit
-				result.add(createCutStep(alternativeDiagram));
-			}
-			combinationIndex++;
-			updateProgress();
-		}*/
-		
-		//use just one
-		/*for(int index = 0; index < allProducts.size(); index++) {
-			CutDiagram alternativeDiagram = processor.getBestCut(lumberLog, getSingleProduct(index), getTargetPieces(1), cutStrategies);
-			if(alternativeDiagram != null && alternativeDiagram.cutInfo.cutVolumeEfficency > efficence) {
-				result.add(createCutStep(alternativeDiagram));
-			}
-			combinationIndex++;
-			updateProgress();
-		}*/
-
-        for(List<Product> entry: data.getProducts()) {
-            CutDiagram alternativeDiagram = processor.getBestCut(lumberLog, entry, getTargetPieces(entry.size()), cutStrategies);
-            if(alternativeDiagram != null && alternativeDiagram.cutInfo.cutVolumeEfficency > efficence) {
-                result.add(createCutStep(alternativeDiagram));
+        if(lumberLog != null) {
+            if(!data.getSelectedProducts().isEmpty()) {
+                selectedDiagram = processor.getBestCut(lumberLog, data.getSelectedProducts(), getTargetPieces(data.getSelectedProducts().size()), cutStrategies);
+                efficence = selectedDiagram.cutInfo.cutVolumeEfficency;
             }
-            combinationIndex++;
-            updateProgress();
+
+            for(List<Product> entry: data.getProducts()) {
+                CutDiagram alternativeDiagram = processor.getBestCut(lumberLog, entry, getTargetPieces(entry.size()), cutStrategies);
+                if(alternativeDiagram != null && alternativeDiagram.cutInfo.cutVolumeEfficency > efficence) {
+                    result.add(createCutStep(lumberLog,alternativeDiagram));
+                }
+                combinationIndex++;
+                updateProgress();
+            }
+        } else if(!data.getLumberLogs().isEmpty()) {
+            for(LumberLog lumberLog: data.getLumberLogs()) {
+                CutDiagram cutDiagram = processor.getBestCut(lumberLog, data.getSelectedProducts(), getTargetPieces(data.getSelectedProducts().size()), cutStrategies);
+                if(cutDiagram != null && cutDiagram.cutInfo.cutVolumeEfficency > efficence) {
+                    result.add(createCutStep(lumberLog, cutDiagram));
+                }
+                combinationIndex++;
+                updateProgress();
+            }
         }
+
 		
 		
 		sortAlternativeCuts();
-        if(!data.getSelectedProducts().isEmpty()) {
-            result.add(0, createCutStep(selectedDiagram));
+        if(!data.getSelectedProducts().isEmpty() && lumberLog != null) {
+            result.add(0, createCutStep(this.lumberLog, selectedDiagram));
         }
 
-        if(result.size()>130) {
-            for(int h=result.size()-1;h>130;h--) {
+        if(result.size()>30) {
+            for(int h=result.size()-1;h>30;h--) {
                 result.remove(h);
             }
         }
@@ -124,23 +106,9 @@ public class CutOptionsCalculator extends SwingWorker<List<CutPlanSenquence>, Ob
 		}
 		return targetPieces;
 	}
+
 	
-	/*private List<Product> getProductVariationOne(int index) {
-		List<Product> products = new ArrayList<>();
-		*//*for(Product product: products) {
-			products.add(product);
-		}*//*
-		products.add(allProducts.get(index));
-		return products;
-	}*/
-	
-	/*private List<Product> getSingleProduct(int index) {
-		List<Product> products = new ArrayList<>();
-		products.add(allProducts.get(index));
-		return products;
-	}*/
-	
-	private CutPlanSenquence createCutStep(CutDiagram diagram){
+	private CutPlanSenquence createCutStep(LumberLog lumberLog, CutDiagram diagram){
 		CutPlanSenquence seq = new CutPlanSenquence();
 		seq.setCutDiagram(diagram);
 		seq.setLumberLog(lumberLog);

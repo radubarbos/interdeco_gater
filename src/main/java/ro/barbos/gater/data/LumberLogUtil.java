@@ -1,6 +1,7 @@
 package ro.barbos.gater.data;
 
 import ro.barbos.gater.model.LumberLog;
+import ro.barbos.gater.model.LumberStack;
 import ro.barbos.gater.stock.StockSettings;
 
 import java.util.List;
@@ -68,5 +69,15 @@ public class LumberLogUtil {
 		firstPart = firstPart * (Math.PI * length / 3);
 		return firstPart;
 	}
+
+    public static LumberStack findLumberStack(LumberLog lumberLog, List<LumberStack> stacks) {
+        LumberStack stack = null;
+        for(LumberStack entry: stacks) {
+            if(lumberLog.getSmallRadius() >= entry.getMinimum() && lumberLog.getSmallRadius() <= entry.getMaximum()) {
+                stack = entry;
+            }
+        }
+        return stack;
+    }
 
 }

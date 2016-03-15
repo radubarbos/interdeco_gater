@@ -1,17 +1,11 @@
 package ro.barbos.gui;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.text.NumberFormat;
-
-import javax.swing.BoxLayout;
-import javax.swing.JComboBox;
-import javax.swing.JFormattedTextField;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-
+import ro.barbos.gater.data.METRIC;
 import ro.barbos.gater.model.Product;
+
+import javax.swing.*;
+import java.awt.*;
+import java.text.NumberFormat;
 
 public class AddProductPanel extends JPanel {
 
@@ -84,24 +78,16 @@ public class AddProductPanel extends JPanel {
 		}
 		
 		Product product = new Product();
-		double lengthValue = getMilimetricNumericValue((Double)lenRadius.getValue(), lenMetric.getSelectedIndex());
-		double widthValue = getMilimetricNumericValue((Double)widthRadius.getValue(), widthMetric.getSelectedIndex());
-		double thickValue = getMilimetricNumericValue((Double)thickRadius.getValue(), thickMetric.getSelectedIndex());
-		product.setLength((long)lengthValue);
-		product.setWidth((long)widthValue);
-		product.setThick((long)thickValue);
+		long lengthValue =  METRIC.toMilimeter(((Double) lenRadius.getValue()).longValue(), lenMetric.getSelectedIndex());
+		long widthValue =  METRIC.toMilimeter(((Double) widthRadius.getValue()).longValue(), widthMetric.getSelectedIndex());
+		long thickValue =  METRIC.toMilimeter(((Double) thickRadius.getValue()).longValue(), thickMetric.getSelectedIndex());
+		product.setLength(lengthValue);
+		product.setWidth(widthValue);
+		product.setThick(thickValue);
 		product.setName(product.getWidth()+"X"+product.getThick()+"X"+formater.format(product.getLength()/1000D)+" m");
 			
 		return product;
 	}
 	
-	private double getMilimetricNumericValue(double value, int metricIndex) {
-		switch(metricIndex) {
-		case 0: return value;
-		case 1: return value * 10;
-		case 2: return value * 100;
-		case 3: return value * 1000;
-		}
-		return value;
-	}
+
 }

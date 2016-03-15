@@ -172,7 +172,7 @@ public class AddLogLumberPanel extends JPanel implements ActionListener, Propert
             return;
         }
     	if(length != null) {
-        	double lengthValue = getMilimetricNumericValue(length, lengthMetricIndex);
+        	double lengthValue =  METRIC.toMilimeter(length, lengthMetricIndex);
         	int meters = (int)lengthValue/1000;
         	meters--;
         	middleRadiusPanel.removeAll();
@@ -241,8 +241,8 @@ public class AddLogLumberPanel extends JPanel implements ActionListener, Propert
             bigLabel.setForeground(Color.red);
         }
 
-        double minimumValue = getMilimetricNumericValue((Long)smallRadius.getValue(), smallRadiusMetric.getSelectedIndex());
-        double maxmimumValue = getMilimetricNumericValue((Long)bigRadius.getValue(), bigRadiusMetric.getSelectedIndex());
+        double minimumValue =  METRIC.toMilimeter((Long)smallRadius.getValue(), smallRadiusMetric.getSelectedIndex());
+        double maxmimumValue =  METRIC.toMilimeter((Long)bigRadius.getValue(), bigRadiusMetric.getSelectedIndex());
 		
 		List<Double> middleRadius = new ArrayList<>();
 		for(int index = 0; index < middleRadiusPanel.getComponentCount(); index++) {
@@ -256,7 +256,7 @@ public class AddLogLumberPanel extends JPanel implements ActionListener, Propert
 				label.setForeground(Color.red);
 			}
 			else {
-				double mediumValue = getMilimetricNumericValue((Long)radius.getValue(), radiusMetric.getSelectedIndex());
+				double mediumValue =  METRIC.toMilimeter((Long)radius.getValue(), radiusMetric.getSelectedIndex());
                 if(mediumValue < minimumValue || mediumValue>maxmimumValue) {
                     status = false;
                     label.setForeground(Color.red);
@@ -323,7 +323,7 @@ public class AddLogLumberPanel extends JPanel implements ActionListener, Propert
 		lumberLog.setBigRadius((double)maxmimumValue);
 		lumberLog.setMetric(METRIC.MILIMETER);
 		
-		double lengthValue = getMilimetricNumericValue((Long)lenRadius.getValue(), lenRadiusMetric.getSelectedIndex());
+		double lengthValue =  METRIC.toMilimeter((Long)lenRadius.getValue(), lenRadiusMetric.getSelectedIndex());
 		lumberLog.setLength(lengthValue);
 		
 		JComboBox<String> tipCombo = (JComboBox<String>)((JPanel)getComponent(5)).getComponent(1);
@@ -357,16 +357,6 @@ public class AddLogLumberPanel extends JPanel implements ActionListener, Propert
 		}
 		
 		return lumberLog;
-	} 
-
-	private long getMilimetricNumericValue(long value, int metricIndex) {
-		switch(metricIndex) {
-		case 0: return value;
-		case 1: return value * 10;
-		case 2: return value * 100;
-		case 3: return value * 1000;
-		}
-		return value;
 	}
 	
 	public LumberStack getLumberStack() {

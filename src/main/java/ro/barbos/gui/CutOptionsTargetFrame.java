@@ -3,7 +3,6 @@ package ro.barbos.gui;
 import ro.barbos.gater.cutprocessor.CutOptionsCalculator;
 import ro.barbos.gater.cutprocessor.CutPlanSenquence;
 import ro.barbos.gater.cutprocessor.DefaultCutOptionsCalculatorData;
-import ro.barbos.gater.model.IDPlate;
 
 import javax.swing.*;
 import java.awt.*;
@@ -22,7 +21,6 @@ public class CutOptionsTargetFrame extends GeneralFrame {
 	public CutOptionsTargetFrame(Map<String, Object> cutInfo, DefaultCutOptionsCalculatorData data) {
 		this.cutInfo = cutInfo;
         this.data = data;
-		IDPlate plate = (IDPlate)cutInfo.get("IDPLATE");
 		setTitle("Optiuni taiere taiere pentru busteanul " + cutInfo.get("IDPLATE_LABEL"));
 		setResizable(true);
 		setMaximizable(true);
@@ -39,13 +37,6 @@ public class CutOptionsTargetFrame extends GeneralFrame {
 		progressBar= new JProgressBar();
 		progressBar.setStringPainted(true);
 		getContentPane().add(progressBar, BorderLayout.NORTH);
-		//IDPlate plate = (IDPlate)cutInfo.get("IDPLATE");
-		//LumberLogFilterDTO filter = new LumberLogFilterDTO();
-		//filter.setIdPlates(Arrays.asList(new Long[]{plate.getId().longValue()}));
-		//List<LumberLogStockEntry> lumbers = StockDAO.getCurrentLumbersLogs(filter);
-		//List<Product> selectedProducts = (List<Product>)(cutInfo.get("SELECTED_PRODUCTS"));
-		//List<Product> allProducts = (List<Product>)(cutInfo.get("ALL_PRODUCTS"));
-		//LumberLog lumberLog = lumbers.get(0).getLumberLog();
 
 		CutOptionsCalculator calculator = new CutOptionsCalculator(data.getLumberLog(), data);
 		calculator.setFrame(this);

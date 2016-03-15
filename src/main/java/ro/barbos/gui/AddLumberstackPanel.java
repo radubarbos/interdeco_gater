@@ -1,26 +1,12 @@
 package ro.barbos.gui;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
+import ro.barbos.gater.data.METRIC;
+import ro.barbos.gater.model.LumberStack;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.text.NumberFormat;
-
-import javax.swing.BoxLayout;
-import javax.swing.JComboBox;
-import javax.swing.JFormattedTextField;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.text.NumberFormatter;
-
-import ro.barbos.gater.dao.LumberStackDAO;
-import ro.barbos.gater.data.METRIC;
-import ro.barbos.gater.model.IDPlate;
-import ro.barbos.gater.model.LumberLog;
-import ro.barbos.gater.model.LumberStack;
 
 public class AddLumberstackPanel extends JPanel implements ActionListener {
 	
@@ -92,8 +78,8 @@ public class AddLumberstackPanel extends JPanel implements ActionListener {
 			return null;
 		}
 		
-		long minimumValue = getMilimetricNumericValue((Long)minimumRadius.getValue(), minimumRadiusMetric.getSelectedIndex());
-		long maximumValue = getMilimetricNumericValue((Long)maximumRadius.getValue(), maximumRadiusMetric.getSelectedIndex());
+		long minimumValue =  METRIC.toMilimeter((Long) minimumRadius.getValue(), minimumRadiusMetric.getSelectedIndex());
+		long maximumValue =  METRIC.toMilimeter((Long) maximumRadius.getValue(), maximumRadiusMetric.getSelectedIndex());
 		
 		if(minimumValue > maximumValue) {
 			minimumLabel.setForeground(Color.red);
@@ -112,15 +98,5 @@ public class AddLumberstackPanel extends JPanel implements ActionListener {
 		stack.setMaximum((double)maximumValue);
 		
 		return stack;
-	} 
-
-	private long getMilimetricNumericValue(long value, int metricIndex) {
-		switch(metricIndex) {
-		case 0: return value;
-		case 1: return value * 10;
-		case 2: return value * 100;
-		case 3: return value * 1000;
-		}
-		return value;
 	}
 }

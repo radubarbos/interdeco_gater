@@ -7,6 +7,7 @@ import ro.barbos.gater.dao.StockDAO;
 import ro.barbos.gater.dto.LumberLogFilterDTO;
 import ro.barbos.gater.model.IDPlate;
 import ro.barbos.gater.model.LumberLogStockEntry;
+import ro.barbos.gui.cut.DiameterCutOptionsTargetPanel;
 import ro.barbos.gui.cut.LumberLogCutAnalysisPanel;
 import ro.barbos.gui.exswing.SuggestionJComboBox;
 import ro.barbos.gui.stock.*;
@@ -150,6 +151,12 @@ public class LeftPanel extends JPanel implements ActionListener {
         db.setAlignmentX(0);
         db.setMaximumSize(buttonDimension);
 
+        JButton diameterAnalisis = new JButton("Analiza taiere diametru");
+        diameterAnalisis.setActionCommand("CUT_PRODUCTS_LUMBER_RADIUS_ANALYSIS");
+        diameterAnalisis.addActionListener(this);
+        diameterAnalisis.setAlignmentX(0);
+        diameterAnalisis.setMaximumSize(buttonDimension);
+
 		
 		if(rights == 0 || rights == 1) {
 			add(receptie);
@@ -193,6 +200,8 @@ if(rights == 0) {
 			add(optionCutDiagram);
 			add(Box.createVerticalStrut(3));
             add(db);
+            add(Box.createVerticalStrut(3));
+            add(diameterAnalisis);
             add(Box.createVerticalStrut(3));
 		}
 
@@ -393,6 +402,8 @@ if(rights == 0) {
             JOptionPane.showMessageDialog(GUIUtil.container, "Baza de date a fost modificata.");
         } else if(command.equals("CUT_PRODUCTS_ANALYSIS")) {
             LumberLogCutAnalysisPanel.showDialog();
+        } else if(command.equals("CUT_PRODUCTS_LUMBER_RADIUS_ANALYSIS")) {
+            DiameterCutOptionsTargetPanel.showDialog();
         }
 	}
 	
