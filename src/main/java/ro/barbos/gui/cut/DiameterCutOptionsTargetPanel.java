@@ -41,7 +41,7 @@ public class DiameterCutOptionsTargetPanel extends JPanel implements ActionListe
 
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         panel.add(GUIFactory.createLabel("Lungime:", 100));
-        JFormattedTextField length = GUIFactory.createNumberInput(4000L, 0L, 1000000L, 80);
+        JFormattedTextField length = GUIFactory.createNumberInput(4100L, 0L, 1000000L, 80);
         panel.add(length);
         JComboBox<String> mCombo = new JComboBox<String>(GUIUtil.metric);
         mCombo.addItemListener(this);

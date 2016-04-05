@@ -8,7 +8,16 @@ public class GaterSetting {
 	private String name;
 	private Double value;
 	private METRIC metric;
-	
+
+    public GaterSetting() {
+
+    }
+
+    public GaterSetting(Long id, String name, Double value) {
+        this.Id = id;
+        this.name = name;
+        this.value = value;
+    }
 	
 	/**
 	 * @return the id

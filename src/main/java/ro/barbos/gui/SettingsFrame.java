@@ -2,10 +2,7 @@ package ro.barbos.gui;
 
 import ro.barbos.gater.dao.BladeDAO;
 import ro.barbos.gater.dao.GaterSettingDAO;
-import ro.barbos.gui.settings.AlgorithmSettingsPanel;
-import ro.barbos.gui.settings.BladeSettingsPanel;
-import ro.barbos.gui.settings.GaterSettingsPanel;
-import ro.barbos.gui.settings.GeneralSettingsPanel;
+import ro.barbos.gui.settings.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -30,7 +27,8 @@ public class SettingsFrame extends GeneralFrame {
 		tab.add("Setari gater", gaterSettings);
 		AlgorithmSettingsPanel algorithmSettings = new AlgorithmSettingsPanel();
 		tab.add("Setari calculare", algorithmSettings);
-		
+		tab.add("Algoritmi taieri", new CutStrategySettingsPanel());
+
 		setContentPane(tab);
 	}
 	

@@ -153,6 +153,10 @@ public class MainFrame extends JFrame implements WindowListener, ActionListener 
 				}
 			}
 			List<GaterSetting> gaterSettings = GaterSettingDAO.getSettings();
+            CutStrategyType.SIMPLE_VERTICAL.setEnabled(true);
+            CutStrategyType.BEST_MATCH_VERTICAL.setEnabled(true);
+            CutStrategyType.ROTATE_ONE.setEnabled(true);
+            CutStrategyType.ROTATE_ONE_180.setEnabled(true);
 			for(GaterSetting setting: gaterSettings) {
 				if(setting.getName().startsWith("Su")) {
 					CutterSettings.TOP_START = setting.getValue().doubleValue();
@@ -172,6 +176,24 @@ public class MainFrame extends JFrame implements WindowListener, ActionListener 
                 else if(setting.getName().equals("MEASURE_MIDDLE_ONCE")) {
                     StockSettings.MEASURE_MIDDLE_ONCE = setting.getValue() == 1;
                 }
+                else if(setting.getName().equals(CutStrategyType.SIMPLE_VERTICAL.name()) && setting.getValue() == 0) {
+                    CutStrategyType.SIMPLE_VERTICAL.setEnabled(false);
+                }
+                else if(setting.getName().equals(CutStrategyType.BEST_MATCH_VERTICAL.name()) && setting.getValue() == 0) {
+                    CutStrategyType.BEST_MATCH_VERTICAL.setEnabled(false);
+                }
+                else if(setting.getName().equals(CutStrategyType.ROTATE_ONE.name()) && setting.getValue() == 0) {
+                    CutStrategyType.ROTATE_ONE.setEnabled(false);
+                }
+                else if(setting.getName().equals(CutStrategyType.ROTATE_ONE_180.name()) && setting.getValue() == 0) {
+                    CutStrategyType.ROTATE_ONE_180.setEnabled(false);
+                }
+                else if(setting.getName().equals(CutStrategyType.BEST_MULTIBLADE_MATCH.name())) {
+                    CutStrategyType.BEST_MULTIBLADE_MATCH.setEnabled(setting.getValue() == 1);
+                }
+                else if(setting.getName().equals(CutStrategyType.NO_MULTI_BLADE.name())) {
+                    CutStrategyType.NO_MULTI_BLADE.setEnabled(setting.getValue() == 1);
+                }
 			}
 		}
 		
@@ -182,10 +204,7 @@ public class MainFrame extends JFrame implements WindowListener, ActionListener 
 			logger.warning(e.getMessage());
 			logger.log(Level.WARNING, "Error", e);
 		}
-        CutStrategyType.SIMPLE_VERTICAL.setEnabled(true);
-        CutStrategyType.BEST_MATCH_VERTICAL.setEnabled(true);
-        CutStrategyType.ROTATE_ONE.setEnabled(true);
-        CutStrategyType.ROTATE_ONE_180.setEnabled(true);
+
 
 		UIManager.put("OptionPane.cancelButtonText", "Anuleaza");
 	    UIManager.put("OptionPane.noButtonText", "Nu");
