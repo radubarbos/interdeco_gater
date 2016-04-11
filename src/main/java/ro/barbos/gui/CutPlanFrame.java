@@ -44,39 +44,47 @@ public class CutPlanFrame extends GeneralFrame implements ActionListener, CutPla
 	public CutPlanFrame() {
 		super();
 
-		setTitle("Plan taiere");
+		setTitle("Creare Plan taiere");
 		setResizable(true);
 		setMaximizable(true);
 		setIconifiable(true);
 		setClosable(true);
 
 		JPanel toolbar = new JPanel(new FlowLayout(FlowLayout.LEADING));
-		JButton save = new JButton(new ImageIcon(GUITools.getImage("resources/save24.png")));
+		JButton save = new JButton("Salveaza",new ImageIcon(GUITools.getImage("resources/save24.png")));
 		save.setToolTipText("Save current plan");
 		save.setActionCommand("SAVE_PLAN");
 		save.addActionListener(this);
 		save.setFocusPainted(false);
+        save.setVerticalTextPosition(SwingConstants.BOTTOM);
+        save.setHorizontalTextPosition(SwingConstants.CENTER);
 		save.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		toolbar.add(save);
-		JButton edit = new JButton(new ImageIcon(GUITools.getImage("resources/edit24.png")));
+		JButton edit = new JButton("Tinta plan",new ImageIcon(GUITools.getImage("resources/edit24.png")));
 		edit.setToolTipText("Target taiere");
 		edit.setActionCommand("CUT_TARGET");
 		edit.addActionListener(this);
 		edit.setFocusPainted(false);
+        edit.setVerticalTextPosition(SwingConstants.BOTTOM);
+        edit.setHorizontalTextPosition(SwingConstants.CENTER);
 		edit.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		toolbar.add(edit);
-		JButton print = new JButton(new ImageIcon(GUITools.getImage("resources/printb24.png")));
+		JButton print = new JButton("Printeaza",new ImageIcon(GUITools.getImage("resources/printb24.png")));
 		print.setToolTipText("Printeaza tabele");
 		print.setActionCommand("PRINT");
 		print.addActionListener(this);
 		print.setFocusPainted(false);
+        print.setVerticalTextPosition(SwingConstants.BOTTOM);
+        print.setHorizontalTextPosition(SwingConstants.CENTER);
 		print.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		toolbar.add(print);
-		JButton settings = new JButton(new ImageIcon(GUITools.getImage("resources/settings_a24.png")));
+		JButton settings = new JButton("Setari algoritm",new ImageIcon(GUITools.getImage("resources/settings_a24.png")));
 		settings.setToolTipText("Setari");
 		settings.setActionCommand("SETTINGS");
 		settings.addActionListener(this);
 		settings.setFocusPainted(false);
+        settings.setVerticalTextPosition(SwingConstants.BOTTOM);
+        settings.setHorizontalTextPosition(SwingConstants.CENTER);
 		settings.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		toolbar.add(settings);
 

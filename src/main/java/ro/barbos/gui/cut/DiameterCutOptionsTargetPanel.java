@@ -36,6 +36,10 @@ public class DiameterCutOptionsTargetPanel extends JPanel implements ActionListe
 
     List<Product> products;
 
+    private JCheckBox filtru2m = new JCheckBox("2m");
+    private JCheckBox filtru3m = new JCheckBox("3m");
+    private JCheckBox filtru4m = new JCheckBox("4m");
+
     public DiameterCutOptionsTargetPanel() {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
@@ -85,12 +89,29 @@ public class DiameterCutOptionsTargetPanel extends JPanel implements ActionListe
             JCheckBox chk = new JCheckBox();
             row.add(chk);
             selection.add(chk);
+            chk.setName("length"+(long)product.getLength());
             row.add(new JLabel(product.getName()));
             productsPanel.add(row);
         }
         JScrollPane scrollPane = new JScrollPane(productsPanel);
         scrollPane.setPreferredSize(new Dimension(productsPanel.getPreferredSize().width+20, 215));
         panel.add(scrollPane);
+        add(panel);
+
+        JPanel filtru = new JPanel(new FlowLayout(FlowLayout.LEADING));
+        filtru.add(filtru2m);
+        filtru.add(filtru3m);
+        filtru.add(filtru4m);
+        filtru2m.setActionCommand("FILTRU2");
+        filtru3m.setActionCommand("FILTRU3");
+        filtru4m.setActionCommand("FILTRU4");
+        filtru2m.addActionListener(this);
+        filtru3m.addActionListener(this);
+        filtru4m.addActionListener(this);
+        panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        JLabel label1 = GUIFactory.createLabel("Filtru", 100);
+        panel.add(label1);
+        panel.add(filtru);
         add(panel);
 
         cancel.setActionCommand("CANCEL_DIALOG");
@@ -112,6 +133,29 @@ public class DiameterCutOptionsTargetPanel extends JPanel implements ActionListe
 
     @Override
     public void actionPerformed(ActionEvent e) {
+
+        if(e.getActionCommand().startsWith("FILTRU")) {
+            int length = Integer.parseInt(e.getActionCommand().substring(6));
+            for(int index = 0; index < selection.size();  index++) {
+                JCheckBox chk1 = (JCheckBox)selection.get(index);
+                int productLength = Integer.parseInt(chk1.getName().substring(6));
+                if(!filtru2m.isSelected() && !filtru3m.isSelected() && !filtru4m.isSelected()) {
+                    chk1.getParent().setVisible(true);
+                    continue;
+                }
+                if(productLength<3000 && productLength>=2000 && filtru2m.isSelected()) {
+                    chk1.getParent().setVisible(true);
+                } else if(productLength<4000 && productLength>=3000 && filtru3m.isSelected()) {
+                    chk1.getParent().setVisible(true);
+                } else if(productLength<5000 && productLength>=4000 && filtru4m.isSelected()) {
+                    chk1.getParent().setVisible(true);
+                } else {
+                    chk1.getParent().setVisible(false);
+                }
+            }
+            this.revalidate();
+            return;
+        }
         boolean valid = true;
 
         JLabel lenLabel = (JLabel)((JPanel)getComponent(0)).getComponent(0);
@@ -215,7 +259,7 @@ public class DiameterCutOptionsTargetPanel extends JPanel implements ActionListe
     public static void showDialog() {
         DiameterCutOptionsTargetPanel panel = new DiameterCutOptionsTargetPanel();
         JButton[] buttons = panel.getButtons();
-        JOptionPane.showOptionDialog(GUIUtil.container, panel, "Produse de taiat",
+        JOptionPane.showOptionDialog(GUIUtil.container, panel, "Analiza taiere diametru",
                 JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, buttons, buttons[0]);
     }
 
