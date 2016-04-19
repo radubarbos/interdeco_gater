@@ -3,10 +3,7 @@ package ro.barbos.gater.dao;
 import ro.barbos.gater.cutprocessor.CutPlanSenquence;
 import ro.barbos.gater.cutprocessor.diagram.CutDiagram;
 import ro.barbos.gater.dto.ProductCutTargetDTO;
-import ro.barbos.gater.model.CutPlan;
-import ro.barbos.gater.model.GeneralResponse;
-import ro.barbos.gater.model.IDPlate;
-import ro.barbos.gater.model.Product;
+import ro.barbos.gater.model.*;
 import ro.barbos.gui.tablemodel.CutPlanTargetRecord;
 
 import java.io.ByteArrayInputStream;
@@ -36,8 +33,8 @@ public class CutPlanDAO {
 		insertPlanSql.append("'").append(DataAccess.escapeString(cutPlan.getDescription())).append("',");
 		insertPlanSql.append("'").append(planDate).append("',");
 		insertPlanSql.append(cutPlan.getStatus()).append(")");
-		StringBuilder insertProduct = new StringBuilder("insert into CutPlanProduct(PlanId, ProductName, TargetVolume, TargetPieces, CutPieces) values(?, ?, ? ,?, ?)");
-		StringBuilder insertDiagram = new StringBuilder("insert into CutPlanLumberLogDiagram(PlanId, LumberLogIDPlate, CutDiagramResult, CutDiagram, Percentage) values(?, ?, ? ,?, ?)");
+		StringBuilder insertProduct = new StringBuilder("insert into CutPlanProduct(PlanId, ProductName, TargetVolume, TargetPieces, CutPieces, ProductVolume) values(?, ?, ? ,?, ?, ?)");
+		StringBuilder insertDiagram = new StringBuilder("insert into CutPlanLumberLogDiagram(PlanId, LumberLogIDPlate, CutDiagramResult, CutDiagram, Percentage, SmallDiameter, MediumDiameter, BigDiameter, Length, Volume, Reallength, Realvolume) values(?, ?, ? ,?, ?, ?, ?, ?, ?, ?, ?, ?)");
 		
 		Connection con =null;
 	    Statement stm =null;
@@ -79,6 +76,7 @@ public class CutPlanDAO {
 		    				  pstm.setDouble(3, productInfo.getTargetVolume());
 		    				  pstm.setLong(4, productInfo.getTargetPieces());
 		    				  pstm.setLong(5, productInfo.getCutPieces());
+		    				  pstm.setDouble(6, productInfo.getProductVolume());
 		    				  pstm.executeUpdate();
 		    			  }
 		    		  }
@@ -90,12 +88,20 @@ public class CutPlanDAO {
 		    			  StringBuilder updateLumbers = new StringBuilder("update lumberlog set planId = "+planId+" where id in(");
 		    			  int lumberIndex =0;
 		    			  for(CutPlanSenquence seq: cutPlan.getCutDiagrams()) {
-		    				  logger.info("Save cut diagram for planid:" + planId + " lumber: "+seq.getLumberLog().getPlate().getLabel());
+                              LumberLog lumberLog = seq.getLumberLog();
+		    				  logger.info("Save cut diagram for planid:" + planId + " lumber: "+lumberLog.getPlate().getLabel());
 		    				  pstm.setInt(1, planId);
 		    				  pstm.setString(2, seq.getLumberLog().getPlate().getLabel());
 		    				  pstm.setString(3, "");
 		    				  pstm.setObject(4, seq.getCutDiagram());
 		    				  pstm.setDouble(5, seq.getPercentage());
+		    				  pstm.setDouble(6, lumberLog.getSmallRadius());
+		    				  pstm.setDouble(7, lumberLog.getSmallRadius());
+		    				  pstm.setDouble(8, lumberLog.getBigRadius());
+		    				  pstm.setDouble(9, lumberLog.getLength());
+		    				  pstm.setDouble(10, lumberLog.getVolume());
+		    				  pstm.setDouble(11, lumberLog.getRealLength());
+		    				  pstm.setDouble(12, lumberLog.getRealVolume());
 		    				  pstm.executeUpdate();
 		    				  if(lumberIndex > 0) updateLumbers.append(",");
 		    				  updateLumbers.append(seq.getLumberLog().getId());
@@ -577,5 +583,91 @@ public class CutPlanDAO {
         }
 
         return status;
+    }
+
+    public static CutPlan getCutPlan(int planId) {
+
+        CutPlan plan = null;
+
+        Logger logger = Logger.getLogger("dao");
+        StringBuilder sql = new StringBuilder("select id, name, description, entrydate, status, complete from CutPlan where id=").append(planId);
+        StringBuilder productInfo = new StringBuilder("select PlanId, ProductName, TargetVolume, TargetPieces, CutPieces, ProductVolume from  CutPlanProduct where PlanId=").append(planId);
+        StringBuilder digramInfo = new StringBuilder("select PlanId, LumberLogIDPlate, CutDiagramResult, CutDiagram, Percentage, SmallDiameter, MediumDiameter, BigDiameter, Length, Volume, Reallength, Realvolume from  CutPlanLumberLogDiagram where PlanId=").append(planId);
+
+        Connection con =null;
+        Statement stm =null;
+        ResultSet rs = null;
+        try {
+            con = DataAccess.getInstance().getDatabaseConnection();
+            con.setAutoCommit(true);
+            stm = con.createStatement();
+            logger.info(sql.toString());
+            rs = stm.executeQuery(sql.toString());
+            if(rs.next()) {
+                plan = new CutPlan();
+                plan.setId(rs.getInt(1));
+                plan.setName(rs.getString(2));
+                plan.setDescription(rs.getString(3));
+                plan.setDate(new Date(rs.getTimestamp(4).getTime()));
+                plan.setStatus(rs.getInt(5));
+                plan.setCompleted(rs.getDouble(6));
+            }
+            if(plan != null) {
+                logger.info(productInfo.toString());
+                rs = stm.executeQuery(productInfo.toString());
+                List<ProductCutTargetDTO>  piecesDTO = new ArrayList<>();
+                while (rs.next()) {
+                    ProductCutTargetDTO piece = new ProductCutTargetDTO();
+                    piece.setProduct(rs.getString(2));
+                    piece.setTargetVolume(rs.getDouble(3));
+                    piece.setProductVolume(rs.getDouble(6));
+                    piece.setTargetPieces(rs.getLong(4));
+                    piece.setCutPieces(rs.getLong(5));
+                    piecesDTO.add(piece);
+                }
+                plan.setCutDataInfo(piecesDTO);
+                List<CutPlanSenquence> cutDiagrams = new ArrayList<>();
+                logger.info(digramInfo.toString());
+                rs = stm.executeQuery(digramInfo.toString());
+                while(rs.next()) {
+                    CutPlanSenquence cutPlanSenquence = new CutPlanSenquence();
+                    LumberLog lumberLog = new LumberLog();
+                    IDPlate plate = new IDPlate();
+                    plate.setLabel(rs.getString(2));
+                    lumberLog.setPlate(plate);
+                    cutPlanSenquence.setLumberLog(lumberLog);
+                    cutPlanSenquence.setPercentage(rs.getDouble(5));
+                    lumberLog.setSmallRadius(rs.getDouble(6));
+                    List<Double> mediumRadius = new ArrayList<>();
+                    mediumRadius.add(rs.getDouble(7));
+                    lumberLog.setMediumRadius(mediumRadius);
+                    lumberLog.setBigRadius(rs.getDouble(8));
+                    lumberLog.setLength(rs.getDouble(9));
+                    lumberLog.setVolume(rs.getDouble(10));
+                    lumberLog.setRealLength(rs.getLong(11));
+                    lumberLog.setRealVolume(rs.getDouble(12));
+                    byte[] buf = rs.getBytes(4);
+                    ObjectInputStream objectIn = null;
+                    if (buf != null)
+                        objectIn = new ObjectInputStream(new ByteArrayInputStream(buf));
+
+                    CutDiagram diagram = (CutDiagram)objectIn.readObject();
+                    cutPlanSenquence.setCutDiagram(diagram);
+                    cutDiagrams.add(cutPlanSenquence);
+                }
+                plan.setCutDiagrams(cutDiagrams);
+            }
+        }
+        catch(Exception e)
+        {
+            logger.warning(e.getMessage());
+            logger.log(Level.INFO, "Error", e);
+        }
+        finally
+        {
+            if(rs!=null) try{rs.close();}catch(Exception e){}
+            if(stm!=null) try{stm.close();}catch(Exception e){}
+        }
+        return plan;
     }
 }

@@ -291,7 +291,6 @@ public class CutPlanFrame extends GeneralFrame implements ActionListener, CutPla
 		model2.setRecords(cutDataInfo);
 		final List<Integer> heights = new ArrayList<>();
 		for (int row = 0; row < plan.size(); row++) {
-	    //tabel.setRowHeight((plan.get(row).getCutDiagram().cutInfo.cutPieces.size() * 20));
 		heights.add(plan.get(row).getCutDiagram().cutInfo.cutPieces.size() * 20);
        }
 		SwingUtilities.invokeLater(new Runnable() {
@@ -304,6 +303,10 @@ public class CutPlanFrame extends GeneralFrame implements ActionListener, CutPla
 			}
 		});
 	}
+
+    public void setTargetPlanRecords(List<CutPlanTargetRecord> records){
+        cutPlanTargetModel.setRecords(records);
+    }
 
 	@Override
 	public String getFrameCode() {

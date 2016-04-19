@@ -10,10 +10,7 @@ import ro.barbos.gater.dao.IDPlateDAO;
 import ro.barbos.gater.dao.StockDAO;
 import ro.barbos.gater.dto.LumberLogFilterDTO;
 import ro.barbos.gater.dto.ProductCutTargetDTO;
-import ro.barbos.gater.model.CutPlan;
-import ro.barbos.gater.model.GeneralResponse;
-import ro.barbos.gater.model.IDPlate;
-import ro.barbos.gater.model.LumberLog;
+import ro.barbos.gater.model.*;
 import ro.barbos.gui.renderer.GeneralTableRenderer;
 import ro.barbos.gui.tablemodel.CutPlanHistoryModel;
 import ro.barbos.gui.tablemodel.CutPlanTargetRecord;
@@ -87,6 +84,16 @@ public class CutPlanHistoryFrame extends GeneralFrame implements ActionListener,
         seeCutDiagram.setHorizontalTextPosition(SwingConstants.CENTER);
         seeCutDiagram.addActionListener(this);
         toolbar.add(seeCutDiagram);
+        JButton detailsCutDiagram = new JButton("Detalii",new ImageIcon(
+                GUITools.getImage("resources/edit24.png")));
+        detailsCutDiagram.setFocusPainted(false);
+        detailsCutDiagram.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        detailsCutDiagram.setToolTipText("Detalii plan taiere");
+        detailsCutDiagram.setActionCommand("SEE_CUT_PLAN_DETAILS");
+        detailsCutDiagram.setVerticalTextPosition(SwingConstants.BOTTOM);
+        detailsCutDiagram.setHorizontalTextPosition(SwingConstants.CENTER);
+        detailsCutDiagram.addActionListener(this);
+        toolbar.add(detailsCutDiagram);
         JButton addLumberLog = new JButton("Adauda bustean",new ImageIcon(
                 GUITools.getImage("resources/add24.png")));
         addLumberLog.setFocusPainted(false);
@@ -180,8 +187,30 @@ public class CutPlanHistoryFrame extends GeneralFrame implements ActionListener,
 					extractData();
 				}
 			}
-		}
-		else if(command.equals("DELETE_PLAN")) {
+		} else if(command.equals("SEE_CUT_PLAN_DETAILS")) {
+            int row = cutPlansTable.getSelectedRow();
+            if(row == -1) {
+                JOptionPane.showMessageDialog(GUIUtil.container, "Nu s-a selectat nici un plan");
+                return;
+            }
+            CutPlan plan = cutPlansModel.getRecord(row);
+            plan = CutPlanDAO.getCutPlan(plan.getId());
+            CutPlanFrame detailsFrame = new CutPlanFrame();
+            List<CutPlanTargetRecord> records = new ArrayList<>();
+            for(ProductCutTargetDTO productCutTargetDTO : plan.getCutDataInfo()){
+                CutPlanTargetRecord targetProductRecord = new CutPlanTargetRecord();
+                targetProductRecord.setTargetMCub(productCutTargetDTO.getTargetVolume());
+                targetProductRecord.setPieces(productCutTargetDTO.getTargetPieces());
+                Product product = new Product();
+                product.setName(productCutTargetDTO.getProduct());
+                targetProductRecord.setProduct(product);
+                records.add(targetProductRecord);
+            }
+            detailsFrame.setTargetPlanRecords(records);
+            GUIUtil.container.addFrame(detailsFrame, GUIUtil.CUT_PLAN_KEY);
+            detailsFrame.showPlan(plan.getCutDiagrams(), plan.getCutDataInfo());
+        }
+		 else if(command.equals("DELETE_PLAN")) {
 			int row = cutPlansTable.getSelectedRow();
 			if(row == -1) {
 				JOptionPane.showMessageDialog(GUIUtil.container, "Nu s-a selectat nici un plan");
