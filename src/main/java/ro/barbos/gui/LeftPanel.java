@@ -20,52 +20,81 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class LeftPanel extends JPanel implements ActionListener {
 	
 	private JTextArea messageArea;
 	SuggestionJComboBox<IDPlate> optPlates;
-	
+
+    JPanel north = new JPanel();
+    JPanel center = new JPanel();
+    JPanel south = new JPanel();
+
+    List<JButton> menu = new ArrayList<>();
+    Map<Integer, List<JButton>> subMenu = new HashMap<>();
+
 	public LeftPanel() {
 		
 		int buttonWidth = 200;
 		int buttonHeight = 30;
 		Dimension buttonDimension = new Dimension(buttonWidth, buttonHeight);
 		
-		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-		
+		//setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        setLayout(new BorderLayout());
+        north.setLayout(new BoxLayout(north, BoxLayout.Y_AXIS));
+        center.setLayout(new BoxLayout(center, BoxLayout.Y_AXIS));
+        center.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
+        south.setLayout(new BoxLayout(south, BoxLayout.Y_AXIS));
+        setPreferredSize(new Dimension(buttonWidth, buttonHeight));
+        setMinimumSize(new Dimension(buttonWidth, buttonHeight));
+
 		Integer rights = ConfigLocalManager.currentUser.getRights().getRightsLevel();
-		
+
+        JButton stock = new JButton("Stoc");
+        stock.setActionCommand("MENU_GROUP_0");
+        stock.addActionListener(this);
+        stock.setAlignmentX(0);
+        stock.setMaximumSize(buttonDimension);
+
+        List<JButton> stockMenu = new ArrayList<>();
+        subMenu.put(0, stockMenu);
 		JButton receptie = new JButton("Receptie");
 		receptie.setActionCommand("RECEPTIE");
 		receptie.addActionListener(this);
 		receptie.setAlignmentX(0);
 		receptie.setMaximumSize(buttonDimension);
+        stockMenu.add(receptie);
 				
 		JButton stockCurrent = new JButton("Stock current");
 		stockCurrent.setActionCommand("STOCK");
 		stockCurrent.addActionListener(this);
 		stockCurrent.setAlignmentX(0);
 		stockCurrent.setMaximumSize(buttonDimension);
+        stockMenu.add(stockCurrent);
 		
 		JButton stockCurrent2 = new JButton("Stock per stiva");
 		stockCurrent2.setActionCommand("STACK_STOCK");
 		stockCurrent2.addActionListener(this);
 		stockCurrent2.setAlignmentX(0);
 		stockCurrent2.setMaximumSize(buttonDimension);
+        stockMenu.add(stockCurrent2);
 		
 		JButton stockCurrent3 = new JButton("Stock per tip");
 		stockCurrent3.setActionCommand("TIP_STOCK");
 		stockCurrent3.addActionListener(this);
 		stockCurrent3.setAlignmentX(0);
 		stockCurrent3.setMaximumSize(buttonDimension);
+        stockMenu.add(stockCurrent3);
 		
 		JButton stockCurrent4 = new JButton("Stock per class");
 		stockCurrent4.setActionCommand("CLASS_STOCK");
 		stockCurrent4.addActionListener(this);
 		stockCurrent4.setAlignmentX(0);
 		stockCurrent4.setMaximumSize(buttonDimension);
+        stockMenu.add(stockCurrent4);
 		
 		JButton idplates = new JButton("Placi");
 		idplates.setActionCommand("IDPLATES");
@@ -85,17 +114,7 @@ public class LeftPanel extends JPanel implements ActionListener {
 		stockCurrent5.setAlignmentX(0);
 		stockCurrent5.setMaximumSize(buttonDimension);
 		
-		JButton mprocessed = new JButton("Marcheaza procesat");
-		mprocessed.setActionCommand("MARK_PROCESSED");
-		mprocessed.addActionListener(this);
-		mprocessed.setAlignmentX(0);
-		mprocessed.setMaximumSize(buttonDimension);
 
-		JButton optionCutDiagram = new JButton("Optiuni taiere bustean");
-		optionCutDiagram.setActionCommand("SEE_CUT_OPTION_DIAGRAM");
-		optionCutDiagram.addActionListener(this);
-		optionCutDiagram.setAlignmentX(0);
-		optionCutDiagram.setMaximumSize(buttonDimension);
 		
 		JButton settings = new JButton("Setari");
 		settings.setActionCommand("SETTINGS");
@@ -103,23 +122,58 @@ public class LeftPanel extends JPanel implements ActionListener {
 		settings.setAlignmentX(0);
 		settings.setMaximumSize(buttonDimension);
 		
-		JButton cut = new JButton("Simulare taiere");
-		cut.setActionCommand("CUT_SIMULATION");
-		cut.addActionListener(this);
-		cut.setAlignmentX(0);
-		cut.setMaximumSize(buttonDimension);
+
+
+        List<JButton> cutPlansMenu = new ArrayList<>();
+        subMenu.put(2, cutPlansMenu);
+        JButton cutPlans = new JButton("Plan taiere");
+        cutPlans.setActionCommand("MENU_GROUP_2");
+        cutPlans.addActionListener(this);
+        cutPlans.setAlignmentX(0);
+        cutPlans.setMaximumSize(buttonDimension);
 		
 		JButton cutPlan = new JButton("Crearea plan taiere");
 		cutPlan.setActionCommand("CUT_PLAN");
 		cutPlan.addActionListener(this);
 		cutPlan.setAlignmentX(0);
 		cutPlan.setMaximumSize(buttonDimension);
+        cutPlansMenu.add(cutPlan);
 		
-		JButton cutPlanHistory = new JButton("Plan taieri");
+		JButton cutPlanHistory = new JButton("Planuri");
 		cutPlanHistory.setActionCommand("HISTORY_CUT_PLAN");
 		cutPlanHistory.addActionListener(this);
 		cutPlanHistory.setAlignmentX(0);
 		cutPlanHistory.setMaximumSize(buttonDimension);
+        cutPlansMenu.add(cutPlanHistory);
+
+        List<JButton> taiereMenu = new ArrayList<>();
+        subMenu.put(3, taiereMenu);
+        JButton taiere = new JButton("Taieri");
+        taiere.setActionCommand("MENU_GROUP_3");
+        taiere.addActionListener(this);
+        taiere.setAlignmentX(0);
+        taiere.setMaximumSize(buttonDimension);
+
+        JButton cut = new JButton("Simulare taiere");
+        cut.setActionCommand("CUT_SIMULATION");
+        cut.addActionListener(this);
+        cut.setAlignmentX(0);
+        cut.setMaximumSize(buttonDimension);
+        taiereMenu.add(cut);
+
+        JButton mprocessed = new JButton("Marcheaza procesat");
+        mprocessed.setActionCommand("MARK_PROCESSED");
+        mprocessed.addActionListener(this);
+        mprocessed.setAlignmentX(0);
+        mprocessed.setMaximumSize(buttonDimension);
+        taiereMenu.add(mprocessed);
+
+        JButton optionCutDiagram = new JButton("Optiuni taiere bustean");
+        optionCutDiagram.setActionCommand("SEE_CUT_OPTION_DIAGRAM");
+        optionCutDiagram.addActionListener(this);
+        optionCutDiagram.setAlignmentX(0);
+        optionCutDiagram.setMaximumSize(buttonDimension);
+        taiereMenu.add(optionCutDiagram);
 		
 		JButton logout = new JButton("Iesire");
 		logout.setActionCommand("LOGOUT");
@@ -150,16 +204,27 @@ public class LeftPanel extends JPanel implements ActionListener {
         db.addActionListener(this);
         db.setAlignmentX(0);
         db.setMaximumSize(buttonDimension);
+        taiereMenu.add(db);
+
 
         JButton diameterAnalisis = new JButton("Analiza taiere diametru");
         diameterAnalisis.setActionCommand("CUT_PRODUCTS_LUMBER_RADIUS_ANALYSIS");
         diameterAnalisis.addActionListener(this);
         diameterAnalisis.setAlignmentX(0);
         diameterAnalisis.setMaximumSize(buttonDimension);
+        taiereMenu.add(diameterAnalisis);
 
-		
-		if(rights == 0 || rights == 1) {
-			add(receptie);
+        menu.add(stock);
+        menu.add(stockCurrent5);
+        menu.add(cutPlans);
+        menu.add(taiere);
+        menu.add(idplates);
+        menu.add(stacks);
+        menu.add(products);
+        menu.add(users);
+        menu.add(settings);
+		if(1>9) {
+			/*add(receptie);
 			add(Box.createVerticalStrut(3));
 			add(stockCurrent);
 			add(Box.createVerticalStrut(3));
@@ -168,20 +233,25 @@ public class LeftPanel extends JPanel implements ActionListener {
 			add(stockCurrent3);
 			add(Box.createVerticalStrut(3));
 			add(stockCurrent4);
-			add(Box.createVerticalStrut(3));
+			add(Box.createVerticalStrut(3));*/
+            menu.add(stock);
 			if(rights == 0) {
 				
-				add(stockCurrent5);
-				add(Box.createVerticalStrut(3));
+				//add(stockCurrent5);
+				//add(Box.createVerticalStrut(3));
+                menu.add(stockCurrent5);
+                menu.add(cutPlans);
 			}
 			
-			add(idplates);
+			/*add(idplates);
 			add(Box.createVerticalStrut(3));
 			add(stacks);
-			add(Box.createVerticalStrut(3));
+			add(Box.createVerticalStrut(3));*/
+            menu.add(idplates);
+            menu.add(stacks);
 		}
 if(rights == 0) {
-	add(settings);
+	/*add(settings);
 	add(Box.createVerticalStrut(3));
 	add(products);
 	add(Box.createVerticalStrut(3));
@@ -192,22 +262,60 @@ if(rights == 0) {
 	add(cutPlanHistory);
 	add(Box.createVerticalStrut(3));
 	add(users);
-	add(Box.createVerticalStrut(3));
+	add(Box.createVerticalStrut(3));*/
+   /* menu.add(products);
+    menu.add(users);
+    menu.add(settings);*/
 		}
 		if(rights == 0 || rights == 2) {
-			add(mprocessed);
+
+			/*add(mprocessed);
 			add(Box.createVerticalStrut(3));
 			add(optionCutDiagram);
 			add(Box.createVerticalStrut(3));
             add(db);
             add(Box.createVerticalStrut(3));
             add(diameterAnalisis);
-            add(Box.createVerticalStrut(3));
+            add(Box.createVerticalStrut(3));*/
 		}
 
-		add(logout);
-		
+		menu.add(logout);
+		add(north, BorderLayout.NORTH);
+        add(center,BorderLayout.CENTER);
+        add(south,BorderLayout.SOUTH);
+        refreshMenuLayout(menu.size());
 	}
+
+    private void refreshMenuLayout(int openIndex) {
+        north.removeAll();
+        center.removeAll();
+        south.removeAll();
+        boolean open = false;
+        for(int index=0; index<menu.size();index++) {
+            if(index<=openIndex) {
+                north.add(menu.get(index));
+                north.add(Box.createVerticalStrut(3));
+            }
+            if(index == openIndex && subMenu.containsKey(index)) {
+                List<JButton> subMenuList = subMenu.get(index);
+                for(JButton button: subMenuList) {
+                    center.add(button);
+                    center.add(Box.createVerticalStrut(3));
+                }
+                open = true;
+            }
+           if(index>openIndex) {
+               if(open) {
+                   south.add(menu.get(index));
+                   south.add(Box.createVerticalStrut(3));
+               } else {
+                   north.add(menu.get(index));
+                   north.add(Box.createVerticalStrut(3));
+               }
+           }
+        }
+        revalidate();
+    }
 	
 	/* (non-Javadoc)
 	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
@@ -218,7 +326,10 @@ if(rights == 0) {
 		String command = e.getActionCommand();
 		if(command == null) {
 			return;
-		}
+		} else if(command.startsWith("MENU_GROUP_")) {
+            int index = Integer.valueOf(command.substring("MENU_GROUP_".length()));
+            refreshMenuLayout(index);
+        }
 		else if(command.equals("RECEPTIE")) {
 			if(!parent.isFrameSet(GUIUtil.RECEPTIE_KEY))
 			{
