@@ -1,15 +1,18 @@
 package ro.barbos.gui;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
+import ro.barbos.gater.cutprocessor.CutterSettings;
+import ro.barbos.gater.cutprocessor.diagram.CutDiagram;
+import ro.barbos.gater.cutprocessor.diagram.GaterOperation;
+import ro.barbos.gater.cutprocessor.diagram.GaterSlide;
+import ro.barbos.gater.cutprocessor.diagram.MultibladeCutSlide;
+import ro.barbos.gater.data.MetricTools;
+import ro.barbos.gater.model.LumberLog;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.Ellipse2D;
-import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.awt.print.PageFormat;
@@ -19,16 +22,6 @@ import java.text.NumberFormat;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
-import javax.swing.JButton;
-import javax.swing.JPanel;
-
-import ro.barbos.gater.cutprocessor.CutterSettings;
-import ro.barbos.gater.cutprocessor.diagram.CutDiagram;
-import ro.barbos.gater.cutprocessor.diagram.GaterOperation;
-import ro.barbos.gater.cutprocessor.diagram.GaterSlide;
-import ro.barbos.gater.cutprocessor.diagram.MultibladeCutSlide;
-import ro.barbos.gater.model.LumberLog;
 
 public class CutDiagramPaintPanel extends JPanel implements ActionListener, Printable {
 
@@ -46,6 +39,11 @@ public class CutDiagramPaintPanel extends JPanel implements ActionListener, Prin
 	private BufferedImage bufferedImage;
 	
 	private int printPages = 0;
+
+    String lumberLogId;
+    String lumberLogVolume;
+    String smallDiameter;
+    String bigDiameter;
 	
 	public CutDiagramPaintPanel(LumberLog lumberLog, CutDiagram diagram) {
 		this.lumberLog = lumberLog;
@@ -58,6 +56,10 @@ public class CutDiagramPaintPanel extends JPanel implements ActionListener, Prin
 		animateCutProcess.setLocation(-1000, -1000);
 		animateCutProcess.setSize(animateCutProcess.getPreferredSize());
 		add(animateCutProcess);
+        lumberLogId = "Bustean: " + lumberLog.getPlate().getLabel();
+        lumberLogVolume = MetricFormatter.formatVolume(MetricTools.toMeterCubs(lumberLog.getVolume()));
+        smallDiameter = "D. mic: "+lumberLog.getSmallRadius() + " mm";
+        bigDiameter = "D. mare: " + lumberLog.getBigRadius() + " mm";
 		buildDisplay();
 	}
 	
@@ -86,21 +88,17 @@ public class CutDiagramPaintPanel extends JPanel implements ActionListener, Prin
 	}
 	
 	private void paintDiagram(Graphics2D g2, int printType, int widthLimit) {
-		int centerOffset = 30;
+		int centerOffset = 60;
+		int centerOffsetX = 20;
 		int firstTxtGap = 40;
 		if(printType == 1) {
 			centerOffset = 5;
 			firstTxtGap = 10;
+            centerOffsetX = 5;
 		}
-		
-		g2.setPaint(Color.black);
-		Font defaultFont = g2.getFont();
-		g2.setFont(new Font("arial", Font.BOLD, 16));
-		int labelWidth = g2.getFontMetrics().stringWidth(lumberLog.getPlate().getLabel());
-		g2.drawString(lumberLog.getPlate().getLabel(), 5, 20);
-		g2.draw(new Line2D.Double(5, 22, 5 + labelWidth, 22));
-		g2.setFont(defaultFont);
-		
+
+        paintLumberLogData(g2);
+
 		if(diagram.cutInfo != null) {
 			g2.setPaint(Color.black);
 			int x = lumberLog.getSmallRadius().intValue() + firstTxtGap;
@@ -133,7 +131,7 @@ public class CutDiagramPaintPanel extends JPanel implements ActionListener, Prin
 	    }
 		
 		
-		g2.translate(lumberLog.getSmallRadius()/2 +centerOffset, lumberLog.getSmallRadius()/2 + centerOffset);
+		g2.translate(lumberLog.getSmallRadius()/2 +centerOffsetX, lumberLog.getSmallRadius()/2 + centerOffset);
 		g2.setPaint(Color.blue);
 		double radius = lumberLog.getSmallRadius()/2;
 		Ellipse2D.Double lumberLogCircle = new Ellipse2D.Double(-radius, -radius, lumberLog.getSmallRadius(), lumberLog.getSmallRadius());
@@ -195,12 +193,31 @@ public class CutDiagramPaintPanel extends JPanel implements ActionListener, Prin
 		}
 		
 	}
+
+    private void paintLumberLogData(Graphics2D g2) {
+
+        g2.setPaint(Color.black);
+        Font defaultFont = g2.getFont();
+        g2.setFont(new Font("arial", Font.BOLD, 16));
+        int labelWidth = g2.getFontMetrics().stringWidth(lumberLogId);
+        g2.drawString(lumberLogId, 5, 20);
+        //g2.draw(new Line2D.Double(5, 22, 5 + labelWidth, 22));
+
+        int labelWidth2 = g2.getFontMetrics().stringWidth(lumberLogVolume);
+        g2.drawString(lumberLogVolume, 5 + labelWidth + 50, 20);
+        //g2.draw(new Line2D.Double(5 + labelWidth + 50, 22, 5 + labelWidth + 100 + labelWidth2, 22));
+
+        g2.drawString(smallDiameter, 5, 50);
+        g2.drawString(bigDiameter, 5 + labelWidth + 50, 50);
+
+        g2.setFont(defaultFont);
+    }
 	
 	public Dimension getPreferredSize() {
 		if(lumberLog == null) {
 			return new Dimension(400, 300);
 		}
-		return new Dimension(lumberLog.getSmallRadius().intValue() + 400, lumberLog.getSmallRadius().intValue() + 50);
+		return new Dimension(lumberLog.getSmallRadius().intValue() + 400, lumberLog.getSmallRadius().intValue() + 150);
 	}
 
 	
