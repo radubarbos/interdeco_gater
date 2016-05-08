@@ -1,11 +1,14 @@
 package ro.barbos.gui.tablemodel;
 
+import ro.barbos.gater.data.METRIC;
+import ro.barbos.gater.data.MetricTools;
+import ro.barbos.gater.model.ProcessedLumberLog;
+import ro.barbos.gui.GUIUtil;
+import ro.barbos.gui.MetricFormatter;
+
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
-
-import ro.barbos.gater.model.ProcessedLumberLog;
-import ro.barbos.gui.GUIUtil;
 
 public class ProcessedLumberLogRecord {
 	
@@ -29,7 +32,7 @@ public class ProcessedLumberLogRecord {
 		this.processedDate = format.format(processedLumberLog.getProcessedDate());
 		smallRadius = processedLumberLog.getLumberLog().getSmallRadius() + " mm";
 		bigRadius = processedLumberLog.getLumberLog().getBigRadius() + " mm";
-		volum = numberFormatter.format(processedLumberLog.getLumberLog().getVolume()/1000000000) + " m.cub"; 
+		volum = MetricFormatter.formatVolume(MetricTools.toMeterCubs(processedLumberLog.getLumberLog().getVolume(), METRIC.MILIMETER));
 		length = processedLumberLog.getLumberLog().getLength() + " mm";
 		type = GUIUtil.types[processedLumberLog.getLumberLog().getLumberType().intValue()-1];
 		lumberClass = GUIUtil.lumberClass[processedLumberLog.getLumberLog().getLumberClass().intValue()-1];

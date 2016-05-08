@@ -1,16 +1,15 @@
 package ro.barbos.gui.tablemodel;
 
-import java.text.NumberFormat;
+import ro.barbos.gater.cutprocessor.CutPlanSenquence;
+import ro.barbos.gater.cutprocessor.CutterSettings;
+import ro.barbos.gater.data.MetricTools;
+import ro.barbos.gui.MetricFormatter;
+
+import javax.swing.table.AbstractTableModel;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
-import javax.swing.table.AbstractTableModel;
-
-import ro.barbos.gater.cutprocessor.CutPlanSenquence;
-import ro.barbos.gater.cutprocessor.CutterSettings;
-import ro.barbos.gui.ConfigLocalManager;
 
 public class CutPlanFoundModel extends AbstractTableModel {
 
@@ -20,8 +19,7 @@ public class CutPlanFoundModel extends AbstractTableModel {
 	public int count =0;
 	public int pages =0;
 	public int pageCount=100;
-	
-	private NumberFormat formatter = NumberFormat.getNumberInstance(ConfigLocalManager.locale);
+
 	
     private List<CutPlanSenquence> records = new ArrayList<CutPlanSenquence>(); 
 	
@@ -78,10 +76,10 @@ public class CutPlanFoundModel extends AbstractTableModel {
 			return sb.toString();
 		}
 		else if(col == 3) {
-			return formatter.format(record.getCutDiagram().cutInfo.cutVolume/1000000000L) + "m. cub";
+			return MetricFormatter.formatVolume(MetricTools.toMeterCubs(record.getCutDiagram().cutInfo.cutVolume));
 		}
 		else if(col == 4) {
-			return formatter.format(CutterSettings.DO_LENGTH_OPTIMIZATION ? record.getCutDiagram().cutInfo.cutVolumeEfficency : record.getCutDiagram().cutInfo.cutLayoutEfficency) + " %";
+			return MetricFormatter.format(CutterSettings.DO_LENGTH_OPTIMIZATION ? record.getCutDiagram().cutInfo.cutVolumeEfficency : record.getCutDiagram().cutInfo.cutLayoutEfficency) + " %";
 		}
 		return null;
 	}

@@ -1,10 +1,10 @@
 package ro.barbos.gui;
 
+import ro.barbos.gater.model.User;
+
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
-
-import ro.barbos.gater.model.User;
 
 
 public class ConfigLocalManager {
@@ -19,5 +19,7 @@ public class ConfigLocalManager {
 
 	public static User currentUser =null;
 	public static Locale locale = null;
+
+    public static Boolean showVolumeSum = true;
 	
 }

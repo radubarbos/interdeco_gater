@@ -3,6 +3,8 @@ package ro.barbos.gui.stock;
 import ro.barbos.gater.dao.LumberLogDAO;
 import ro.barbos.gater.dao.StockDAO;
 import ro.barbos.gater.data.LumberLogUtil;
+import ro.barbos.gater.data.METRIC;
+import ro.barbos.gater.data.MetricTools;
 import ro.barbos.gater.model.LumberLog;
 import ro.barbos.gater.model.LumberLogStockEntry;
 import ro.barbos.gui.*;
@@ -180,7 +182,7 @@ public class CurrentStockFrame extends GeneralFrame implements ActionListener {
 						JOptionPane.showMessageDialog(GUIUtil.container, "Busteanul nu a fost sters", "Erroare", JOptionPane.ERROR_MESSAGE);
 					}
 					else {
-						totalVolume -= (lumberLog.getVolume()/1000000000L);
+						totalVolume -= MetricTools.toMeterCubs(lumberLog.getVolume(), METRIC.MILIMETER);
 						totalLabel.setText("Total cubaj: " + numberFormatter.format(totalVolume) + " metri cubi");
 						stockModel.removeLumberLog(row);
 					}

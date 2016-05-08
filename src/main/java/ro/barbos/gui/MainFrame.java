@@ -210,6 +210,8 @@ public class MainFrame extends JFrame implements WindowListener, ActionListener 
 	    UIManager.put("OptionPane.noButtonText", "Nu");
 	    UIManager.put("OptionPane.okButtonText", "Ok");
 	    UIManager.put("OptionPane.yesButtonText", "Da");
+
+        MetricFormatter.init();
 	}
 
 	

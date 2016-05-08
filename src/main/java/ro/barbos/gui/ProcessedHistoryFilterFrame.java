@@ -1,29 +1,20 @@
 package ro.barbos.gui;
 
-import java.awt.BorderLayout;
-import java.awt.Cursor;
-import java.awt.FlowLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
-import java.text.NumberFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
-
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JFileChooser;
-import javax.swing.JInternalFrame;
-import javax.swing.JPanel;
-import javax.swing.SwingConstants;
-
 import ro.barbos.gater.dao.StockDAO;
 import ro.barbos.gater.data.DataSearchResult;
+import ro.barbos.gater.data.METRIC;
+import ro.barbos.gater.data.MetricTools;
 import ro.barbos.gater.dto.ProcessedLumberLogFilterDTO;
 import ro.barbos.gater.gui.grid.DefaultGrid;
 import ro.barbos.gater.model.ProcessedLumberLog;
 import ro.barbos.gui.tablemodel.ProcessedHistoryModel;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.util.Date;
 
 public class ProcessedHistoryFilterFrame extends JInternalFrame implements ActionListener {
 
@@ -100,7 +91,7 @@ public class ProcessedHistoryFilterFrame extends JInternalFrame implements Actio
 			historyData.setHistoryData(lumbersProcessed);
 		}
 		for(ProcessedLumberLog processedLog: lumbersProcessed.getData()) {
-			double lumberVolume = (processedLog.getLumberLog().getVolume()/1000000000L);
+			double lumberVolume = MetricTools.toMeterCubs(processedLog.getLumberLog().getVolume(), METRIC.MILIMETER);
 			volume += lumberVolume;
             lumberCount++;
 		}

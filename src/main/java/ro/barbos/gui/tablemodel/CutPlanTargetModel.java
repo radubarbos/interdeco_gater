@@ -1,9 +1,11 @@
 package ro.barbos.gui.tablemodel;
 
-import java.util.ArrayList;
-import java.util.List;
+import ro.barbos.gui.ConfigLocalManager;
+import ro.barbos.gui.MetricFormatter;
 
 import javax.swing.table.AbstractTableModel;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class CutPlanTargetModel extends AbstractTableModel {
@@ -57,7 +59,7 @@ public class CutPlanTargetModel extends AbstractTableModel {
 			return record.getProduct().getName();
 		} 
 		else if(col == 2) {
-			return record.getTargetMCub();
+			return MetricFormatter.format(record.getTargetMCub());
 		}
 		else if(col == 3) {
 			return record.getPieces();
@@ -66,6 +68,7 @@ public class CutPlanTargetModel extends AbstractTableModel {
 	}
 	
 	private void refreshOnDataChange() {
+        afterDataSet();
 		fireTableDataChanged();
 		count = records.size();
 		pages = (records.size()-1)/pageCount +1;
@@ -76,4 +79,15 @@ public class CutPlanTargetModel extends AbstractTableModel {
 		this.records = records;
 		refreshOnDataChange();
 	}
+
+    private void afterDataSet() {
+      if(ConfigLocalManager.showVolumeSum && records != null && !records.isEmpty()) {
+          Double volumeTotal = 0D;
+          for(CutPlanTargetRecord record: records) {
+              volumeTotal += record.getTargetMCub();
+          }
+          CutPlanTargetRecord endRecord = new CutPlanTargetRecord();
+          endRecord.setTargetMCub(volumeTotal);
+      }
+    }
 }

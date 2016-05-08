@@ -1,17 +1,12 @@
 package ro.barbos.gui.tablemodel;
 
+import ro.barbos.gater.dto.ClassStockDTO;
+import ro.barbos.gui.ConfigLocalManager;
+import ro.barbos.gui.MetricFormatter;
+
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
-
-import javax.swing.table.AbstractTableModel;
-
-import ro.barbos.gater.dto.ClassStockDTO;
-import ro.barbos.gater.dto.LumberStackInfoDTO;
-import ro.barbos.gater.dto.TypeStockDTO;
-import ro.barbos.gater.model.LumberLog;
-import ro.barbos.gui.ConfigLocalManager;
 
 public class ClassStockModel extends GeneralAbstractTableModel {
 	
@@ -65,7 +60,7 @@ public class ClassStockModel extends GeneralAbstractTableModel {
 			return record.getTotalLumberLogs();
 		} 
 		else if(col == 2) {
-			return numberFormatter.format(record.getTotalVolume()) + " m.cub";
+			return MetricFormatter.formatVolume(record.getTotalVolume());
 		} 
 		return null;
 	}

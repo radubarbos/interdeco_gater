@@ -4,6 +4,7 @@ import ro.barbos.gater.dao.LumberStackDAO;
 import ro.barbos.gater.data.IDPlateManager;
 import ro.barbos.gater.data.LumberLogUtil;
 import ro.barbos.gater.data.METRIC;
+import ro.barbos.gater.data.MetricTools;
 import ro.barbos.gater.model.IDPlate;
 import ro.barbos.gater.model.LumberLog;
 import ro.barbos.gater.model.LumberStack;
@@ -341,7 +342,7 @@ public class AddLogLumberPanel extends JPanel implements ActionListener, Propert
 			warning += "Lungime i mai mare ca limita admisa" + System.lineSeparator();
 		}
 		LumberLogUtil.calculateVolume(lumberLog);
-		if(lumberLog.getVolume()/1000000000L > StockSettings.RECEIVE_MAX_VOLUME) {
+		if(MetricTools.toMeterCubs(lumberLog.getVolume()) > StockSettings.RECEIVE_MAX_VOLUME) {
 			warning += "Volumul i mai mare ca limita admisa" + System.lineSeparator();
 		}
 		if(warning.length()>0) {

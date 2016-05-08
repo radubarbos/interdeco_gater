@@ -1,10 +1,12 @@
 package ro.barbos.gui.tablemodel;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import ro.barbos.gater.data.METRIC;
+import ro.barbos.gater.data.MetricTools;
 import ro.barbos.gater.model.LumberLog;
 import ro.barbos.gater.model.LumberLogStockEntry;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class FullStockModel extends StockModel {
 	
@@ -92,7 +94,7 @@ public class FullStockModel extends StockModel {
 			for(LumberLogStockEntry lumberLogEntry: lumberLogs) {
 				LumberLog lumberLog = lumberLogEntry.getLumberLog();
 				records.add(new StockRecord(lumberLogEntry));
-				volume += (lumberLog.getVolume()/1000000000L);
+				volume += MetricTools.toMeterCubs(lumberLog.getVolume(), METRIC.MILIMETER);
 			}
 		}
 		refreshOnDataChange();
@@ -106,7 +108,7 @@ public class FullStockModel extends StockModel {
 			for(LumberLogStockEntry lumberLogEntry: lumberLogs) {
 				LumberLog lumberLog = lumberLogEntry.getLumberLog();
 				records.add(new StockRecord(lumberLogEntry));
-				double lumberVolume = (lumberLog.getVolume()/1000000000L);
+				double lumberVolume = MetricTools.toMeterCubs(lumberLog.getVolume(), METRIC.MILIMETER);
 				volume += lumberVolume;
 				if(lumberLog.getCutPlanId() == 0) {
 					unuseable += lumberVolume;
@@ -123,8 +125,8 @@ public class FullStockModel extends StockModel {
 		LumberLog oldLumberLog = records.get(index).getLumberLog();
 		//records.set(index, new StockRecord(lumberLog));
 		records.get(index).updateLumberLog(lumberLog);
-		volume -= (oldLumberLog.getVolume()/1000000000L);
-		volume += (lumberLog.getVolume()/1000000000L);
+		volume -= MetricTools.toMeterCubs(oldLumberLog.getVolume(), METRIC.MILIMETER);
+		volume += MetricTools.toMeterCubs(lumberLog.getVolume(), METRIC.MILIMETER);
 		refreshOnDataChange();
 		return volume;
 	}

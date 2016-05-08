@@ -1,33 +1,21 @@
 package ro.barbos.gui;
 
-import java.awt.BorderLayout;
-import java.awt.Cursor;
-import java.awt.FlowLayout;
-import java.awt.Image;
-import java.awt.Window;
+import ro.barbos.gater.dao.StockDAO;
+import ro.barbos.gater.data.DataSearchPagination;
+import ro.barbos.gater.data.DataSearchResult;
+import ro.barbos.gater.data.METRIC;
+import ro.barbos.gater.data.MetricTools;
+import ro.barbos.gater.gui.grid.DefaultGrid;
+import ro.barbos.gater.model.ProcessedLumberLog;
+import ro.barbos.gui.tablemodel.ProcessedHistoryModel;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.Date;
 import java.util.List;
-
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
-
-import ro.barbos.gater.dao.StockDAO;
-import ro.barbos.gater.data.DataSearchPagination;
-import ro.barbos.gater.data.DataSearchResult;
-import ro.barbos.gater.gui.grid.DefaultGrid;
-import ro.barbos.gater.model.ProcessedLumberLog;
-import ro.barbos.gui.renderer.GeneralTableRenderer;
-import ro.barbos.gui.tablemodel.ProcessedHistoryModel;
 
 public class ProcessedHistoryFrame extends GeneralFrame implements ActionListener {
 	
@@ -107,7 +95,7 @@ public class ProcessedHistoryFrame extends GeneralFrame implements ActionListene
 			historyData.setHistoryData(lumbersProcessed);
 		}
         for(ProcessedLumberLog processedLog: lumbersProcessed.getData()) {
-            double lumberVolume = (processedLog.getLumberLog().getVolume()/1000000000L);
+            double lumberVolume = MetricTools.toMeterCubs(processedLog.getLumberLog().getVolume(), METRIC.MILIMETER);
             volume += lumberVolume;
             lumberCount++;
         }

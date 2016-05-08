@@ -1,12 +1,15 @@
 package ro.barbos.gui.tablemodel;
 
-import java.text.NumberFormat;
-import java.text.SimpleDateFormat;
-
+import ro.barbos.gater.data.METRIC;
+import ro.barbos.gater.data.MetricTools;
 import ro.barbos.gater.model.LumberLog;
 import ro.barbos.gater.model.LumberLogStockEntry;
 import ro.barbos.gui.ConfigLocalManager;
 import ro.barbos.gui.GUIUtil;
+import ro.barbos.gui.MetricFormatter;
+
+import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
 
 public class StockRecord {
 
@@ -46,7 +49,7 @@ public class StockRecord {
 		smallRadius = lumberLog.getSmallRadius() + " mm";
 		mediumRadius = lumberLog.getMediumRadius() + " mm";
 		bigRadius = lumberLog.getBigRadius() + " mm";
-		volum = numberFormatter.format(lumberLog.getVolume()/1000000000) + " m.cub"; 
+		volum = MetricFormatter.formatVolume(MetricTools.toMeterCubs(lumberLog.getVolume(), METRIC.MILIMETER));
 		length = lumberLog.getLength() + " mm";
 		type = GUIUtil.types[lumberLog.getLumberType().intValue()-1];
 		lumberClass = GUIUtil.lumberClass[lumberLog.getLumberClass().intValue()-1];

@@ -1,16 +1,14 @@
 package ro.barbos.gui;
 
-import java.awt.Color;
-import java.awt.FlowLayout;
+import ro.barbos.gater.cutprocessor.CutPlanSenquence;
+import ro.barbos.gater.data.METRIC;
+import ro.barbos.gater.data.MetricTools;
+import ro.barbos.gater.dto.ProductCutTargetDTO;
+
+import javax.swing.*;
+import java.awt.*;
 import java.text.NumberFormat;
 import java.util.List;
-
-import javax.swing.BoxLayout;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-
-import ro.barbos.gater.cutprocessor.CutPlanSenquence;
-import ro.barbos.gater.dto.ProductCutTargetDTO;
 
 public class CutPlanTotalStatisticsPanel extends JPanel {
 
@@ -29,8 +27,8 @@ public void showTotalStatistics(List<CutPlanSenquence> plan, List<ProductCutTarg
 	  
 	  double volumeLumber = 0, volumeProduct = 0;
 	  for(CutPlanSenquence cutSequence: plan) {
-		 volumeLumber += cutSequence.getLumberLog().getVolume()/1000000000L; 
-		 volumeProduct += cutSequence.getCutDiagram().cutInfo.cutVolume/1000000000L;
+		 volumeLumber += MetricTools.toMeterCubs(cutSequence.getLumberLog().getVolume(), METRIC.MILIMETER);
+		 volumeProduct += MetricTools.toMeterCubs(cutSequence.getCutDiagram().cutInfo.cutVolume, METRIC.MILIMETER);
 	  }
 	  
 	  row = new JPanel(new FlowLayout(FlowLayout.LEADING));
@@ -51,7 +49,7 @@ public void showTotalStatistics(List<CutPlanSenquence> plan, List<ProductCutTarg
 	  for(ProductCutTargetDTO productInfo: cutDataInfo) {
 		  row = new JPanel(new FlowLayout(FlowLayout.LEADING));
 		  row.add(GUIFactory.createLabel("Volum "+productInfo.getProduct(), 150));
-		  row.add(createValueLabel(formatter.format(productInfo.getCutPieces() * (productInfo.getProductVolume()/1000000000L)) + " m. cub"));
+		  row.add(createValueLabel(MetricFormatter.formatVolume(productInfo.getCutPieces() * MetricTools.toMeterCubs(productInfo.getProductVolume()))));
 		  this.add(row);
 	  }
   }

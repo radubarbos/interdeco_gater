@@ -1,12 +1,12 @@
 package ro.barbos.gui.tablemodel;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.swing.table.AbstractTableModel;
-
+import ro.barbos.gater.data.METRIC;
+import ro.barbos.gater.data.MetricTools;
 import ro.barbos.gater.model.LumberLog;
 import ro.barbos.gater.model.LumberLogStockEntry;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class StockModel extends GeneralAbstractTableModel {
 	
@@ -81,7 +81,7 @@ public class StockModel extends GeneralAbstractTableModel {
 			for(LumberLogStockEntry lumberLogEntry: lumberLogs) {
 				LumberLog lumberLog = lumberLogEntry.getLumberLog();
 				records.add(new StockRecord(lumberLog));
-				volume += (lumberLog.getVolume()/1000000000L);
+				volume += MetricTools.toMeterCubs(lumberLog.getVolume(), METRIC.MILIMETER);
 			}
 		}
 		refreshOnDataChange();
@@ -91,8 +91,8 @@ public class StockModel extends GeneralAbstractTableModel {
 	public Double updateLumberLog(LumberLog lumberLog, int index) {
 		LumberLog oldLumberLog = records.get(index).getLumberLog();
 		records.set(index, new StockRecord(lumberLog));
-		volume -= (oldLumberLog.getVolume()/1000000000L);
-		volume += (lumberLog.getVolume()/1000000000L);
+		volume -= MetricTools.toMeterCubs(oldLumberLog.getVolume(), METRIC.MILIMETER);
+		volume += MetricTools.toMeterCubs(lumberLog.getVolume(), METRIC.MILIMETER);
 		refreshOnDataChange();
 		return volume;
 	}

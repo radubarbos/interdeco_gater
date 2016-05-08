@@ -1,11 +1,14 @@
 package ro.barbos.gui.tablemodel;
 
-import java.text.NumberFormat;
-import java.util.Locale;
-
+import ro.barbos.gater.data.METRIC;
+import ro.barbos.gater.data.MetricTools;
 import ro.barbos.gater.model.LumberLog;
 import ro.barbos.gater.model.LumberStack;
 import ro.barbos.gui.GUIUtil;
+import ro.barbos.gui.MetricFormatter;
+
+import java.text.NumberFormat;
+import java.util.Locale;
 
 public class ReceiveRecord {
 
@@ -31,7 +34,7 @@ public class ReceiveRecord {
 		smallRadius = lumberLog.getSmallRadius() + " mm";
 		//mediumRadius = lumberLog.getMediumRadius() + " mm";
 		bigRadius = lumberLog.getBigRadius() + " mm";
-		volum = numberFormatter.format(lumberLog.getVolume()/1000000000) + " m.cub"; 
+		volum = MetricFormatter.formatVolume(MetricTools.toMeterCubs(lumberLog.getVolume(), METRIC.MILIMETER));
 		length = lumberLog.getLength() + " mm";
 		type = GUIUtil.types[lumberLog.getLumberType().intValue()-1];
 		lumberClass = GUIUtil.lumberClass[lumberLog.getLumberClass().intValue()-1];
@@ -92,7 +95,7 @@ public class ReceiveRecord {
 		return bigRadius;
 	}
 	/**
-	 * @param bbigRadius the bbigRadius to set
+	 * @param bigRadius the bbigRadius to set
 	 */
 	public void setBigRadius(String bigRadius) {
 		this.bigRadius = bigRadius;
