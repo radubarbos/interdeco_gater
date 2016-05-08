@@ -60,7 +60,7 @@ public class GeneralSettingsPanel extends JPanel implements ActionListener {
                 List<GaterSetting> gaterSettings = GaterSettingDAO.getSettings();
                 List<GaterSetting> updatedSetting = new ArrayList<GaterSetting>();
                 for(GaterSetting setting: gaterSettings) {
-                    if(setting.getName().equals("MEASURE_MIDDLE_ONCE")) {
+                    if(setting.getName().equals(Settings.MEASURE_MIDDLE_ONCE)) {
                         setting.setValue(lumberMeasureMiddle.isSelected() ? 1d : 0d);
                         updatedSetting.add(setting);
                     }

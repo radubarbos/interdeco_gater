@@ -8,6 +8,7 @@ import ro.barbos.gater.model.Blade;
 import ro.barbos.gater.model.GaterSetting;
 import ro.barbos.gater.model.User;
 import ro.barbos.gater.stock.StockSettings;
+import ro.barbos.gui.settings.Settings;
 
 import javax.swing.*;
 import java.awt.*;
@@ -173,7 +174,7 @@ public class MainFrame extends JFrame implements WindowListener, ActionListener 
 				else if(setting.getName().startsWith("Tol")) {
 					CutterSettings.EDGE_TOLERANCE = setting.getValue().doubleValue();
 				}
-                else if(setting.getName().equals("MEASURE_MIDDLE_ONCE")) {
+                else if(setting.getName().equals(Settings.MEASURE_MIDDLE_ONCE)) {
                     StockSettings.MEASURE_MIDDLE_ONCE = setting.getValue() == 1;
                 }
                 else if(setting.getName().equals(CutStrategyType.SIMPLE_VERTICAL.name()) && setting.getValue() == 0) {

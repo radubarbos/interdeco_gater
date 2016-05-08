@@ -10,6 +10,7 @@ import ro.barbos.gater.model.LumberLogStockEntry;
 import ro.barbos.gui.cut.DiameterCutOptionsTargetPanel;
 import ro.barbos.gui.cut.LumberLogCutAnalysisPanel;
 import ro.barbos.gui.exswing.SuggestionJComboBox;
+import ro.barbos.gui.settings.Settings;
 import ro.barbos.gui.stock.*;
 
 import javax.swing.*;
@@ -483,10 +484,10 @@ if(rights == 0) {
                 con = DataAccess.getInstance().getDatabaseConnection();
                 con.setAutoCommit(true);
                 stm = con.createStatement();
-                rs = stm.executeQuery("select * from gatersetting where Name='MEASURE_MIDDLE_ONCE'");
+                rs = stm.executeQuery("select * from gatersetting where Name='"+ Settings.MEASURE_MIDDLE_ONCE+"'");
                 if(!rs.next())
                 {
-                    stm.executeUpdate("INSERT INTO `gatersetting` VALUES (7,'MEASURE_MIDDLE_ONCE',1,1)");
+                    stm.executeUpdate("INSERT INTO `gatersetting` VALUES (7,'"+ Settings.MEASURE_MIDDLE_ONCE+"',1,1)");
                 }
             }catch(Exception eee)
             {
