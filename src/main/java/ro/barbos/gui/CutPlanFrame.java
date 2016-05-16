@@ -1,18 +1,15 @@
 package ro.barbos.gui;
 
-import ro.barbos.gater.cutprocessor.CutPlanCalculator;
-import ro.barbos.gater.cutprocessor.CutPlanCalculatorListener;
-import ro.barbos.gater.cutprocessor.CutPlanSenquence;
+import ro.barbos.gater.cutprocessor.*;
+import ro.barbos.gater.cutprocessor.cutplan.CutPlanStackResult;
 import ro.barbos.gater.dao.CutPlanDAO;
 import ro.barbos.gater.dto.ProductCutTargetDTO;
 import ro.barbos.gater.model.CutPlan;
 import ro.barbos.gater.model.GeneralResponse;
+import ro.barbos.gater.model.LumberStack;
 import ro.barbos.gater.model.Product;
 import ro.barbos.gui.renderer.GeneralTableRenderer;
-import ro.barbos.gui.tablemodel.CutPlanFoundInfoModel;
-import ro.barbos.gui.tablemodel.CutPlanFoundModel;
-import ro.barbos.gui.tablemodel.CutPlanTargetModel;
-import ro.barbos.gui.tablemodel.CutPlanTargetRecord;
+import ro.barbos.gui.tablemodel.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -34,12 +31,19 @@ public class CutPlanFrame extends GeneralFrame implements ActionListener, CutPla
 	private JSplitPane displayPanel;
 	private JPanel cutCalculatedPanel;
 
+    private JTable cutPlanStackStatistics;
+    private CutPlanStackStatisticsModel stackStatisticsModel;
+
 	private SaveCutPlanPanel savePanel;
 	private CutPlanSettingsPanel settingsPanel = new CutPlanSettingsPanel();
 
 	private List<ProductCutTargetDTO> cutDataInfo;
 	private List<CutPlanSenquence> cutDiagrams;
 	private Map<Product, Long> pieces;
+
+    private boolean doStatistics = false;
+
+    JTabbedPane tabPanel;
 
 	public CutPlanFrame() {
 		super();
@@ -137,6 +141,7 @@ public class CutPlanFrame extends GeneralFrame implements ActionListener, CutPla
 				Window w = SwingUtilities.getWindowAncestor((JButton) eve.getSource());
 				if (w != null)
 					w.dispose();
+                doStatistics = true;
 				calculateCutPlan(data);
 			}
 		} else if (command.equals("PRINT")) {
@@ -246,14 +251,16 @@ public class CutPlanFrame extends GeneralFrame implements ActionListener, CutPla
 		cutCalculatedPanel.add(progressBar);
 		cutCalculatedPanel.revalidate();
 		cutCalculatedPanel.repaint();
-		new CutPlanCalculator(records, this, settingsPanel.getCutStrategySettings()).execute();
+		CutPlanCalculator cutCalculator = new CutPlanCalculator(records, this, settingsPanel.getCutStrategySettings());
+        cutCalculator.setStatistics(new StackCutPlanStatistics());
+        cutCalculator.execute();
 	}
 
 	public void showPlan(List<CutPlanSenquence> plan, List<ProductCutTargetDTO> cutDataInfo) {
 		cutCalculatedPanel.removeAll();
 		this.cutDataInfo = cutDataInfo;
 		this.cutDiagrams = plan;
-		JTabbedPane tabPanel = new JTabbedPane();
+		tabPanel = new JTabbedPane();
 		JPanel tab1 = new JPanel(new BorderLayout());
 		CutPlanFoundModel model = new CutPlanFoundModel();
 		final JTable tabel = new JTable(model);
@@ -303,6 +310,57 @@ public class CutPlanFrame extends GeneralFrame implements ActionListener, CutPla
 			}
 		});
 	}
+
+    @Override
+    public void showStatistics(CutPlanStatistics statistics) {
+        if(!doStatistics) {
+            return;
+        }
+        CutPlanStackStatisticsModel stackModel = new CutPlanStackStatisticsModel(true);
+        List<CutPlanStackResult> data = new ArrayList<CutPlanStackResult>();
+        for(Map.Entry<LumberStack, Map<String, Object>> entry: ((StackCutPlanStatistics)statistics).getStatistics().entrySet()) {
+            LumberStack stack = entry.getKey();
+            Map<String, Object> stats = entry.getValue();
+            CutPlanStackResult result = new CutPlanStackResult();
+            result.setStack(stack.getName());
+            result.setCount((Integer)stats.get("COUNT"));
+            result.setAvgEfficency((Double)stats.get("AVG_EFFICENCY"));
+            data.add(result);
+        }
+        Collections.sort(data, new Comparator<CutPlanStackResult>() {
+            @Override
+            public int compare(CutPlanStackResult o1, CutPlanStackResult o2) {
+                if(o2.getAvgEfficency()>o1.getAvgEfficency()) {
+                    return 1;
+                }
+                return -1;
+            }
+        });
+        stackModel.setRecords(data);
+        JTable stackTable = new JTable(stackModel);
+        JPanel stackTab = new JPanel();
+        stackTab.setLayout(new BoxLayout(stackTab, BoxLayout.Y_AXIS));
+        stackTab.add(new JScrollPane(stackTable), BorderLayout.CENTER);
+        tabPanel.add("Statistici stiva", stackTab);
+
+        List<CutPlanStackResult> optimal = statistics.getOptimalSelection(this.cutDataInfo);
+        stackModel = new CutPlanStackStatisticsModel(false);
+        Collections.sort(optimal, new Comparator<CutPlanStackResult>() {
+            @Override
+            public int compare(CutPlanStackResult o1, CutPlanStackResult o2) {
+                if(o2.getCount()>o1.getCount()) {
+                    return 1;
+                }
+                return -1;
+            }
+        });
+        stackModel.setRecords(optimal);
+        stackTable = new JTable(stackModel);
+        stackTab = new JPanel();
+        stackTab.setLayout(new BoxLayout(stackTab, BoxLayout.Y_AXIS));
+        stackTab.add(new JScrollPane(stackTable), BorderLayout.CENTER);
+        tabPanel.add("Optimal", stackTab);
+    }
 
     public void setTargetPlanRecords(List<CutPlanTargetRecord> records){
         cutPlanTargetModel.setRecords(records);

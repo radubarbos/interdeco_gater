@@ -3,6 +3,7 @@ package ro.barbos.gui;
 import ro.barbos.gater.cutprocessor.CutPlanCalculator;
 import ro.barbos.gater.cutprocessor.CutPlanCalculatorListener;
 import ro.barbos.gater.cutprocessor.CutPlanSenquence;
+import ro.barbos.gater.cutprocessor.CutPlanStatistics;
 import ro.barbos.gater.cutprocessor.diagram.CutDiagram;
 import ro.barbos.gater.cutprocessor.strategy.CutStrategies;
 import ro.barbos.gater.dao.CutPlanDAO;
@@ -410,5 +411,10 @@ public class CutPlanHistoryFrame extends GeneralFrame implements ActionListener,
     public void showPlan(List<CutPlanSenquence> plan, List<ProductCutTargetDTO> cutDataInfo) {
         addition = plan.get(0);
         view = new SeeCutDiagramFrame(addition.getLumberLog(), addition.getCutDiagram(), this);
+    }
+
+    @Override
+    public void showStatistics(CutPlanStatistics statistics) {
+
     }
 }

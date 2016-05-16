@@ -28,6 +28,8 @@ public class CutPlanCalculator extends SwingWorker {
 	private CutPlanCalculatorListener frame;
 	
 	private long shortestProductLength = 1111111110;
+
+    private CutPlanStatistics statistics = new DefaultCutPlanStatistics();
 	
 	public CutPlanCalculator(List<CutPlanTargetRecord> records, CutPlanCalculatorListener frame, Map<String, Boolean> cutStrategies) {
 		this.records = records;
@@ -68,6 +70,7 @@ public class CutPlanCalculator extends SwingWorker {
 		
 		boolean finish = false;
 		boolean allLumbersProcessed = false;
+        List[] firstTargetCutInfo = null;
 		while(!finish && !allLumbersProcessed) {
 			if(processedLumberLogs.size() == lumberLogs.size()) {
 				allLumbersProcessed = true;
@@ -78,6 +81,9 @@ public class CutPlanCalculator extends SwingWorker {
 			LumberLog bestLumberLog = null;
 			CutDiagram bestDiagram = null;
 			List[] targetCutInfo = getCurrentCutTarget();
+            if(firstTargetCutInfo == null) {
+                firstTargetCutInfo = targetCutInfo;
+            }
 			
 			for(LumberLog lumberLog: lumberLogs) {
 				if(!processedLumberLogs.containsKey(lumberLog.getId())) {
@@ -119,12 +125,32 @@ public class CutPlanCalculator extends SwingWorker {
 					senquence.setPercentage(senquencePercent);
 					cutDataInfo.get(index).addCutPieces(piecesFromLumber.longValue());
 				}
+                statistics.lumberLogSelected(bestLumberLog, bestDiagram);
 			}
 		}
+        if(processedLumberLogs.size() != lumberLogs.size()) {
+            for(LumberLog lumberLog: lumberLogs) {
+                if(!processedLumberLogs.containsKey(lumberLog.getId())) {
+                    CutDiagram diagram =  processor.getBestCut(lumberLog, firstTargetCutInfo[0], firstTargetCutInfo[1], cutStrategies);
+                    if(diagram != null && diagram.cutInfo.cutVolume > 0) {
+                        statistics.lumberLogSelected(lumberLog, diagram);
+                    }
+                }
+            }
+        }
+        statistics.computeStats();
 		return null;
 	}
-	
-	private List<Object>[] getCurrentCutTarget() {
+
+    public CutPlanStatistics getStatistics() {
+        return statistics;
+    }
+
+    public void setStatistics(CutPlanStatistics statistics) {
+        this.statistics = statistics;
+    }
+
+    private List<Object>[] getCurrentCutTarget() {
 		List<Product> products = new ArrayList<>(records.size());
 		List<Integer> targetPieces = new ArrayList<>(records.size());
 		for(int index = 0; index < records.size(); index++) {
@@ -143,7 +169,9 @@ public class CutPlanCalculator extends SwingWorker {
 	protected void done() {
 		if(frame!=null){
             frame.showPlan(planSteps, cutDataInfo);
+            frame.showStatistics(statistics);
         }
+       // statistics.printStatistics();
 		super.done();
 	}
 

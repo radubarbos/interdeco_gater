@@ -21,5 +21,11 @@ public class MetricFormatter {
     public static String format(Double value) {
         return numberFormatter.format(value);
     }
+    public static String formatPercent(Double value) {
+        NumberFormat formatter = NumberFormat.getPercentInstance(ConfigLocalManager.locale);
+        return formatter.format(value);
+    }
+
+
 
 }

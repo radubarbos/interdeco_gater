@@ -10,4 +10,6 @@ import java.util.List;
 public interface CutPlanCalculatorListener {
 
     public void showPlan(List<CutPlanSenquence> plan, List<ProductCutTargetDTO> cutDataInfo);
+
+    public void showStatistics(CutPlanStatistics statistics);
 }
