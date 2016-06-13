@@ -1,25 +1,17 @@
-package ro.barbos.gui;
-
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Cursor;
-import java.awt.FlowLayout;
-import java.awt.Font;
-import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JInternalFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.event.InternalFrameEvent;
-import javax.swing.event.InternalFrameListener;
+package ro.barbos.gui.cut.diagram;
 
 import ro.barbos.gater.cutprocessor.diagram.CutDiagram;
 import ro.barbos.gater.cutprocessor.diagram.GaterCutStep;
 import ro.barbos.gater.model.LumberLog;
+import ro.barbos.gui.GUITools;
+import ro.barbos.gui.GUIUtil;
+
+import javax.swing.*;
+import javax.swing.event.InternalFrameEvent;
+import javax.swing.event.InternalFrameListener;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class CutDiagramAnimationDisplay extends JInternalFrame implements ActionListener, InternalFrameListener {
 

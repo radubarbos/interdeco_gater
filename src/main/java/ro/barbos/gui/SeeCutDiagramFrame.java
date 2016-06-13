@@ -2,6 +2,7 @@ package ro.barbos.gui;
 
 import ro.barbos.gater.cutprocessor.diagram.CutDiagram;
 import ro.barbos.gater.model.LumberLog;
+import ro.barbos.gui.cut.diagram.CutDiagramPaintPanel;
 
 import javax.swing.*;
 import java.awt.*;

@@ -12,6 +12,7 @@ import ro.barbos.gater.dao.StockDAO;
 import ro.barbos.gater.dto.LumberLogFilterDTO;
 import ro.barbos.gater.dto.ProductCutTargetDTO;
 import ro.barbos.gater.model.*;
+import ro.barbos.gui.cut.diagram.CutDiagramPaintPanel;
 import ro.barbos.gui.renderer.GeneralTableRenderer;
 import ro.barbos.gui.tablemodel.CutPlanHistoryModel;
 import ro.barbos.gui.tablemodel.CutPlanTargetRecord;

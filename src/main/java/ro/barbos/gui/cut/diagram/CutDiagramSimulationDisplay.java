@@ -1,15 +1,12 @@
-package ro.barbos.gui;
-
-import java.awt.Container;
-import java.util.List;
-
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JInternalFrame;
-import javax.swing.JLabel;
+package ro.barbos.gui.cut.diagram;
 
 import ro.barbos.gater.cutprocessor.diagram.CutDiagram;
 import ro.barbos.gater.model.LumberLog;
+import ro.barbos.gui.GUIUtil;
+
+import javax.swing.*;
+import java.awt.*;
+import java.util.List;
 
 public class CutDiagramSimulationDisplay extends JInternalFrame {
 	

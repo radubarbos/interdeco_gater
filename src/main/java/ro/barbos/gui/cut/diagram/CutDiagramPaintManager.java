@@ -1,4 +1,4 @@
-package ro.barbos.gui;
+package ro.barbos.gui.cut.diagram;
 
 public class CutDiagramPaintManager {
 

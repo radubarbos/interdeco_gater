@@ -3,6 +3,7 @@ package ro.barbos.gui;
 import ro.barbos.gater.cutprocessor.CutOptionsCalculator;
 import ro.barbos.gater.cutprocessor.CutPlanSenquence;
 import ro.barbos.gater.cutprocessor.DefaultCutOptionsCalculatorData;
+import ro.barbos.gui.cut.diagram.CutDiagramPaintPanel;
 
 import javax.swing.*;
 import java.awt.*;

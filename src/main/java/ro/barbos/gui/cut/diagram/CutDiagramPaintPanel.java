@@ -1,12 +1,11 @@
-package ro.barbos.gui;
+package ro.barbos.gui.cut.diagram;
 
 import ro.barbos.gater.cutprocessor.CutterSettings;
-import ro.barbos.gater.cutprocessor.diagram.CutDiagram;
-import ro.barbos.gater.cutprocessor.diagram.GaterOperation;
-import ro.barbos.gater.cutprocessor.diagram.GaterSlide;
-import ro.barbos.gater.cutprocessor.diagram.MultibladeCutSlide;
+import ro.barbos.gater.cutprocessor.diagram.*;
 import ro.barbos.gater.data.MetricTools;
 import ro.barbos.gater.model.LumberLog;
+import ro.barbos.gui.ConfigLocalManager;
+import ro.barbos.gui.MetricFormatter;
 
 import javax.swing.*;
 import java.awt.*;
@@ -27,9 +26,17 @@ public class CutDiagramPaintPanel extends JPanel implements ActionListener, Prin
 
 	
 	private static final long serialVersionUID = 1L;
-	
+
+    public enum DIAGRAM_CONTENT {FINAL_POSITION, INITIAL_POSITION}
+
+    public static final String ANIMATION_ACTION = "ANIMATION_ACTION";
+    public static final String SHOW_INITIAL_POSITION_ACTION = "SHOW_INITIAL_POSITION_ACTION";
+    public static final String SHOW_FINAL_POSITION_ACTION = "SHOW_FINAL_POSITION_ACTION";
+
 	private LumberLog lumberLog;
 	private CutDiagram diagram;
+    private JButton finalPosition;
+    private JButton initialPosition;
 	private JButton animateCutProcess;
 	
 	private NumberFormat formatter = NumberFormat.getNumberInstance(ConfigLocalManager.locale);
@@ -37,7 +44,8 @@ public class CutDiagramPaintPanel extends JPanel implements ActionListener, Prin
 	private boolean ignoreEmptySegments = true;
 	
 	private BufferedImage bufferedImage;
-	
+    private DIAGRAM_CONTENT diagramContent = DIAGRAM_CONTENT.FINAL_POSITION;
+
 	private int printPages = 0;
 
     String lumberLogId;
@@ -54,8 +62,21 @@ public class CutDiagramPaintPanel extends JPanel implements ActionListener, Prin
 		animateCutProcess = new JButton("Animatie");
 		animateCutProcess.addActionListener(this);
 		animateCutProcess.setLocation(-1000, -1000);
-		animateCutProcess.setSize(animateCutProcess.getPreferredSize());
+        animateCutProcess.setSize(new Dimension(150, animateCutProcess.getPreferredSize().height));
+        animateCutProcess.setActionCommand(ANIMATION_ACTION);
 		add(animateCutProcess);
+        finalPosition = new JButton("Pos. finala");
+        finalPosition.addActionListener(this);
+        finalPosition.setLocation(-1000, -1000);
+        finalPosition.setSize(new Dimension(150, finalPosition.getPreferredSize().height));
+        finalPosition.setActionCommand(SHOW_FINAL_POSITION_ACTION);
+        add(finalPosition);
+        initialPosition = new JButton("Pos. initiala");
+        initialPosition.addActionListener(this);
+        initialPosition.setLocation(-1000, -1000);
+        initialPosition.setSize(new Dimension(150, initialPosition.getPreferredSize().height));
+        initialPosition.setActionCommand(SHOW_INITIAL_POSITION_ACTION);
+        add(initialPosition);
         lumberLogId = "Bustean: " + lumberLog.getPlate().getLabel();
         lumberLogVolume = MetricFormatter.formatVolume(MetricTools.toMeterCubs(lumberLog.getVolume()));
         smallDiameter = "D. mic: "+lumberLog.getSmallRadius() + " mm";
@@ -104,9 +125,11 @@ public class CutDiagramPaintPanel extends JPanel implements ActionListener, Prin
 			int x = lumberLog.getSmallRadius().intValue() + firstTxtGap;
 			int y = 20;
 			if(printType == 0) {
-			  animateCutProcess.setLocation(x, y); 
+			  initialPosition.setLocation(x, y);
+			  finalPosition.setLocation(x, y+25);
+			  animateCutProcess.setLocation(x, y+50);
 			  this.paintChildren(g2);
-			  y += 40;
+			  y += 90;
 			}
 			g2.drawString("Eficenta taiere: " + formatter.format(CutterSettings.DO_LENGTH_OPTIMIZATION ? diagram.cutInfo.cutVolumeEfficency : diagram.cutInfo.cutLayoutEfficency) + " %", x, y);
 			y+= 20;
@@ -130,69 +153,96 @@ public class CutDiagramPaintPanel extends JPanel implements ActionListener, Prin
 	    paintSteps(g2, printType, false);
 	    }
 		
-		
-		g2.translate(lumberLog.getSmallRadius()/2 +centerOffsetX, lumberLog.getSmallRadius()/2 + centerOffset);
-		g2.setPaint(Color.blue);
-		double radius = lumberLog.getSmallRadius()/2;
-		Ellipse2D.Double lumberLogCircle = new Ellipse2D.Double(-radius, -radius, lumberLog.getSmallRadius(), lumberLog.getSmallRadius());
-		g2.draw(lumberLogCircle);
-		if(printType == 0){
-		  g2.clip(lumberLogCircle);
-		}
-		for(GaterOperation operation: diagram.gaterCutFlow) {
-			if(operation.rotate()) {
-				g2.rotate(Math.PI/2);
-			}
-		}
-		for(GaterOperation operation: diagram.gaterCutFlow) {
-			if(operation.rotate()) {
-				g2.rotate(-Math.PI/2);
-			}
-			else {
-				GaterSlide slide = (GaterSlide)operation;
-				double sliceX = -radius-30;
-				double sliceWidth = lumberLog.getSmallRadius() + 60;
-				if(sliceX + sliceWidth > slide.rightLimit) {
-					sliceWidth = slide.rightLimit - sliceX;
-				}
-				g2.setPaint(Color.blue);
-				if(CutDiagramPaintManager.SHOW_GATER_CUT) {
-					Rectangle2D.Double cutSlide = new Rectangle2D.Double(sliceX, slide.y, sliceWidth, slide.height);
-					g2.draw(cutSlide);
-				}
-				if(slide.pieces > 0) {
-					g2.setPaint(slide.color);
-					for(int innerIndex = 0; innerIndex < slide.pieces; innerIndex++) {
-						double x = slide.x + innerIndex * slide.pieceWidth + innerIndex * CutterSettings.MULTIBLADE;
-						Rectangle2D.Double piece = new Rectangle2D.Double(x, slide.y, slide.pieceWidth, slide.height);
-						g2.draw(piece);
-                        if(CutDiagramPaintManager.SHOW_PHASE && slide.phase != null) {
-                        	drawPhaseNumber(g2, piece, slide.phase.getCode());
-                        }
-					}
-				}
-			}
-		}
-		
-		for(MultibladeCutSlide slide : diagram.multiBladeSlides) {
-			g2.setPaint(slide.color);
-			for(int innerIndex = 0; innerIndex < slide.pieces; innerIndex++) {
-				double x = slide.x + innerIndex * slide.pieceWidth + innerIndex * CutterSettings.MULTIBLADE;
-				Rectangle2D.Double piece = new Rectangle2D.Double(x, slide.y, slide.pieceWidth, slide.height);
-				g2.draw(piece);
-				if(CutDiagramPaintManager.SHOW_PHASE && slide.phase != null) {
-                	drawPhaseNumber(g2, piece, slide.phase.getCode());
-                }
-			}
-		}
-		
-		if(diagram.debugSquare != null) {
-			g2.setPaint(Color.cyan);
-			Rectangle2D.Double cutSlide = new Rectangle2D.Double(-diagram.debugSquare/2, -diagram.debugSquare/2, diagram.debugSquare, diagram.debugSquare);
-		    g2.draw(cutSlide);
-		}
+		paintCutDiagram(g2, centerOffsetX, centerOffset, printType);
+
 		
 	}
+
+    private void paintCutDiagram(Graphics2D g2, int centerOffsetX, int centerOffset, int printType) {
+        g2.translate(lumberLog.getSmallRadius()/2 +centerOffsetX, lumberLog.getSmallRadius()/2 + centerOffset);
+        g2.setPaint(Color.blue);
+        double radius = lumberLog.getSmallRadius()/2;
+        Ellipse2D.Double lumberLogCircle = new Ellipse2D.Double(-radius, -radius, lumberLog.getSmallRadius(), lumberLog.getSmallRadius());
+        g2.draw(lumberLogCircle);
+        if(printType == 0){
+            g2.clip(lumberLogCircle);
+        }
+
+        if(diagramContent == DIAGRAM_CONTENT.FINAL_POSITION) {
+            drawFinalPosition(g2);
+        } else {
+            drawInitialPosition(g2);
+        }
+
+
+
+
+        if(diagram.debugSquare != null) {
+            g2.setPaint(Color.cyan);
+            Rectangle2D.Double cutSlide = new Rectangle2D.Double(-diagram.debugSquare/2, -diagram.debugSquare/2, diagram.debugSquare, diagram.debugSquare);
+            g2.draw(cutSlide);
+        }
+    }
+
+    private void drawInitialPosition(Graphics2D g2) {
+        for(GaterCutStep operation: diagram.steps.getStepSequence()) {
+            if(operation.isRotate) {
+                g2.rotate(Math.toRadians(operation.value));
+            }
+        }
+        drawFinalPosition(g2);
+    }
+
+    private void drawFinalPosition(Graphics2D g2) {
+        double radius = lumberLog.getSmallRadius()/2;
+        for(GaterOperation operation: diagram.gaterCutFlow) {
+            if(operation.rotate()) {
+                g2.rotate(Math.PI/2);
+            }
+        }
+
+        for(GaterOperation operation: diagram.gaterCutFlow) {
+            if(operation.rotate()) {
+                g2.rotate(-Math.PI/2);
+            }
+            else {
+                GaterSlide slide = (GaterSlide)operation;
+                double sliceX = -radius-30;
+                double sliceWidth = lumberLog.getSmallRadius() + 60;
+                if(sliceX + sliceWidth > slide.rightLimit) {
+                    sliceWidth = slide.rightLimit - sliceX;
+                }
+                g2.setPaint(Color.blue);
+                if(CutDiagramPaintManager.SHOW_GATER_CUT) {
+                    Rectangle2D.Double cutSlide = new Rectangle2D.Double(sliceX, slide.y, sliceWidth, slide.height);
+                    g2.draw(cutSlide);
+                }
+                if(slide.pieces > 0) {
+                    g2.setPaint(slide.color);
+                    for(int innerIndex = 0; innerIndex < slide.pieces; innerIndex++) {
+                        double x = slide.x + innerIndex * slide.pieceWidth + innerIndex * CutterSettings.MULTIBLADE;
+                        Rectangle2D.Double piece = new Rectangle2D.Double(x, slide.y, slide.pieceWidth, slide.height);
+                        g2.draw(piece);
+                        if(CutDiagramPaintManager.SHOW_PHASE && slide.phase != null) {
+                            drawPhaseNumber(g2, piece, slide.phase.getCode());
+                        }
+                    }
+                }
+            }
+        }
+
+        for(MultibladeCutSlide slide : diagram.multiBladeSlides) {
+            g2.setPaint(slide.color);
+            for(int innerIndex = 0; innerIndex < slide.pieces; innerIndex++) {
+                double x = slide.x + innerIndex * slide.pieceWidth + innerIndex * CutterSettings.MULTIBLADE;
+                Rectangle2D.Double piece = new Rectangle2D.Double(x, slide.y, slide.pieceWidth, slide.height);
+                g2.draw(piece);
+                if(CutDiagramPaintManager.SHOW_PHASE && slide.phase != null) {
+                    drawPhaseNumber(g2, piece, slide.phase.getCode());
+                }
+            }
+        }
+    }
 
     private void paintLumberLogData(Graphics2D g2) {
 
@@ -201,11 +251,8 @@ public class CutDiagramPaintPanel extends JPanel implements ActionListener, Prin
         g2.setFont(new Font("arial", Font.BOLD, 16));
         int labelWidth = g2.getFontMetrics().stringWidth(lumberLogId);
         g2.drawString(lumberLogId, 5, 20);
-        //g2.draw(new Line2D.Double(5, 22, 5 + labelWidth, 22));
 
-        int labelWidth2 = g2.getFontMetrics().stringWidth(lumberLogVolume);
         g2.drawString(lumberLogVolume, 5 + labelWidth + 50, 20);
-        //g2.draw(new Line2D.Double(5 + labelWidth + 50, 22, 5 + labelWidth + 100 + labelWidth2, 22));
 
         g2.drawString(smallDiameter, 5, 50);
         g2.drawString(bigDiameter, 5 + labelWidth + 50, 50);
@@ -223,7 +270,24 @@ public class CutDiagramPaintPanel extends JPanel implements ActionListener, Prin
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		new CutDiagramAnimationDisplay(diagram, lumberLog).setVisible(true);
+        if(e.getActionCommand().equals("ANIMATION_ACTION")) {
+            new CutDiagramAnimationDisplay(diagram, lumberLog).setVisible(true);
+        } else if(e.getActionCommand().equals("SHOW_FINAL_POSITION_ACTION")) {
+            diagramContent = DIAGRAM_CONTENT.FINAL_POSITION;
+            buildDisplay();
+            revalidate();
+            getParent().revalidate();
+            repaint();
+            getParent().repaint();
+        } else if(e.getActionCommand().equals("SHOW_INITIAL_POSITION_ACTION")) {
+            diagramContent = DIAGRAM_CONTENT.INITIAL_POSITION;
+            buildDisplay();
+            revalidate();
+            getParent().revalidate();
+            repaint();
+            getParent().repaint();
+        }
+
 	}
 	
 	private void paintInfo(Graphics2D g2, int printType) {
