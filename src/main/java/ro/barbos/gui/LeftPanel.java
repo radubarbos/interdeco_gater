@@ -1,16 +1,15 @@
 package ro.barbos.gui;
 
-import ro.barbos.gater.dao.DataAccess;
-import ro.barbos.gater.dao.IDPlateDAO;
-import ro.barbos.gater.dao.LumberLogDAO;
-import ro.barbos.gater.dao.StockDAO;
+import ro.barbos.gater.dao.*;
 import ro.barbos.gater.dto.LumberLogFilterDTO;
 import ro.barbos.gater.model.IDPlate;
 import ro.barbos.gater.model.LumberLogStockEntry;
+import ro.barbos.gater.model.Machine;
 import ro.barbos.gui.cut.DiameterCutOptionsTargetPanel;
 import ro.barbos.gui.cut.LumberLogCutAnalysisPanel;
 import ro.barbos.gui.exswing.SuggestionJComboBox;
-import ro.barbos.gui.settings.Settings;
+import ro.barbos.gui.inventory.machines.InventoryMachineFrame;
+import ro.barbos.gui.production.MachineProductionFrame;
 import ro.barbos.gui.stock.*;
 
 import javax.swing.*;
@@ -18,7 +17,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -42,8 +40,7 @@ public class LeftPanel extends JPanel implements ActionListener {
 		int buttonWidth = 200;
 		int buttonHeight = 30;
 		Dimension buttonDimension = new Dimension(buttonWidth, buttonHeight);
-		
-		//setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+
         setLayout(new BorderLayout());
         north.setLayout(new BoxLayout(north, BoxLayout.Y_AXIS));
         center.setLayout(new BoxLayout(center, BoxLayout.Y_AXIS));
@@ -187,6 +184,38 @@ public class LeftPanel extends JPanel implements ActionListener {
 		products.addActionListener(this);
 		products.setAlignmentX(0);
 		products.setMaximumSize(buttonDimension);
+
+        List<JButton> processedMenu = new ArrayList<>();
+        subMenu.put(7, processedMenu);
+        JButton processed = new JButton("Procesare");
+        processed.setActionCommand("MENU_GROUP_7");
+        processed.addActionListener(this);
+        processed.setAlignmentX(0);
+        processed.setMaximumSize(buttonDimension);
+        List<Machine> machines = MachineDAO.getMachines();
+        for(Machine machine: machines) {
+            JButton machineMenu = new JButton(machine.getLabel());
+            machineMenu.setActionCommand("INVENTORY_MACHINE_" + machine.getId());
+            machineMenu.addActionListener(this);
+            machineMenu.setAlignmentX(0);
+            machineMenu.setMaximumSize(buttonDimension);
+            processedMenu.add(machineMenu);
+        }
+
+        List<JButton> inventoryMenu = new ArrayList<>();
+        subMenu.put(8, inventoryMenu);
+        JButton inventory = new JButton("Inventar");
+        inventory.setActionCommand("MENU_GROUP_8");
+        inventory.addActionListener(this);
+        inventory.setAlignmentX(0);
+        inventory.setMaximumSize(buttonDimension);
+
+        JButton inventoryMachines = new JButton("Masini");
+        inventoryMachines.setActionCommand("INVENTORY_MACHINES");
+        inventoryMachines.addActionListener(this);
+        inventoryMachines.setAlignmentX(0);
+        inventoryMachines.setMaximumSize(buttonDimension);
+        inventoryMenu.add(inventoryMachines);
 		
 		JButton users = new JButton("Utilizatori");
 		users.setActionCommand("USERS");
@@ -194,11 +223,11 @@ public class LeftPanel extends JPanel implements ActionListener {
 		users.setAlignmentX(0);
 		users.setMaximumSize(buttonDimension);
 
-        /*JButton db = new JButton("Fix database");
-        db.setActionCommand("FIX");
-        db.addActionListener(this);
-        db.setAlignmentX(0);
-        db.setMaximumSize(buttonDimension);*/
+        JButton db2 = new JButton("Fix database");
+        db2.setActionCommand("FIX");
+        db2.addActionListener(this);
+        db2.setAlignmentX(0);
+        db2.setMaximumSize(buttonDimension);
 
         JButton db = new JButton("Analiza taiere produse");
         db.setActionCommand("CUT_PRODUCTS_ANALYSIS");
@@ -222,6 +251,8 @@ public class LeftPanel extends JPanel implements ActionListener {
         menu.add(idplates);
         menu.add(stacks);
         menu.add(products);
+        menu.add(processed);
+        menu.add(inventory);
         menu.add(users);
         menu.add(settings);
 		if(1>9) {
@@ -280,6 +311,7 @@ if(rights == 0) {
             add(Box.createVerticalStrut(3));*/
 		}
 
+		menu.add(db2);
 		menu.add(logout);
 		add(north, BorderLayout.NORTH);
         add(center,BorderLayout.CENTER);
@@ -479,22 +511,16 @@ if(rights == 0) {
 		} else if(command.equals("FIX")) {
             Connection con =null;
             Statement stm =null;
-            ResultSet rs = null;
             try {
                 con = DataAccess.getInstance().getDatabaseConnection();
                 con.setAutoCommit(true);
                 stm = con.createStatement();
-                rs = stm.executeQuery("select * from gatersetting where Name='"+ Settings.MEASURE_MIDDLE_ONCE+"'");
-                if(!rs.next())
-                {
-                    stm.executeUpdate("INSERT INTO `gatersetting` VALUES (7,'"+ Settings.MEASURE_MIDDLE_ONCE+"',1,1)");
-                }
+                stm.executeUpdate("alter table cutplanproduct add ProductVolume decimal(20,2);");
             }catch(Exception eee)
             {
             }
             finally
             {
-                if(rs!=null) try{rs.close();}catch(Exception er){}
                 if(stm!=null) try{stm.close();}catch(Exception er){}
             }
 
@@ -502,13 +528,18 @@ if(rights == 0) {
                 con = DataAccess.getInstance().getDatabaseConnection();
                 con.setAutoCommit(true);
                 stm = con.createStatement();
-                stm.executeUpdate("alter table cutplanproduct add ProcessedPieces int default 0");
+                stm.executeUpdate("alter table cutplanlumberlogdiagram add SmallDiameter decimal(10,2) NOT NULL,\n" +
+                        "                                 add MediumDiameter decimal(10,2) NOT NULL,\n" +
+                        "                                 add BigDiameter decimal(10,2) NOT NULL,\n" +
+                        "                                 add Length decimal(10,2) NOT NULL,\n" +
+                        "                                 add Volume decimal(20,2) NOT NULL,\n" +
+                        "                                 add Reallength decimal(10,2) NOT NULL,\n" +
+                        "                                 add Realvolume decimal(20,2) NOT NULL;");
             }catch(Exception eee)
             {
             }
             finally
             {
-                if(rs!=null) try{rs.close();}catch(Exception er){}
                 if(stm!=null) try{stm.close();}catch(Exception er){}
             }
             JOptionPane.showMessageDialog(GUIUtil.container, "Baza de date a fost modificata.");
@@ -516,6 +547,18 @@ if(rights == 0) {
             LumberLogCutAnalysisPanel.showDialog();
         } else if(command.equals("CUT_PRODUCTS_LUMBER_RADIUS_ANALYSIS")) {
             DiameterCutOptionsTargetPanel.showDialog();
+        } else if(command.equals("INVENTORY_MACHINES")) {
+            if(!parent.isFrameSet(GUIUtil.INVENTORY_MACHINE_KEY))
+            {
+                InventoryMachineFrame frame = new InventoryMachineFrame();
+                parent.addFrame(frame, GUIUtil.INVENTORY_MACHINE_KEY);
+            }
+        } else if(command.startsWith("INVENTORY_MACHINE_")) {
+            if(!parent.isFrameSet(GUIUtil.INVENTORY_MACHINE_SINGLE_KEY))
+            {
+                MachineProductionFrame frame = new MachineProductionFrame(Long.valueOf(command.substring("INVENTORY_MACHINE_".length())));
+                parent.addFrame(frame, GUIUtil.INVENTORY_MACHINE_SINGLE_KEY);
+            }
         }
 	}
 	

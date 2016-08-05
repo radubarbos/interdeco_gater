@@ -1,7 +1,5 @@
 package ro.barbos.gui;
 
-import ro.barbos.gui.InfoPanel;
-
 public class GUIUtil {
 
 	public static String STOCK_KEY="stoc";
@@ -26,7 +24,9 @@ public class GUIUtil {
 	public static String CUT_PLAN_KEY="cut_plan";
 	public static String HISTORY_CUT_PLAN_KEY="history_cut_plan";
 	public static String USERS_KEY="users";
-	
+    public static String INVENTORY_MACHINE_KEY="inventory_machine";
+    public static String INVENTORY_MACHINE_SINGLE_KEY="inventory_machine_single";
+
 	public static MainContainer container =null;
 	public static InfoPanel info =null;
 	public static MainFrame main=null;

@@ -3,8 +3,6 @@ package ro.barbos.gater.dao;
 import java.sql.Connection;
 import java.sql.DriverManager;
 
-import com.mysql.jdbc.JDBC4Connection;
-
 
 
 public class DataAccess 
@@ -12,9 +10,11 @@ public class DataAccess
 
 	private static DataAccess instance;
 	private String server="127.0.0.1";
-	private String serverURL="jdbc:mysql://127.0.0.1:3306/gater?autoReconnect=true"; 
+	private String serverURL="jdbc:mysql://127.0.0.1:3306/gater?autoReconnect=true";
+	//private String serverURL="jdbc:mysql://127.0.0.1:3306/gater?autoReconnect=true";
 	private String serverUser="root";
 	private String serverPass="root";
+	//private String serverPass = "!nicol@e179";
 	private String driver="org.gjt.mm.mysql.Driver";
 	private Connection con;
 	

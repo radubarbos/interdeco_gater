@@ -155,5 +155,42 @@ public class ProductDAO {
         }
         return product;
     }
+
+    public static Product getProduct(Long id) {
+        Logger logger = Logger.getLogger("dao");
+        Product product = null;
+
+        StringBuilder sql = new StringBuilder("select id, label, length, width, thick from product where id = ").append(id).append("");
+
+        Connection con =null;
+        Statement stm =null;
+        ResultSet rs = null;
+        try {
+            con = DataAccess.getInstance().getDatabaseConnection();
+            con.setAutoCommit(true);
+            stm = con.createStatement();
+            logger.fine(sql.toString());
+            rs = stm.executeQuery(sql.toString());
+            if(rs.next())
+            {
+                product = new Product();
+                product.setId(rs.getLong("id"));
+                product.setName(rs.getString("label"));
+                product.setLength(rs.getLong("length"));
+                product.setWidth(rs.getLong("width"));
+                product.setThick(rs.getLong("thick"));
+            }
+        }catch(Exception e)
+        {
+            logger.warning(e.getMessage());
+            logger.log(Level.INFO, "Error", e);
+        }
+        finally
+        {
+            if(rs!=null) try{rs.close();}catch(Exception e){}
+            if(stm!=null) try{stm.close();}catch(Exception e){}
+        }
+        return product;
+    }
 	
 }
