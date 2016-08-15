@@ -40,3 +40,16 @@ CREATE TABLE `production_product` (
   CONSTRAINT `productionproduct_productfk_1` FOREIGN KEY (`productid`) REFERENCES `product` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+DROP TABLE IF EXISTS supplier;
+
+CREATE TABLE supplier (
+  id bigint NOT NULL AUTO_INCREMENT,
+  entrydate datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  registerno varchar(255) NOT NULL,
+  title varchar(100) NOT NULL,
+  address text,
+  usestatus bit NOT NULL DEFAULT 0,
+  areacode varchar(30),
+  PRIMARY KEY (`id`)
+) DEFAULT CHARSET=utf8;

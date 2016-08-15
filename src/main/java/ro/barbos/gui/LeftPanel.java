@@ -11,6 +11,7 @@ import ro.barbos.gui.exswing.SuggestionJComboBox;
 import ro.barbos.gui.inventory.machines.InventoryMachineFrame;
 import ro.barbos.gui.production.MachineProductionFrame;
 import ro.barbos.gui.stock.*;
+import ro.barbos.gui.supplier.SuppliersFrame;
 
 import javax.swing.*;
 import java.awt.*;
@@ -93,6 +94,13 @@ public class LeftPanel extends JPanel implements ActionListener {
 		stockCurrent4.setAlignmentX(0);
 		stockCurrent4.setMaximumSize(buttonDimension);
         stockMenu.add(stockCurrent4);
+
+        JButton stockCurrent9 = new JButton("Furnizori");
+        stockCurrent9.setActionCommand("SUPPLIER_STOCK");
+        stockCurrent9.addActionListener(this);
+        stockCurrent9.setAlignmentX(0);
+        stockCurrent9.setMaximumSize(buttonDimension);
+        stockMenu.add(stockCurrent9);
 		
 		JButton idplates = new JButton("Placi");
 		idplates.setActionCommand("IDPLATES");
@@ -558,6 +566,12 @@ if(rights == 0) {
             {
                 MachineProductionFrame frame = new MachineProductionFrame(Long.valueOf(command.substring("INVENTORY_MACHINE_".length())));
                 parent.addFrame(frame, GUIUtil.INVENTORY_MACHINE_SINGLE_KEY);
+            }
+        }else if(command.equals("SUPPLIER_STOCK")) {
+            if(!parent.isFrameSet(GUIUtil.SUPPLIER_STOCKS_KEY))
+            {
+                SuppliersFrame frame = new SuppliersFrame();
+                parent.addFrame(frame, GUIUtil.SUPPLIER_STOCKS_KEY);
             }
         }
 	}
