@@ -33,6 +33,7 @@ public class SettingsFrame extends GeneralFrame {
 		AlgorithmSettingsPanel algorithmSettings = new AlgorithmSettingsPanel();
 		tab.add("Setari calculare", algorithmSettings);
 		tab.add("Algoritmi taieri", new CutStrategySettingsPanel());
+		tab.add("Stoc", new StockSettingsPanel());
 
 		setContentPane(tab);
 	}

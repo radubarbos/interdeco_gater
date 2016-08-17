@@ -75,4 +75,34 @@ public class SettingsDAO {
 		
 		return saveStatus;
 	}
+
+    public static boolean saveSetting(String name, double value)
+    {
+        Logger logger = Logger.getLogger("dao");
+        StringBuilder up = new StringBuilder("update gatersetting set val=").append(value).append(" where name='" + name + "'");
+        StringBuilder in = new StringBuilder("insert into gatersetting(name,val, metric) values('" + name + "',").append(value).append(",1)");
+
+        boolean saveStatus = true;
+        Statement stm =null;
+        try
+        {
+            stm = DataAccess.getInstance().getDatabaseConnection().createStatement();
+            logger.info(up.toString());
+            int upNo = stm.executeUpdate(up.toString());
+            logger.info(in.toString());
+            if(upNo==0) stm.execute(in.toString());
+        }
+        catch(Exception e)
+        {
+            saveStatus = false;
+            logger.warning(e.getMessage());
+            logger.log(Level.INFO, "Error", e);
+        }
+        finally
+        {
+            if(stm!=null) try{stm.close();}catch(Exception e){}
+        }
+
+        return saveStatus;
+    }
 }

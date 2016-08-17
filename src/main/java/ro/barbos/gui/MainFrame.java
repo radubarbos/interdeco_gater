@@ -195,6 +195,9 @@ public class MainFrame extends JFrame implements WindowListener, ActionListener 
                 else if(setting.getName().equals(CutStrategyType.NO_MULTI_BLADE.name())) {
                     CutStrategyType.NO_MULTI_BLADE.setEnabled(setting.getValue() == 1);
                 }
+                else if(setting.getName().equals("LUMBER_LOG_MARGIN")) {
+                    StockSettings.LUMBER_LOG_MARGIN = setting.getValue().intValue();
+                }
 			}
 		}
 		
