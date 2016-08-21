@@ -53,3 +53,28 @@ CREATE TABLE supplier (
   areacode varchar(30),
   PRIMARY KEY (`id`)
 ) DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS LumberLogTransportCertificate;
+
+CREATE TABLE LumberLogTransportCertificate (
+  Id bigint NOT NULL AUTO_INCREMENT,
+  EntryDate datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  SerialCode varchar(255) NOT NULL,
+  SerialNo varchar(255) NOT NULL,
+  SupplierId bigint NOT NULL,
+  Code varchar(20) NOT NULL,
+  CodeCreationTime datetime NOT NULL,
+  Document varchar(255),
+  LoadPlace varchar(255) NOT NULL,
+  TransportLeaveDate datetime NOT NULL,
+  UnloadPlace varchar(255) NOT NULL,
+  TransportArrivalDate datetime NOT NULL,
+  DocCreator varchar(255),
+  DocCreatorName varchar(255),
+  TransportName varchar(255),
+  TransportPlate varchar(15) NOT NULL,
+  DriverName varchar(255) NOT NULL,
+  DriverId varchar(15),
+  PRIMARY KEY (`Id`),
+  CONSTRAINT `transportcertificate_supplier` FOREIGN KEY (`SupplierId`) REFERENCES `supplier` (`id`)
+) DEFAULT CHARSET=utf8;

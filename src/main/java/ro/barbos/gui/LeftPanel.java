@@ -101,8 +101,15 @@ public class LeftPanel extends JPanel implements ActionListener {
         stockCurrent9.setAlignmentX(0);
         stockCurrent9.setMaximumSize(buttonDimension);
         stockMenu.add(stockCurrent9);
-		
-		JButton idplates = new JButton("Placi");
+
+        JButton stockCurrent10 = new JButton("Avize");
+        stockCurrent10.setActionCommand("LUMBER_TRANSPORT_STOCK");
+        stockCurrent10.addActionListener(this);
+        stockCurrent10.setAlignmentX(0);
+        stockCurrent10.setMaximumSize(buttonDimension);
+        stockMenu.add(stockCurrent10);
+
+        JButton idplates = new JButton("Placi");
 		idplates.setActionCommand("IDPLATES");
 		idplates.addActionListener(this);
 		idplates.setAlignmentX(0);
@@ -567,11 +574,16 @@ if(rights == 0) {
                 MachineProductionFrame frame = new MachineProductionFrame(Long.valueOf(command.substring("INVENTORY_MACHINE_".length())));
                 parent.addFrame(frame, GUIUtil.INVENTORY_MACHINE_SINGLE_KEY);
             }
-        }else if(command.equals("SUPPLIER_STOCK")) {
+        } else if (command.equals("SUPPLIER_STOCK")) {
             if(!parent.isFrameSet(GUIUtil.SUPPLIER_STOCKS_KEY))
             {
                 SuppliersFrame frame = new SuppliersFrame();
                 parent.addFrame(frame, GUIUtil.SUPPLIER_STOCKS_KEY);
+            }
+        } else if (command.equals("LUMBER_TRANSPORT_STOCK")) {
+            if (!parent.isFrameSet(GUIUtil.LUMBER_TRANSPORT_STOCK_EY)) {
+                LumberLogTransportCertificateFrame frame = new LumberLogTransportCertificateFrame();
+                parent.addFrame(frame, GUIUtil.LUMBER_TRANSPORT_STOCK_EY);
             }
         }
 	}
