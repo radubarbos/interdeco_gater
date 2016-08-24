@@ -8,6 +8,8 @@ public class LumberLogFilterDTO {
 	private List<Long> idPlates;
 	private long minLength = -1;
 	private boolean available;
+    private Integer status;
+    private Long transportEntryId;
 
 	/**
 	 * @return the stacks
@@ -64,7 +66,20 @@ public class LumberLogFilterDTO {
 	public void setMinLength(long minLength) {
 		this.minLength = minLength;
 	}
-	
-	
 
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
+    public Long getTransportEntryId() {
+        return transportEntryId;
+    }
+
+    public void setTransportEntryId(Long transportEntryId) {
+        this.transportEntryId = transportEntryId;
+    }
 }

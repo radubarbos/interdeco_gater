@@ -21,15 +21,15 @@ public class StockDAO {
 		Logger logger = Logger.getLogger("dao");
 		
 		List<LumberLogStockEntry> lumberLogs = null;
-		StringBuilder sql = new StringBuilder("select l.id, l.idplate, i.label, l.small_diameter, l.big_diameter, l.length, l.volume, l.lumbertype, l.lumberclass, st.name, stoe.entryDate, u.FullName, l.planId, l.reallength, l.realvolume from lumberlog l left join idplate i on l.idplate = i.id left join lumberstack st on l.stack = st.id join lumberentry_to_lumberlog le on l.id = le.lumberlogid join lumberentry stoe on le.entryid = stoe.id join user u on stoe.user = u.ID");
-		if(filter != null) {
-			sql.append(" where ");
-			if(filter.getStacks() != null && filter.getStacks().size() > 0) {
-				sql.append(" l.stack = ").append(filter.getStacks().get(0));
-			}
+        StringBuilder sql = new StringBuilder("select l.id, l.idplate, i.label, l.small_diameter, l.big_diameter, l.length, l.volume, l.lumbertype, l.lumberclass, st.name, stoe.entryDate, u.FullName, l.planId, l.reallength, l.realvolume from lumberlog l left join idplate i on l.idplate = i.id left join lumberstack st on l.stack = st.id join lumberentry_to_lumberlog le on l.id = le.lumberlogid join lumberentry stoe on le.entryid = stoe.id join user u on stoe.user = u.ID where l.Status=0 ");
+        if(filter != null) {
+            sql.append(" ");
+            if(filter.getStacks() != null && filter.getStacks().size() > 0) {
+                sql.append("and  l.stack = ").append(filter.getStacks().get(0));
+            }
 			if(filter.getIdPlates() != null && filter.getIdPlates().size() > 0) {
-				sql.append(" l.idplate = ").append(filter.getIdPlates().get(0));
-			}
+                sql.append("and  l.idplate = ").append(filter.getIdPlates().get(0));
+            }
 		}
 		sql.append(" order by i.label");
 		
@@ -87,9 +87,9 @@ public class StockDAO {
 		Logger logger = Logger.getLogger("dao");
 		
 		List<LumberStackInfoDTO> stacksInfo = null;
-		StringBuilder sql = new StringBuilder("select s.id, s.name, s.minimum, s.maximum, count(l.id) as lumbertotal, sum((l.volume/1000000000)) as volume from lumberstack s left join lumberlog l on l.stack = s.id group by s.id");
-		
-		Connection con =null;
+        StringBuilder sql = new StringBuilder("select s.id, s.name, s.minimum, s.maximum, count(l.id) as lumbertotal, sum((l.volume/1000000000)) as volume from lumberstack s left join lumberlog l on l.stack = s.id where l.Status = 0 group by s.id");
+
+        Connection con =null;
 	    Statement stm =null;
 	    ResultSet rs = null;
 	    try {
@@ -128,9 +128,9 @@ public class StockDAO {
 		Logger logger = Logger.getLogger("dao");
 		
 		List<TypeStockDTO> typeInfo = null;
-		StringBuilder sql = new StringBuilder("select t.id, t.name, count(l.id) as lumbertotal, sum((l.volume/1000000000)) as volume from lumbertype t left join lumberlog l on l.lumbertype = t.id group by t.id");
-		
-		Connection con =null;
+        StringBuilder sql = new StringBuilder("select t.id, t.name, count(l.id) as lumbertotal, sum((l.volume/1000000000)) as volume from lumbertype t left join lumberlog l on l.lumbertype = t.id where l.Status=0 group by t.id");
+
+        Connection con =null;
 	    Statement stm =null;
 	    ResultSet rs = null;
 	    try {
@@ -164,9 +164,9 @@ public class StockDAO {
 		Logger logger = Logger.getLogger("dao");
 		
 		List<ClassStockDTO> typeInfo = null;
-		StringBuilder sql = new StringBuilder("select c.id, c.name, count(l.id) as lumbertotal, sum((l.volume/1000000000)) as volume from lumberclass c left join lumberlog l on l.lumberclass = c.id group by c.id");
-		
-		Connection con =null;
+        StringBuilder sql = new StringBuilder("select c.id, c.name, count(l.id) as lumbertotal, sum((l.volume/1000000000)) as volume from lumberclass c left join lumberlog l on l.lumberclass = c.id where l.Status=0 group by c.id");
+
+        Connection con =null;
 	    Statement stm =null;
 	    ResultSet rs = null;
 	    try {
@@ -296,9 +296,9 @@ public class StockDAO {
 		Logger logger = Logger.getLogger("dao");
 		
 		Map<String, Object> statistics = new HashMap<String, Object>();
-		StringBuilder sql = new StringBuilder("select count(*) as no, sum(volume/1000000000) as volume, lumbertype from lumberlog group by lumbertype;");
-		
-		Connection con =null;
+        StringBuilder sql = new StringBuilder("select count(*) as no, sum(volume/1000000000) as volume, lumbertype from lumberlog where Status = 0 group by lumbertype;");
+
+        Connection con =null;
 	    Statement stm =null;
 	    ResultSet rs = null;
 	    try {
@@ -340,14 +340,14 @@ public class StockDAO {
 		List<LumberLog> lumberLogs = null;
 		StringBuilder sql = new StringBuilder("select l.id, l.idplate, i.label, l.small_diameter, l.big_diameter, l.length, l.volume, l.lumbertype, l.lumberclass, st.name, l.reallength, l.realvolume, l.planId from lumberlog l left join idplate i on l.idplate = i.id left join lumberstack st on l.stack = st.id");
 		if(filter != null) {
-			sql.append(" where ");
+            sql.append(" where l.Status=0 ");
             String operator = "";
 			if(filter.getStacks() != null && filter.getStacks().size() > 0) {
-				sql.append(" l.stack = ").append(filter.getStacks().get(0));
-			}
+                sql.append(" and l.stack = ").append(filter.getStacks().get(0));
+            }
 			if(filter.getIdPlates() != null && filter.getIdPlates().size() > 0) {
-				sql.append(" l.idplate = ").append(filter.getIdPlates().get(0));
-			}
+                sql.append(" and l.idplate = ").append(filter.getIdPlates().get(0));
+            }
 			if(filter.isAvailable()) {
 				sql.append(" l.planId is NULL ");
                 operator = " and ";

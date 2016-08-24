@@ -78,3 +78,27 @@ CREATE TABLE LumberLogTransportCertificate (
   PRIMARY KEY (`Id`),
   CONSTRAINT `transportcertificate_supplier` FOREIGN KEY (`SupplierId`) REFERENCES `supplier` (`id`)
 ) DEFAULT CHARSET=utf8;
+
+alter table lumberlog add Status int default 0;
+alter table lumberlog SupplierId bigint NOT NULL;
+insert into supplier(registerno,title,address,usestatus) values('test','test','test', 1);
+update lumberlog set SupplierId=2;
+alter table lumberlog add CONSTRAINT `lumberlog_supplier_fk` FOREIGN KEY (`SupplierId`) REFERENCES `supplier` (`id`);
+alter table lumberlog add TransportCertificateId bigint NULL;
+#alter table lumberlog add CONSTRAINT `lumberlog_transportcertificate_fk` FOREIGN KEY (`TransportCertificateId`) REFERENCES `LumberLogTransportCertificate` (`Id`);
+alter table lumberlog add Margin int default 0;
+alter table lumberlog add MarginVolume decimal(10,2);
+alter table lumberlog add RealMarginVolume decimal(10,2);
+
+
+CREATE TABLE LumberLogTransportEntry (
+  Id bigint NOT NULL AUTO_INCREMENT,
+  EntryDate datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  UserId int NOT NULL,
+  Status int default 0,
+  PRIMARY KEY (`Id`),
+  CONSTRAINT `transportentry_user` FOREIGN KEY (`UserId`) REFERENCES `user` (`ID`)
+) DEFAULT CHARSET=utf8;
+
+alter table lumberlog add TransportEntryId bigint NOT NULL;
+#alter table lumberlog add CONSTRAINT `lumberlog_transportentry_fk` FOREIGN KEY (`TransportEntryId`) REFERENCES `LumberLogTransportEntry` (`Id`);

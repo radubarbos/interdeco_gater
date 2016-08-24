@@ -131,6 +131,19 @@ public class AddLumberTransportCertificatePanel extends JPanel {
         return certificate;
     }
 
+    public void setSupplierId(Long supplierId) {
+        int size = suppliers.getModel().getSize();
+        for (int i = 0; i < size; i++) {
+            Supplier supp = suppliers.getItemAt(i);
+            if (supp.getId() == supplierId.longValue()) {
+                suppliers.setSelectedIndex(i);
+                break;
+            }
+        }
+        suppliers.setEditable(false);
+        suppliers.setEnabled(false);
+    }
+
     private boolean checkDateField(JPanel panel) {
         boolean valid = true;
         JLabel label = (JLabel) (panel).getComponent(0);

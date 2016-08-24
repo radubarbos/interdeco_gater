@@ -1,12 +1,10 @@
 package ro.barbos.gui.tablemodel;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.swing.table.AbstractTableModel;
-
 import ro.barbos.gater.model.LumberLog;
 import ro.barbos.gater.model.LumberStack;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ReceiveModel extends GeneralAbstractTableModel {
 	
@@ -86,8 +84,16 @@ public class ReceiveModel extends GeneralAbstractTableModel {
 		lumberLogs.add(lumberLog);
 		refreshOnDataChange();
 	}
-	
-	public void removeLumberLog(int index) {
+
+    public void addLumberLogs(List<LumberLog> lumberLogs) {
+        for (LumberLog lumberLog : lumberLogs) {
+            data.add(new ReceiveRecord(lumberLog, lumberLog.getStack()));
+            this.lumberLogs.add(lumberLog);
+        }
+        refreshOnDataChange();
+    }
+
+    public void removeLumberLog(int index) {
 		data.remove(index);
 		lumberLogs.remove(index);
 		refreshOnDataChange();
@@ -96,5 +102,9 @@ public class ReceiveModel extends GeneralAbstractTableModel {
 	public LumberLog getLumberLog(int row) {
 		return lumberLogs.get(row);
 	}
+
+    public List<LumberLog> getLumberLogs() {
+        return lumberLogs;
+    }
 
 }

@@ -175,4 +175,10 @@ public class LumberLogTransportCertificate {
     public void setSerialNo(String serialNo) {
         this.serialNo = serialNo;
     }
+
+
+    @Override
+    public String toString() {
+        return code;
+    }
 }

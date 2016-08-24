@@ -25,9 +25,9 @@ import java.util.List;
 import java.util.Map;
 
 public class LeftPanel extends JPanel implements ActionListener {
-	
-	private JTextArea messageArea;
-	SuggestionJComboBox<IDPlate> optPlates;
+
+    private JTextArea messageArea;
+    SuggestionJComboBox<IDPlate> optPlates;
 
     JPanel north = new JPanel();
     JPanel center = new JPanel();
@@ -36,11 +36,11 @@ public class LeftPanel extends JPanel implements ActionListener {
     List<JButton> menu = new ArrayList<>();
     Map<Integer, List<JButton>> subMenu = new HashMap<>();
 
-	public LeftPanel() {
-		
-		int buttonWidth = 200;
-		int buttonHeight = 30;
-		Dimension buttonDimension = new Dimension(buttonWidth, buttonHeight);
+    public LeftPanel() {
+
+        int buttonWidth = 200;
+        int buttonHeight = 30;
+        Dimension buttonDimension = new Dimension(buttonWidth, buttonHeight);
 
         setLayout(new BorderLayout());
         north.setLayout(new BoxLayout(north, BoxLayout.Y_AXIS));
@@ -50,7 +50,7 @@ public class LeftPanel extends JPanel implements ActionListener {
         setPreferredSize(new Dimension(buttonWidth, buttonHeight));
         setMinimumSize(new Dimension(buttonWidth, buttonHeight));
 
-		Integer rights = ConfigLocalManager.currentUser.getRights().getRightsLevel();
+        Integer rights = ConfigLocalManager.currentUser.getRights().getRightsLevel();
 
         JButton stock = new JButton("Stoc");
         stock.setActionCommand("MENU_GROUP_0");
@@ -60,39 +60,39 @@ public class LeftPanel extends JPanel implements ActionListener {
 
         List<JButton> stockMenu = new ArrayList<>();
         subMenu.put(0, stockMenu);
-		JButton receptie = new JButton("Receptie");
-		receptie.setActionCommand("RECEPTIE");
-		receptie.addActionListener(this);
-		receptie.setAlignmentX(0);
-		receptie.setMaximumSize(buttonDimension);
+        JButton receptie = new JButton("Receptie");
+        receptie.setActionCommand("RECEPTIE");
+        receptie.addActionListener(this);
+        receptie.setAlignmentX(0);
+        receptie.setMaximumSize(buttonDimension);
         stockMenu.add(receptie);
-				
-		JButton stockCurrent = new JButton("Stock current");
-		stockCurrent.setActionCommand("STOCK");
-		stockCurrent.addActionListener(this);
-		stockCurrent.setAlignmentX(0);
-		stockCurrent.setMaximumSize(buttonDimension);
+
+        JButton stockCurrent = new JButton("Stock current");
+        stockCurrent.setActionCommand("STOCK");
+        stockCurrent.addActionListener(this);
+        stockCurrent.setAlignmentX(0);
+        stockCurrent.setMaximumSize(buttonDimension);
         stockMenu.add(stockCurrent);
-		
-		JButton stockCurrent2 = new JButton("Stock per stiva");
-		stockCurrent2.setActionCommand("STACK_STOCK");
-		stockCurrent2.addActionListener(this);
-		stockCurrent2.setAlignmentX(0);
-		stockCurrent2.setMaximumSize(buttonDimension);
+
+        JButton stockCurrent2 = new JButton("Stock per stiva");
+        stockCurrent2.setActionCommand("STACK_STOCK");
+        stockCurrent2.addActionListener(this);
+        stockCurrent2.setAlignmentX(0);
+        stockCurrent2.setMaximumSize(buttonDimension);
         stockMenu.add(stockCurrent2);
-		
-		JButton stockCurrent3 = new JButton("Stock per tip");
-		stockCurrent3.setActionCommand("TIP_STOCK");
-		stockCurrent3.addActionListener(this);
-		stockCurrent3.setAlignmentX(0);
-		stockCurrent3.setMaximumSize(buttonDimension);
+
+        JButton stockCurrent3 = new JButton("Stock per tip");
+        stockCurrent3.setActionCommand("TIP_STOCK");
+        stockCurrent3.addActionListener(this);
+        stockCurrent3.setAlignmentX(0);
+        stockCurrent3.setMaximumSize(buttonDimension);
         stockMenu.add(stockCurrent3);
-		
-		JButton stockCurrent4 = new JButton("Stock per class");
-		stockCurrent4.setActionCommand("CLASS_STOCK");
-		stockCurrent4.addActionListener(this);
-		stockCurrent4.setAlignmentX(0);
-		stockCurrent4.setMaximumSize(buttonDimension);
+
+        JButton stockCurrent4 = new JButton("Stock per class");
+        stockCurrent4.setActionCommand("CLASS_STOCK");
+        stockCurrent4.addActionListener(this);
+        stockCurrent4.setAlignmentX(0);
+        stockCurrent4.setMaximumSize(buttonDimension);
         stockMenu.add(stockCurrent4);
 
         JButton stockCurrent9 = new JButton("Furnizori");
@@ -110,31 +110,29 @@ public class LeftPanel extends JPanel implements ActionListener {
         stockMenu.add(stockCurrent10);
 
         JButton idplates = new JButton("Placi");
-		idplates.setActionCommand("IDPLATES");
-		idplates.addActionListener(this);
-		idplates.setAlignmentX(0);
-		idplates.setMaximumSize(buttonDimension);
-		
-		JButton stacks = new JButton("Stive");
-		stacks.setActionCommand("STACKS");
-		stacks.addActionListener(this);
-		stacks.setAlignmentX(0);
-		stacks.setMaximumSize(buttonDimension);
-		
-		JButton stockCurrent5 = new JButton("Istoric procesat");
-		stockCurrent5.setActionCommand("PROCESSED_HISTORY");
-		stockCurrent5.addActionListener(this);
-		stockCurrent5.setAlignmentX(0);
-		stockCurrent5.setMaximumSize(buttonDimension);
-		
+        idplates.setActionCommand("IDPLATES");
+        idplates.addActionListener(this);
+        idplates.setAlignmentX(0);
+        idplates.setMaximumSize(buttonDimension);
 
-		
-		JButton settings = new JButton("Setari");
-		settings.setActionCommand("SETTINGS");
-		settings.addActionListener(this);
-		settings.setAlignmentX(0);
-		settings.setMaximumSize(buttonDimension);
-		
+        JButton stacks = new JButton("Stive");
+        stacks.setActionCommand("STACKS");
+        stacks.addActionListener(this);
+        stacks.setAlignmentX(0);
+        stacks.setMaximumSize(buttonDimension);
+
+        JButton stockCurrent5 = new JButton("Istoric procesat");
+        stockCurrent5.setActionCommand("PROCESSED_HISTORY");
+        stockCurrent5.addActionListener(this);
+        stockCurrent5.setAlignmentX(0);
+        stockCurrent5.setMaximumSize(buttonDimension);
+
+
+        JButton settings = new JButton("Setari");
+        settings.setActionCommand("SETTINGS");
+        settings.addActionListener(this);
+        settings.setAlignmentX(0);
+        settings.setMaximumSize(buttonDimension);
 
 
         List<JButton> cutPlansMenu = new ArrayList<>();
@@ -144,19 +142,19 @@ public class LeftPanel extends JPanel implements ActionListener {
         cutPlans.addActionListener(this);
         cutPlans.setAlignmentX(0);
         cutPlans.setMaximumSize(buttonDimension);
-		
-		JButton cutPlan = new JButton("Crearea plan taiere");
-		cutPlan.setActionCommand("CUT_PLAN");
-		cutPlan.addActionListener(this);
-		cutPlan.setAlignmentX(0);
-		cutPlan.setMaximumSize(buttonDimension);
+
+        JButton cutPlan = new JButton("Crearea plan taiere");
+        cutPlan.setActionCommand("CUT_PLAN");
+        cutPlan.addActionListener(this);
+        cutPlan.setAlignmentX(0);
+        cutPlan.setMaximumSize(buttonDimension);
         cutPlansMenu.add(cutPlan);
-		
-		JButton cutPlanHistory = new JButton("Planuri");
-		cutPlanHistory.setActionCommand("HISTORY_CUT_PLAN");
-		cutPlanHistory.addActionListener(this);
-		cutPlanHistory.setAlignmentX(0);
-		cutPlanHistory.setMaximumSize(buttonDimension);
+
+        JButton cutPlanHistory = new JButton("Planuri");
+        cutPlanHistory.setActionCommand("HISTORY_CUT_PLAN");
+        cutPlanHistory.addActionListener(this);
+        cutPlanHistory.setAlignmentX(0);
+        cutPlanHistory.setMaximumSize(buttonDimension);
         cutPlansMenu.add(cutPlanHistory);
 
         List<JButton> taiereMenu = new ArrayList<>();
@@ -187,18 +185,18 @@ public class LeftPanel extends JPanel implements ActionListener {
         optionCutDiagram.setAlignmentX(0);
         optionCutDiagram.setMaximumSize(buttonDimension);
         taiereMenu.add(optionCutDiagram);
-		
-		JButton logout = new JButton("Iesire");
-		logout.setActionCommand("LOGOUT");
-		logout.addActionListener(GUIUtil.main);
-		logout.setAlignmentX(0);
-		logout.setMaximumSize(buttonDimension);
-		
-		JButton products = new JButton("Produse");
-		products.setActionCommand("PRODUCTS");
-		products.addActionListener(this);
-		products.setAlignmentX(0);
-		products.setMaximumSize(buttonDimension);
+
+        JButton logout = new JButton("Iesire");
+        logout.setActionCommand("LOGOUT");
+        logout.addActionListener(GUIUtil.main);
+        logout.setAlignmentX(0);
+        logout.setMaximumSize(buttonDimension);
+
+        JButton products = new JButton("Produse");
+        products.setActionCommand("PRODUCTS");
+        products.addActionListener(this);
+        products.setAlignmentX(0);
+        products.setMaximumSize(buttonDimension);
 
         List<JButton> processedMenu = new ArrayList<>();
         subMenu.put(7, processedMenu);
@@ -208,7 +206,7 @@ public class LeftPanel extends JPanel implements ActionListener {
         processed.setAlignmentX(0);
         processed.setMaximumSize(buttonDimension);
         List<Machine> machines = MachineDAO.getMachines();
-        for(Machine machine: machines) {
+        for (Machine machine : machines) {
             JButton machineMenu = new JButton(machine.getLabel());
             machineMenu.setActionCommand("INVENTORY_MACHINE_" + machine.getId());
             machineMenu.addActionListener(this);
@@ -231,12 +229,12 @@ public class LeftPanel extends JPanel implements ActionListener {
         inventoryMachines.setAlignmentX(0);
         inventoryMachines.setMaximumSize(buttonDimension);
         inventoryMenu.add(inventoryMachines);
-		
-		JButton users = new JButton("Utilizatori");
-		users.setActionCommand("USERS");
-		users.addActionListener(this);
-		users.setAlignmentX(0);
-		users.setMaximumSize(buttonDimension);
+
+        JButton users = new JButton("Utilizatori");
+        users.setActionCommand("USERS");
+        users.addActionListener(this);
+        users.setAlignmentX(0);
+        users.setMaximumSize(buttonDimension);
 
         JButton db2 = new JButton("Fix database");
         db2.setActionCommand("FIX");
@@ -270,8 +268,8 @@ public class LeftPanel extends JPanel implements ActionListener {
         menu.add(inventory);
         menu.add(users);
         menu.add(settings);
-		if(1>9) {
-			/*add(receptie);
+        if (1 > 9) {
+            /*add(receptie);
 			add(Box.createVerticalStrut(3));
 			add(stockCurrent);
 			add(Box.createVerticalStrut(3));
@@ -282,13 +280,13 @@ public class LeftPanel extends JPanel implements ActionListener {
 			add(stockCurrent4);
 			add(Box.createVerticalStrut(3));*/
             menu.add(stock);
-			if(rights == 0) {
-				
-				//add(stockCurrent5);
-				//add(Box.createVerticalStrut(3));
+            if (rights == 0) {
+
+                //add(stockCurrent5);
+                //add(Box.createVerticalStrut(3));
                 menu.add(stockCurrent5);
                 menu.add(cutPlans);
-			}
+            }
 			
 			/*add(idplates);
 			add(Box.createVerticalStrut(3));
@@ -296,8 +294,8 @@ public class LeftPanel extends JPanel implements ActionListener {
 			add(Box.createVerticalStrut(3));*/
             menu.add(idplates);
             menu.add(stacks);
-		}
-if(rights == 0) {
+        }
+        if (rights == 0) {
 	/*add(settings);
 	add(Box.createVerticalStrut(3));
 	add(products);
@@ -313,8 +311,8 @@ if(rights == 0) {
    /* menu.add(products);
     menu.add(users);
     menu.add(settings);*/
-		}
-		if(rights == 0 || rights == 2) {
+        }
+        if (rights == 0 || rights == 2) {
 
 			/*add(mprocessed);
 			add(Box.createVerticalStrut(3));
@@ -324,219 +322,188 @@ if(rights == 0) {
             add(Box.createVerticalStrut(3));
             add(diameterAnalisis);
             add(Box.createVerticalStrut(3));*/
-		}
+        }
 
-		menu.add(db2);
-		menu.add(logout);
-		add(north, BorderLayout.NORTH);
-        add(center,BorderLayout.CENTER);
-        add(south,BorderLayout.SOUTH);
+        menu.add(db2);
+        menu.add(logout);
+        add(north, BorderLayout.NORTH);
+        add(center, BorderLayout.CENTER);
+        add(south, BorderLayout.SOUTH);
         refreshMenuLayout(menu.size());
-	}
+    }
 
     private void refreshMenuLayout(int openIndex) {
         north.removeAll();
         center.removeAll();
         south.removeAll();
         boolean open = false;
-        for(int index=0; index<menu.size();index++) {
-            if(index<=openIndex) {
+        for (int index = 0; index < menu.size(); index++) {
+            if (index <= openIndex) {
                 north.add(menu.get(index));
                 north.add(Box.createVerticalStrut(3));
             }
-            if(index == openIndex && subMenu.containsKey(index)) {
+            if (index == openIndex && subMenu.containsKey(index)) {
                 List<JButton> subMenuList = subMenu.get(index);
-                for(JButton button: subMenuList) {
+                for (JButton button : subMenuList) {
                     center.add(button);
                     center.add(Box.createVerticalStrut(3));
                 }
                 open = true;
             }
-           if(index>openIndex) {
-               if(open) {
-                   south.add(menu.get(index));
-                   south.add(Box.createVerticalStrut(3));
-               } else {
-                   north.add(menu.get(index));
-                   north.add(Box.createVerticalStrut(3));
-               }
-           }
+            if (index > openIndex) {
+                if (open) {
+                    south.add(menu.get(index));
+                    south.add(Box.createVerticalStrut(3));
+                } else {
+                    north.add(menu.get(index));
+                    north.add(Box.createVerticalStrut(3));
+                }
+            }
         }
         revalidate();
     }
-	
-	/* (non-Javadoc)
-	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-	 */
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		MainContainer parent = GUIUtil.container;
-		String command = e.getActionCommand();
-		if(command == null) {
-			return;
-		} else if(command.startsWith("MENU_GROUP_")) {
+
+    /* (non-Javadoc)
+     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+     */
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        MainContainer parent = GUIUtil.container;
+        String command = e.getActionCommand();
+        if (command == null) {
+            return;
+        } else if (command.startsWith("MENU_GROUP_")) {
             int index = Integer.valueOf(command.substring("MENU_GROUP_".length()));
             refreshMenuLayout(index);
-        }
-		else if(command.equals("RECEPTIE")) {
-			if(!parent.isFrameSet(GUIUtil.RECEPTIE_KEY))
-			{
-				ReceiceFrame frame = new ReceiceFrame();
-				parent.addFrame(frame, GUIUtil.RECEPTIE_KEY);
-			} 
-		}
-		else if(command.equals("STOCK")) {
-			if(!parent.isFrameSet(GUIUtil.STOCK_KEY))
-			{
-				CurrentStockFrame frame = new CurrentStockFrame();
-				parent.addFrame(frame, GUIUtil.STOCK_KEY);
-			} 
-		}
-		else if(command.equals("STACK_STOCK")) {
-			if(!parent.isFrameSet(GUIUtil.STACKS_STOCKS_KEY))
-			{
-				CurrentStackStockFrame frame = new CurrentStackStockFrame();
-				parent.addFrame(frame, GUIUtil.STACKS_STOCKS_KEY);
-			} 
-		}
-		else if(command.equals("TIP_STOCK")) {
-			if(!parent.isFrameSet(GUIUtil.TYPE_STOCKS_KEY))
-			{
-				CurrentTypeStockFrame frame = new CurrentTypeStockFrame();
-				parent.addFrame(frame, GUIUtil.TYPE_STOCKS_KEY);
-			} 
-		}
-		else if(command.equals("CLASS_STOCK")) {
-			if(!parent.isFrameSet(GUIUtil.CLASS_STOCKS_KEY))
-			{
-				CurrentClassStockFrame frame = new CurrentClassStockFrame();
-				parent.addFrame(frame, GUIUtil.CLASS_STOCKS_KEY);
-			} 
-		}
-		else if(command.equals("PROCESSED_HISTORY")) {
-			if(!parent.isFrameSet(GUIUtil.PROCESSED_HISTORY_KEY))
-			{
-				ProcessedHistoryFrame frame = new ProcessedHistoryFrame();
-				parent.addFrame(frame, GUIUtil.PROCESSED_HISTORY_KEY);
-			} 
-		}
-		else if(command.equals("IDPLATES")) {
-			if(!parent.isFrameSet(GUIUtil.IDPLATE_KEY))
-			{
-				IDPlateFrame frame = new IDPlateFrame();
-				parent.addFrame(frame, GUIUtil.IDPLATE_KEY);
-			} 
-		}
-		else if(command.equals("STACKS")) {
-			if(!parent.isFrameSet(GUIUtil.STACKS_KEY))
-			{
-				LumberStackFrame frame = new LumberStackFrame();
-				parent.addFrame(frame, GUIUtil.STACKS_KEY);
-			} 
-		}
-		else if(command.equals("SETTINGS")) {
-			if(!parent.isFrameSet(GUIUtil.SETTINGS_KEY))
-			{
-				SettingsFrame frame = new SettingsFrame();
-				parent.addFrame(frame, GUIUtil.SETTINGS_KEY);
-			} 
-		}
-		else if(command.equals("CUT_SIMULATION")) {
-			if(!parent.isFrameSet(GUIUtil.CUT_SIMULATION_KEY))
-			{
-				CutSimulationFrame frame = new CutSimulationFrame();
-				parent.addFrame(frame, GUIUtil.CUT_SIMULATION_KEY);
-			} 
-		}
-		else if(command.equals("MARK_PROCESSED")) {
-			List<IDPlate> plates = IDPlateDAO.getUsedPlates();
-			//plates.add(0, null);
-			//optPlates = new JComboBox<IDPlate>(plates.toArray(new IDPlate[0]));
-			optPlates = new SuggestionJComboBox<IDPlate>(plates.toArray(new IDPlate[0]));
-			optPlates.setPreferredSize(new Dimension(100, optPlates.getPreferredSize().height));
-			JPanel markPanel = new JPanel();
-			markPanel.setLayout(new BoxLayout(markPanel, BoxLayout.Y_AXIS));
-			JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-			panel.add(createLabel("Placuta:"));
-			panel.add(optPlates);
-			markPanel.add(panel);
-			panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-			panel.add(createLabel("Mesaj:"));
-			messageArea = new JTextArea(5, 20);
-			messageArea.setWrapStyleWord(true);
-			panel.add(new JScrollPane(messageArea));
-			markPanel.add(panel);
-			int rasp = JOptionPane.showOptionDialog(GUIUtil.container, markPanel, "Marcare bustean procesat", 
-					JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
-			if(rasp == JOptionPane.YES_OPTION) {
-				IDPlate plate = (IDPlate)optPlates.getSelectedItem();
-				String message = messageArea.getText();
-				if(plate == null) {
-					JOptionPane.showMessageDialog(GUIUtil.container, "Nu a fost selectat nici o placuta");
-					return;
-				}
-				LumberLogFilterDTO filter = new LumberLogFilterDTO();
-				List<Long> platesId = new ArrayList<>();
-				platesId.add(plate.getId());
-				filter.setIdPlates(platesId);
-				List<LumberLogStockEntry> logs = StockDAO.getCurrentLumbersLogs(filter);
-				if(logs.size()!=1) {
-					//err
-					return;
-				}
-				boolean status = LumberLogDAO.markProcessedLumberLog(logs.get(0).getLumberLog(), message);
-				if(!status) {
-					JOptionPane.showMessageDialog(GUIUtil.container, "Busteanul nu a fost marcat ca procesat", "Erroare", JOptionPane.ERROR_MESSAGE);
-				}
-				else {
-					JOptionPane.showMessageDialog(GUIUtil.container, "Busteanul a fost marcat.");	
-				}
-			}
-		}
-		else if(command.equals("CUT_PLAN")) {
-			if(!parent.isFrameSet(GUIUtil.CUT_PLAN_KEY))
-			{
-				CutPlanFrame frame = new CutPlanFrame();
-				parent.addFrame(frame, GUIUtil.CUT_PLAN_KEY);
-			} 
-		}
-		else if(command.equals("PRODUCTS")) {
-			if(!parent.isFrameSet(GUIUtil.PRODUCT_KEY))
-			{
-				ProductsFrame frame = new ProductsFrame();
-				parent.addFrame(frame, GUIUtil.PRODUCT_KEY);
-			} 
-		}
-		else if(command.equals("HISTORY_CUT_PLAN")) {
-			if(!parent.isFrameSet(GUIUtil.HISTORY_CUT_PLAN_KEY))
-			{
-				CutPlanHistoryFrame frame = new CutPlanHistoryFrame();
-				parent.addFrame(frame, GUIUtil.HISTORY_CUT_PLAN_KEY);
-			} 
-		}
-		else if(command.equals("USERS")) {
-			if(!parent.isFrameSet(GUIUtil.USERS_KEY))
-			{
-				UsersFrame frame = new UsersFrame();
-				parent.addFrame(frame, GUIUtil.USERS_KEY);
-			} 
-		}
-		else if(command.equals("SEE_CUT_OPTION_DIAGRAM")) {
-			CutOptionsTargetPanel.showDialog();
-		} else if(command.equals("FIX")) {
-            Connection con =null;
-            Statement stm =null;
+        } else if (command.equals("RECEPTIE")) {
+            if (!parent.isFrameSet(GUIUtil.RECEPTIE_KEY)) {
+                ReceiveFrame frame = new ReceiveFrame();
+                parent.addFrame(frame, GUIUtil.RECEPTIE_KEY);
+            }
+        } else if (command.equals("STOCK")) {
+            if (!parent.isFrameSet(GUIUtil.STOCK_KEY)) {
+                CurrentStockFrame frame = new CurrentStockFrame();
+                parent.addFrame(frame, GUIUtil.STOCK_KEY);
+            }
+        } else if (command.equals("STACK_STOCK")) {
+            if (!parent.isFrameSet(GUIUtil.STACKS_STOCKS_KEY)) {
+                CurrentStackStockFrame frame = new CurrentStackStockFrame();
+                parent.addFrame(frame, GUIUtil.STACKS_STOCKS_KEY);
+            }
+        } else if (command.equals("TIP_STOCK")) {
+            if (!parent.isFrameSet(GUIUtil.TYPE_STOCKS_KEY)) {
+                CurrentTypeStockFrame frame = new CurrentTypeStockFrame();
+                parent.addFrame(frame, GUIUtil.TYPE_STOCKS_KEY);
+            }
+        } else if (command.equals("CLASS_STOCK")) {
+            if (!parent.isFrameSet(GUIUtil.CLASS_STOCKS_KEY)) {
+                CurrentClassStockFrame frame = new CurrentClassStockFrame();
+                parent.addFrame(frame, GUIUtil.CLASS_STOCKS_KEY);
+            }
+        } else if (command.equals("PROCESSED_HISTORY")) {
+            if (!parent.isFrameSet(GUIUtil.PROCESSED_HISTORY_KEY)) {
+                ProcessedHistoryFrame frame = new ProcessedHistoryFrame();
+                parent.addFrame(frame, GUIUtil.PROCESSED_HISTORY_KEY);
+            }
+        } else if (command.equals("IDPLATES")) {
+            if (!parent.isFrameSet(GUIUtil.IDPLATE_KEY)) {
+                IDPlateFrame frame = new IDPlateFrame();
+                parent.addFrame(frame, GUIUtil.IDPLATE_KEY);
+            }
+        } else if (command.equals("STACKS")) {
+            if (!parent.isFrameSet(GUIUtil.STACKS_KEY)) {
+                LumberStackFrame frame = new LumberStackFrame();
+                parent.addFrame(frame, GUIUtil.STACKS_KEY);
+            }
+        } else if (command.equals("SETTINGS")) {
+            if (!parent.isFrameSet(GUIUtil.SETTINGS_KEY)) {
+                SettingsFrame frame = new SettingsFrame();
+                parent.addFrame(frame, GUIUtil.SETTINGS_KEY);
+            }
+        } else if (command.equals("CUT_SIMULATION")) {
+            if (!parent.isFrameSet(GUIUtil.CUT_SIMULATION_KEY)) {
+                CutSimulationFrame frame = new CutSimulationFrame();
+                parent.addFrame(frame, GUIUtil.CUT_SIMULATION_KEY);
+            }
+        } else if (command.equals("MARK_PROCESSED")) {
+            List<IDPlate> plates = IDPlateDAO.getUsedPlates();
+            //plates.add(0, null);
+            //optPlates = new JComboBox<IDPlate>(plates.toArray(new IDPlate[0]));
+            optPlates = new SuggestionJComboBox<IDPlate>(plates.toArray(new IDPlate[0]));
+            optPlates.setPreferredSize(new Dimension(100, optPlates.getPreferredSize().height));
+            JPanel markPanel = new JPanel();
+            markPanel.setLayout(new BoxLayout(markPanel, BoxLayout.Y_AXIS));
+            JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+            panel.add(createLabel("Placuta:"));
+            panel.add(optPlates);
+            markPanel.add(panel);
+            panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+            panel.add(createLabel("Mesaj:"));
+            messageArea = new JTextArea(5, 20);
+            messageArea.setWrapStyleWord(true);
+            panel.add(new JScrollPane(messageArea));
+            markPanel.add(panel);
+            int rasp = JOptionPane.showOptionDialog(GUIUtil.container, markPanel, "Marcare bustean procesat",
+                    JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
+            if (rasp == JOptionPane.YES_OPTION) {
+                IDPlate plate = (IDPlate) optPlates.getSelectedItem();
+                String message = messageArea.getText();
+                if (plate == null) {
+                    JOptionPane.showMessageDialog(GUIUtil.container, "Nu a fost selectat nici o placuta");
+                    return;
+                }
+                LumberLogFilterDTO filter = new LumberLogFilterDTO();
+                List<Long> platesId = new ArrayList<>();
+                platesId.add(plate.getId());
+                filter.setIdPlates(platesId);
+                List<LumberLogStockEntry> logs = StockDAO.getCurrentLumbersLogs(filter);
+                if (logs.size() != 1) {
+                    //err
+                    return;
+                }
+                boolean status = LumberLogDAO.markProcessedLumberLog(logs.get(0).getLumberLog(), message);
+                if (!status) {
+                    JOptionPane.showMessageDialog(GUIUtil.container, "Busteanul nu a fost marcat ca procesat", "Erroare", JOptionPane.ERROR_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(GUIUtil.container, "Busteanul a fost marcat.");
+                }
+            }
+        } else if (command.equals("CUT_PLAN")) {
+            if (!parent.isFrameSet(GUIUtil.CUT_PLAN_KEY)) {
+                CutPlanFrame frame = new CutPlanFrame();
+                parent.addFrame(frame, GUIUtil.CUT_PLAN_KEY);
+            }
+        } else if (command.equals("PRODUCTS")) {
+            if (!parent.isFrameSet(GUIUtil.PRODUCT_KEY)) {
+                ProductsFrame frame = new ProductsFrame();
+                parent.addFrame(frame, GUIUtil.PRODUCT_KEY);
+            }
+        } else if (command.equals("HISTORY_CUT_PLAN")) {
+            if (!parent.isFrameSet(GUIUtil.HISTORY_CUT_PLAN_KEY)) {
+                CutPlanHistoryFrame frame = new CutPlanHistoryFrame();
+                parent.addFrame(frame, GUIUtil.HISTORY_CUT_PLAN_KEY);
+            }
+        } else if (command.equals("USERS")) {
+            if (!parent.isFrameSet(GUIUtil.USERS_KEY)) {
+                UsersFrame frame = new UsersFrame();
+                parent.addFrame(frame, GUIUtil.USERS_KEY);
+            }
+        } else if (command.equals("SEE_CUT_OPTION_DIAGRAM")) {
+            CutOptionsTargetPanel.showDialog();
+        } else if (command.equals("FIX")) {
+            Connection con = null;
+            Statement stm = null;
             try {
                 con = DataAccess.getInstance().getDatabaseConnection();
                 con.setAutoCommit(true);
                 stm = con.createStatement();
                 stm.executeUpdate("alter table cutplanproduct add ProductVolume decimal(20,2);");
-            }catch(Exception eee)
-            {
-            }
-            finally
-            {
-                if(stm!=null) try{stm.close();}catch(Exception er){}
+            } catch (Exception eee) {
+            } finally {
+                if (stm != null) try {
+                    stm.close();
+                } catch (Exception er) {
+                }
             }
 
             try {
@@ -550,33 +517,30 @@ if(rights == 0) {
                         "                                 add Volume decimal(20,2) NOT NULL,\n" +
                         "                                 add Reallength decimal(10,2) NOT NULL,\n" +
                         "                                 add Realvolume decimal(20,2) NOT NULL;");
-            }catch(Exception eee)
-            {
-            }
-            finally
-            {
-                if(stm!=null) try{stm.close();}catch(Exception er){}
+            } catch (Exception eee) {
+            } finally {
+                if (stm != null) try {
+                    stm.close();
+                } catch (Exception er) {
+                }
             }
             JOptionPane.showMessageDialog(GUIUtil.container, "Baza de date a fost modificata.");
-        } else if(command.equals("CUT_PRODUCTS_ANALYSIS")) {
+        } else if (command.equals("CUT_PRODUCTS_ANALYSIS")) {
             LumberLogCutAnalysisPanel.showDialog();
-        } else if(command.equals("CUT_PRODUCTS_LUMBER_RADIUS_ANALYSIS")) {
+        } else if (command.equals("CUT_PRODUCTS_LUMBER_RADIUS_ANALYSIS")) {
             DiameterCutOptionsTargetPanel.showDialog();
-        } else if(command.equals("INVENTORY_MACHINES")) {
-            if(!parent.isFrameSet(GUIUtil.INVENTORY_MACHINE_KEY))
-            {
+        } else if (command.equals("INVENTORY_MACHINES")) {
+            if (!parent.isFrameSet(GUIUtil.INVENTORY_MACHINE_KEY)) {
                 InventoryMachineFrame frame = new InventoryMachineFrame();
                 parent.addFrame(frame, GUIUtil.INVENTORY_MACHINE_KEY);
             }
-        } else if(command.startsWith("INVENTORY_MACHINE_")) {
-            if(!parent.isFrameSet(GUIUtil.INVENTORY_MACHINE_SINGLE_KEY))
-            {
+        } else if (command.startsWith("INVENTORY_MACHINE_")) {
+            if (!parent.isFrameSet(GUIUtil.INVENTORY_MACHINE_SINGLE_KEY)) {
                 MachineProductionFrame frame = new MachineProductionFrame(Long.valueOf(command.substring("INVENTORY_MACHINE_".length())));
                 parent.addFrame(frame, GUIUtil.INVENTORY_MACHINE_SINGLE_KEY);
             }
         } else if (command.equals("SUPPLIER_STOCK")) {
-            if(!parent.isFrameSet(GUIUtil.SUPPLIER_STOCKS_KEY))
-            {
+            if (!parent.isFrameSet(GUIUtil.SUPPLIER_STOCKS_KEY)) {
                 SuppliersFrame frame = new SuppliersFrame();
                 parent.addFrame(frame, GUIUtil.SUPPLIER_STOCKS_KEY);
             }
@@ -586,15 +550,14 @@ if(rights == 0) {
                 parent.addFrame(frame, GUIUtil.LUMBER_TRANSPORT_STOCK_EY);
             }
         }
-	}
-	
-	private JLabel createLabel(String text) {
-		JLabel label = new JLabel();
-		label.setText(text);
-		label.setPreferredSize(new Dimension(100, label.getPreferredSize().height));
-		return label;
-	}
-	
+    }
 
-	
+    private JLabel createLabel(String text) {
+        JLabel label = new JLabel();
+        label.setText(text);
+        label.setPreferredSize(new Dimension(100, label.getPreferredSize().height));
+        return label;
+    }
+
+
 }

@@ -1,9 +1,9 @@
 package ro.barbos.gater.model;
 
+import ro.barbos.gater.data.METRIC;
+
 import java.io.Serializable;
 import java.util.List;
-
-import ro.barbos.gater.data.METRIC;
 
 public class LumberLog implements Serializable {
 	
@@ -23,9 +23,65 @@ public class LumberLog implements Serializable {
 	private Long lumberType;
 	private LumberStack stack;
 	private Long cutPlanId;
-	
-	/**
-	 * @return the id
+    private int status;
+    private Long supplierId;
+    private Long transportCertifiateId;
+    private Integer marginPercent;
+    private Double marginVolume;
+    private Double marginRealVolume;
+    private Long transportEntryId;
+
+
+    public Double getMarginRealVolume() {
+        return marginRealVolume;
+    }
+
+    public void setMarginRealVolume(Double marginRealVolume) {
+        this.marginRealVolume = marginRealVolume;
+    }
+
+    public Double getMarginVolume() {
+        return marginVolume;
+    }
+
+    public void setMarginVolume(Double marginVolume) {
+        this.marginVolume = marginVolume;
+    }
+
+    public Integer getMarginPercent() {
+        return marginPercent;
+    }
+
+    public void setMarginPercent(Integer marginPercent) {
+        this.marginPercent = marginPercent;
+    }
+
+    public Long getTransportCertifiateId() {
+        return transportCertifiateId;
+    }
+
+    public void setTransportCertifiateId(Long transportCertifiateId) {
+        this.transportCertifiateId = transportCertifiateId;
+    }
+
+    public Long getSupplierId() {
+        return supplierId;
+    }
+
+    public void setSupplierId(Long supplierId) {
+        this.supplierId = supplierId;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    /**
+     * @return the id
 	 */
 	public Long getId() {
 		return id;
@@ -193,7 +249,12 @@ public class LumberLog implements Serializable {
 	public void setRealVolume(Double realVolume) {
 		this.realVolume = realVolume;
 	}
-	
-	
 
+    public Long getTransportEntryId() {
+        return transportEntryId;
+    }
+
+    public void setTransportEntryId(Long transportEntryId) {
+        this.transportEntryId = transportEntryId;
+    }
 }

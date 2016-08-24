@@ -1,0 +1,125 @@
+package ro.barbos.gater.model;
+
+import ro.barbos.gater.data.MetricTools;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+/**
+ * Created by radu on 8/22/2016.
+ */
+public class LumberLogTransportEntry {
+    private Long id;
+    private Date entryDate;
+    private int lumberLogCount = 0;
+    private Long userId;
+    private Boolean finished;
+    private Double volume = 0D;
+    private Double marginVolume = 0D;
+    private Long supplierId;
+    private Long certificateId;
+    private List<LumberLog> lumberLogs = new ArrayList<>();
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Date getEntryDate() {
+        return entryDate;
+    }
+
+    public void setEntryDate(Date entryDate) {
+        this.entryDate = entryDate;
+    }
+
+    public Integer getLumberLogCount() {
+        return lumberLogCount;
+    }
+
+    public void setLumberLogCount(Integer lumberLogCount) {
+        this.lumberLogCount = lumberLogCount;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
+    public Boolean getFinished() {
+        return finished;
+    }
+
+    public void setFinished(Boolean finished) {
+        this.finished = finished;
+    }
+
+    public Double getVolume() {
+        return volume;
+    }
+
+    public void setVolume(Double volume) {
+        this.volume = volume;
+    }
+
+    public Double getMarginVolume() {
+        return marginVolume;
+    }
+
+    public void setMarginVolume(Double marginVolume) {
+        this.marginVolume = marginVolume;
+    }
+
+    public Long getSupplierId() {
+        return supplierId;
+    }
+
+    public void setSupplierId(Long supplierId) {
+        this.supplierId = supplierId;
+    }
+
+    public Long getCertificateId() {
+        return certificateId;
+    }
+
+    public void setCertificateId(Long certificateId) {
+        this.certificateId = certificateId;
+    }
+
+    public List<Long> getLumberLogIds() {
+        List<Long> result = new ArrayList<>();
+        for (LumberLog lumberLog : lumberLogs) {
+            result.add(lumberLog.getId());
+        }
+        return result;
+    }
+
+    public void setLumberLogs(List<LumberLog> lumberLogs) {
+        this.lumberLogs = lumberLogs;
+        for (LumberLog lumberLog : lumberLogs) {
+            addLumberLog(lumberLog);
+        }
+    }
+
+    public void addLumberLog(LumberLog lumberLog) {
+        volume += MetricTools.toMeterCubs(lumberLog.getVolume());
+        marginVolume += MetricTools.toMeterCubs(lumberLog.getMarginVolume());
+        lumberLogCount++;
+        lumberLogs.add(lumberLog);
+    }
+
+    public void removeLumberLog(LumberLog lumberLog) {
+        volume -= MetricTools.toMeterCubs(lumberLog.getVolume());
+        marginVolume -= MetricTools.toMeterCubs(lumberLog.getMarginVolume());
+        lumberLogCount--;
+        lumberLogs.remove(lumberLog);
+    }
+
+}
