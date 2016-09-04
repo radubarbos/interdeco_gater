@@ -96,6 +96,8 @@ CREATE TABLE LumberLogTransportEntry (
   EntryDate datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   UserId int NOT NULL,
   Status int default 0,
+  Cost decimal(10,2) default 0,
+  CostConfig text,
   PRIMARY KEY (`Id`),
   CONSTRAINT `transportentry_user` FOREIGN KEY (`UserId`) REFERENCES `user` (`ID`)
 ) DEFAULT CHARSET=utf8;

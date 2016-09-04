@@ -499,6 +499,7 @@ public class ReceiveFrame extends GeneralFrame implements ActionListener {
                 entry.setFinished(false);
             }
             entry.setLumberLogs(pendingLogs);
+            entry.addLumberLogs(pendingLogs);
             isNew = false;
         }
     }

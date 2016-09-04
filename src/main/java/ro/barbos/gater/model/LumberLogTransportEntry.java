@@ -20,6 +20,8 @@ public class LumberLogTransportEntry {
     private Long supplierId;
     private Long certificateId;
     private List<LumberLog> lumberLogs = new ArrayList<>();
+    private Double cost = 0D;
+    private String costConfig;
 
     public Long getId() {
         return id;
@@ -93,6 +95,14 @@ public class LumberLogTransportEntry {
         this.certificateId = certificateId;
     }
 
+    public Double getCost() {
+        return cost;
+    }
+
+    public void setCost(Double cost) {
+        this.cost = cost;
+    }
+
     public List<Long> getLumberLogIds() {
         List<Long> result = new ArrayList<>();
         for (LumberLog lumberLog : lumberLogs) {
@@ -103,6 +113,21 @@ public class LumberLogTransportEntry {
 
     public void setLumberLogs(List<LumberLog> lumberLogs) {
         this.lumberLogs = lumberLogs;
+    }
+
+    public List<LumberLog> getLumberLogs() {
+        return lumberLogs;
+    }
+
+    public String getCostConfig() {
+        return costConfig;
+    }
+
+    public void setCostConfig(String costConfig) {
+        this.costConfig = costConfig;
+    }
+
+    public void addLumberLogs(List<LumberLog> lumberLogs) {
         for (LumberLog lumberLog : lumberLogs) {
             addLumberLog(lumberLog);
         }
