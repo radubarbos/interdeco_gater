@@ -480,4 +480,44 @@ public class StockDAO {
 
         return results;
     }
+
+    public static List<LengthStockDTO> getCurrentStockLengthInfo() {
+        Logger logger = Logger.getLogger("dao");
+
+        List<LengthStockDTO> results = null;
+        StringBuilder sql = new StringBuilder("select l.length, count(l.id) as lumbertotal, sum((l.volume/1000000000)) as volume from lumberlog l where l.Status=0 group by l.length order by volume desc");
+
+        Connection con = null;
+        Statement stm = null;
+        ResultSet rs = null;
+        try {
+            con = DataAccess.getInstance().getDatabaseConnection();
+            con.setAutoCommit(true);
+            stm = con.createStatement();
+            logger.fine(sql.toString());
+            rs = stm.executeQuery(sql.toString());
+            results = new ArrayList<>();
+            while (rs.next()) {
+                LengthStockDTO stockDTO = new LengthStockDTO();
+                stockDTO.setLength(rs.getDouble(1));
+                stockDTO.setTotalLumberLogs(rs.getLong(2));
+                stockDTO.setTotalVolume(rs.getDouble(3));
+                results.add(stockDTO);
+            }
+        } catch (Exception e) {
+            logger.warning(e.getMessage());
+            logger.log(Level.INFO, "Error", e);
+        } finally {
+            if (rs != null) try {
+                rs.close();
+            } catch (Exception e) {
+            }
+            if (stm != null) try {
+                stm.close();
+            } catch (Exception e) {
+            }
+        }
+
+        return results;
+    }
 }

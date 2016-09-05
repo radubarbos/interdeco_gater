@@ -16,6 +16,7 @@ public class GUIUtil {
 	public static String STACKS_STOCKS_KEY="stacksstock";
 	public static String TYPE_STOCKS_KEY="typestock";
     public static String SUPPLIER_STOCK_KEY = "supplierstock";
+    public static String LENGTH_STOCK_KEY = "lengthstock";
     public static String CLASS_STOCKS_KEY="classstock";
 	public static String SUPPLIER_STOCKS_KEY="supplierstock";
     public static String LUMBER_TRANSPORT_STOCK_EY = "lumber_transport_stock";
