@@ -1,33 +1,19 @@
 package ro.barbos.gui.stock;
 
-import java.awt.BorderLayout;
-import java.awt.Cursor;
-import java.awt.FlowLayout;
-import java.awt.Image;
-import java.awt.Window;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
-import java.text.NumberFormat;
-import java.util.List;
-
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JFileChooser;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
-
 import ro.barbos.gater.dao.StockDAO;
 import ro.barbos.gater.dto.TypeStockDTO;
-import ro.barbos.gui.ConfigLocalManager;
 import ro.barbos.gui.GUITools;
 import ro.barbos.gui.GUIUtil;
 import ro.barbos.gui.GeneralFrame;
 import ro.barbos.gui.renderer.GeneralTableRenderer;
 import ro.barbos.gui.tablemodel.TypeStockModel;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.util.List;
 
 public class CurrentTypeStockFrame extends GeneralFrame implements
 		ActionListener {
@@ -35,8 +21,6 @@ public class CurrentTypeStockFrame extends GeneralFrame implements
 	private static final long serialVersionUID = 1L;
 	TypeStockModel stockModel;
 	JTable stockTable;
-
-	private NumberFormat numberFormatter = NumberFormat.getInstance(ConfigLocalManager.locale);
 
 	public CurrentTypeStockFrame() {
 		super();
@@ -46,9 +30,6 @@ public class CurrentTypeStockFrame extends GeneralFrame implements
 		setMaximizable(true);
 		setIconifiable(true);
 		setClosable(true);
-
-		numberFormatter.setMaximumFractionDigits(2);
-		numberFormatter.setMinimumFractionDigits(2);
 
 		JPanel toolbar = new JPanel(new FlowLayout(FlowLayout.LEADING));
 

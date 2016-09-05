@@ -116,6 +116,13 @@ public class LeftPanel extends JPanel implements ActionListener {
         stockCurrent11.setMaximumSize(buttonDimension);
         stockMenu.add(stockCurrent11);
 
+        JButton stockCurrent12 = new JButton("Stock per furnizor");
+        stockCurrent12.setActionCommand("SUPPLIER_STOCK");
+        stockCurrent12.addActionListener(this);
+        stockCurrent12.setAlignmentX(0);
+        stockCurrent12.setMaximumSize(buttonDimension);
+        stockMenu.add(stockCurrent12);
+
         JButton idplates = new JButton("Placi");
         idplates.setActionCommand("IDPLATES");
         idplates.addActionListener(this);
@@ -401,6 +408,11 @@ public class LeftPanel extends JPanel implements ActionListener {
             if (!parent.isFrameSet(GUIUtil.TYPE_STOCKS_KEY)) {
                 CurrentTypeStockFrame frame = new CurrentTypeStockFrame();
                 parent.addFrame(frame, GUIUtil.TYPE_STOCKS_KEY);
+            }
+        } else if (command.equals("SUPPLIER_STOCK")) {
+            if (!parent.isFrameSet(GUIUtil.SUPPLIER_STOCK_KEY)) {
+                SupplierStockFrame frame = new SupplierStockFrame();
+                parent.addFrame(frame, GUIUtil.SUPPLIER_STOCK_KEY);
             }
         } else if (command.equals("CLASS_STOCK")) {
             if (!parent.isFrameSet(GUIUtil.CLASS_STOCKS_KEY)) {

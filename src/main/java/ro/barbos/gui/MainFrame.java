@@ -43,9 +43,9 @@ public class MainFrame extends JFrame implements WindowListener, ActionListener 
 		
 		
 		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
-		setSize((int)(screen.width*0.75),(int)(screen.height*0.80));
-		
-		//create obj
+        setSize((int) (screen.width * 0.75), (int) (screen.height * 0.90));
+
+        //create obj
 		MainContainer container = new MainContainer();
 		GUIUtil.container = container;
 		getContentPane().add(container,BorderLayout.CENTER);
