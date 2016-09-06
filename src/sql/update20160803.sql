@@ -87,8 +87,10 @@ alter table lumberlog add CONSTRAINT `lumberlog_supplier_fk` FOREIGN KEY (`Suppl
 alter table lumberlog add TransportCertificateId bigint NULL;
 #alter table lumberlog add CONSTRAINT `lumberlog_transportcertificate_fk` FOREIGN KEY (`TransportCertificateId`) REFERENCES `LumberLogTransportCertificate` (`Id`);
 alter table lumberlog add Margin int default 0;
-alter table lumberlog add MarginVolume decimal(10,2);
-alter table lumberlog add RealMarginVolume decimal(10,2);
+alter table lumberlog add MarginVolume decimal(20,2);
+alter table lumberlog add RealMarginVolume decimal(20,2);
+
+alter table lumberlog_processed add reallength decimal(10,2), add realvolume decimal(20,2), add status int, add SupplierId bigint, add TransportCertificateId bigint,add  add Margin int, add MarginVolume decimal(20,2),add RealMarginVolume decimal (20,2), add TransportEntryId bigint;
 
 
 CREATE TABLE LumberLogTransportEntry (

@@ -154,11 +154,11 @@ public class LumberLogDAO {
 	public static boolean markProcessedLumberLog(LumberLog lumberLog, String message) {
 		Logger logger = Logger.getLogger("dao");
 		boolean status = false;
-		
-		StringBuilder selectSql = new StringBuilder("select id, small_diameter, medium_diameter, big_diameter, length, volume, lumbertype, lumberclass, stack, idplate, planid from lumberlog where id = ").append(lumberLog.getId());
-		StringBuilder deleteSql = new StringBuilder("delete from lumberlog where id = ").append(lumberLog.getId());
-		StringBuilder insertSql = new StringBuilder("insert into lumberlog_processed(userid, small_diameter, medium_diameter, big_diameter, length, volume, idlumbertype, idlumberclass, idstack, idplate, message, planId) values (");
-		insertSql.append(ConfigLocalManager.currentUser.getID());
+
+        StringBuilder selectSql = new StringBuilder("select id, small_diameter, medium_diameter, big_diameter, length, volume, lumbertype, lumberclass, stack, idplate, planid, reallength, realvolume, status, SupplierId, TransportCertificateId, margin, MarginVolume, RealMarginVolume, TransportEntryId  from lumberlog where id = ").append(lumberLog.getId());
+        StringBuilder deleteSql = new StringBuilder("delete from lumberlog where id = ").append(lumberLog.getId());
+        StringBuilder insertSql = new StringBuilder("insert into lumberlog_processed(userid, small_diameter, medium_diameter, big_diameter, length, volume, idlumbertype, idlumberclass, idstack, idplate, message, planId, reallength, realvolume, status, SupplierId, TransportCertificateId, Margin, MarginVolume, RealMarginVolume, TransportEntryId) values (");
+        insertSql.append(ConfigLocalManager.currentUser.getID());
 		
 		StringBuilder cutPlan = new StringBuilder(" select PlanId, Percentage from  CutPlanLumberLogDiagram cp inner join CutPlan plan on  cp.PlanId = plan.id where plan.status = 0 and cp.LumberLogIDPlate = '").append(DataAccess.escapeString(lumberLog.getPlate().getLabel())).append("'");
 		StringBuilder checkLastFromPlan = new StringBuilder("select count(*) from lumberlog where planId = ");
@@ -190,8 +190,19 @@ public class LumberLogDAO {
 	    		insertSql.append(",").append(rs.getInt(9));
 	    		insertSql.append(",").append(rs.getInt(10));
 	    		insertSql.append(",'").append(DataAccess.escapeString(message)).append("'");
-	    		insertSql.append(",").append(rs.getInt(11)).append(")");
-	    	}
+                int planId = rs.getInt(11);
+                insertSql.append(",").append(planId);
+                insertSql.append(",").append(rs.getDouble(12));//reallength
+                insertSql.append(",").append(rs.getDouble(13));//realvolume
+                insertSql.append(",").append(rs.getInt(14));//status
+                insertSql.append(",").append(rs.getLong(15));//supplierid
+                insertSql.append(",").append(rs.getLong(16));//transport certificate id
+                insertSql.append(",").append(rs.getInt(17));//margin
+                insertSql.append(",").append(rs.getDouble(18));//marginvolume
+                insertSql.append(",").append(rs.getDouble(19));//realmarginvolume
+                insertSql.append(",").append(rs.getLong(20));//transport entry id
+                insertSql.append(")");
+            }
 	    	logger.info(insertSql.toString());
 	    	int insertRez = stm.executeUpdate(insertSql.toString());
 	    	logger.info(deleteSql.toString());
