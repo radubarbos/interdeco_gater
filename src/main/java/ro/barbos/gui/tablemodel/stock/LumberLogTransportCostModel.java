@@ -120,7 +120,7 @@ public class LumberLogTransportCostModel extends GeneralAbstractTableModel {
             if (valueCell != null) {
                 valueCell.setCost(cellCost);
                 matrix.calculateTotalCost();
-                parent.costChanged(matrix.getTotalCost());
+                parent.costChanged(matrix.getMediumCost());
             }
         }
     }

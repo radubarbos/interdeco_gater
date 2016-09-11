@@ -96,7 +96,7 @@ public class LeftPanel extends JPanel implements ActionListener {
         stockMenu.add(stockCurrent4);
 
         JButton stockCurrent9 = new JButton("Furnizori");
-        stockCurrent9.setActionCommand("SUPPLIER_STOCK");
+        stockCurrent9.setActionCommand("SUPPLIERS_KEY");
         stockCurrent9.addActionListener(this);
         stockCurrent9.setAlignmentX(0);
         stockCurrent9.setMaximumSize(buttonDimension);
@@ -109,14 +109,14 @@ public class LeftPanel extends JPanel implements ActionListener {
         stockCurrent10.setMaximumSize(buttonDimension);
         stockMenu.add(stockCurrent10);
 
-        JButton stockCurrent11 = new JButton("Recepti");
+        JButton stockCurrent11 = new JButton("Situatii receptii");
         stockCurrent11.setActionCommand("TRANSPORT_STOCK_ENTRIES");
         stockCurrent11.addActionListener(this);
         stockCurrent11.setAlignmentX(0);
         stockCurrent11.setMaximumSize(buttonDimension);
         stockMenu.add(stockCurrent11);
 
-        JButton stockCurrent12 = new JButton("Stock per furnizor");
+        /*JButton stockCurrent12 = new JButton("Stock per furnizor");
         stockCurrent12.setActionCommand("SUPPLIER_STOCK");
         stockCurrent12.addActionListener(this);
         stockCurrent12.setAlignmentX(0);
@@ -128,7 +128,7 @@ public class LeftPanel extends JPanel implements ActionListener {
         stockCurrent13.addActionListener(this);
         stockCurrent13.setAlignmentX(0);
         stockCurrent13.setMaximumSize(buttonDimension);
-        stockMenu.add(stockCurrent13);
+        stockMenu.add(stockCurrent13);*/
 
         JButton idplates = new JButton("Placi");
         idplates.setActionCommand("IDPLATES");
@@ -345,7 +345,7 @@ public class LeftPanel extends JPanel implements ActionListener {
             add(Box.createVerticalStrut(3));*/
         }
 
-        menu.add(db2);
+        //menu.add(db2);
         menu.add(logout);
         add(north, BorderLayout.NORTH);
         add(center, BorderLayout.CENTER);
@@ -570,10 +570,10 @@ public class LeftPanel extends JPanel implements ActionListener {
                 MachineProductionFrame frame = new MachineProductionFrame(Long.valueOf(command.substring("INVENTORY_MACHINE_".length())));
                 parent.addFrame(frame, GUIUtil.INVENTORY_MACHINE_SINGLE_KEY);
             }
-        } else if (command.equals("SUPPLIER_STOCK")) {
-            if (!parent.isFrameSet(GUIUtil.SUPPLIER_STOCKS_KEY)) {
+        } else if (command.equals("SUPPLIERS_KEY")) {
+            if (!parent.isFrameSet(GUIUtil.SUPPLIERS_KEY)) {
                 SuppliersFrame frame = new SuppliersFrame();
-                parent.addFrame(frame, GUIUtil.SUPPLIER_STOCKS_KEY);
+                parent.addFrame(frame, GUIUtil.SUPPLIERS_KEY);
             }
         } else if (command.equals("LUMBER_TRANSPORT_STOCK")) {
             if (!parent.isFrameSet(GUIUtil.LUMBER_TRANSPORT_STOCK_EY)) {

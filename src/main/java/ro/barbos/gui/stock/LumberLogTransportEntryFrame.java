@@ -154,7 +154,7 @@ public class LumberLogTransportEntryFrame extends GeneralFrame implements Action
     public void setNewCost(LumberLogTransportEntryCostMatrix matrix, LumberLogTransportEntry entry) {
         GsonBuilder builder = new GsonBuilder();
         String matrixJson = builder.create().toJson(matrix);
-        entry.setCost(matrix.getTotalCost());
+        entry.setCost(matrix.getMediumCost());
         entry.setCostConfig(matrixJson);
         entry.setFinished(true);
         boolean status = new LumberLogTransportEntryDAO().update(entry);

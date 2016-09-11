@@ -7,7 +7,6 @@ import ro.barbos.gater.dao.SupplierDAO;
 import ro.barbos.gater.data.LumberLogUtil;
 import ro.barbos.gater.model.*;
 import ro.barbos.gater.model.validation.LumberLogTransportEntryValidator;
-import ro.barbos.gater.stock.StockSettings;
 import ro.barbos.gui.*;
 import ro.barbos.gui.renderer.ReceiveTableRenderer;
 import ro.barbos.gui.supplier.SuppliersPanel;
@@ -267,7 +266,7 @@ public class ReceiveFrame extends GeneralFrame implements ActionListener {
             buttonCancel.addActionListener(this);
             addLogLumberPanel = new AddLogLumberPanel(null);
             JScrollPane scrollPane = new JScrollPane(addLogLumberPanel);
-            scrollPane.setPreferredSize(new Dimension(addLogLumberPanel.getPreferredSize().width + 20, 250));
+            scrollPane.setPreferredSize(new Dimension(addLogLumberPanel.getPreferredSize().width + 20, 320));
             JOptionPane.showOptionDialog(GUIUtil.container, scrollPane, "Adaugare bustean",
                     JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, new JButton[]{buttonOk, buttonCancel}, buttonCancel);
         } else if (command.equals("CANCEL_ADD_LOG")) {
@@ -442,7 +441,6 @@ public class ReceiveFrame extends GeneralFrame implements ActionListener {
             }
 
             lumberLog.setStatus(-1);
-            lumberLog.setMarginPercent(StockSettings.LUMBER_LOG_MARGIN);
             LumberLogUtil.calculateVolume(lumberLog);
             lumberLog.setRealLength(lumberLog.getLength().longValue());
             lumberLog.setRealVolume(lumberLog.getVolume());
@@ -455,6 +453,9 @@ public class ReceiveFrame extends GeneralFrame implements ActionListener {
             if (entry.getCertificateId() != null) {
                 lumberLog.setTransportCertifiateId(entry.getCertificateId());
             }
+            //adjust volume
+            lumberLog.setVolume(lumberLog.getVolume() - lumberLog.getMarginVolume());
+            lumberLog.setRealVolume(lumberLog.getRealVolume() - lumberLog.getMarginRealVolume());
 
 
             boolean status = LumberLogDAO.saveLumberLog(lumberLog, addLogLumberPanel.getLumberStack(), stockEntry);
@@ -471,13 +472,13 @@ public class ReceiveFrame extends GeneralFrame implements ActionListener {
     private void addLumberLog(LumberLog lumberLog) {
         entry.addLumberLog(lumberLog);
         totalCubajLabel.setText("Total cubaj: " + numberFormatter.format(entry.getVolume()) + " metri cubi");
-        marginCubajLabel.setText("Total cubaj: " + numberFormatter.format(entry.getMarginVolume()) + " metri cubi");
+        marginCubajLabel.setText("Coaja cubaj: " + numberFormatter.format(entry.getMarginVolume()) + " metri cubi");
     }
 
     private void removeLumberLog(LumberLog lumberLog) {
         entry.removeLumberLog(lumberLog);
         totalCubajLabel.setText("Total cubaj: " + numberFormatter.format(entry.getVolume()) + " metri cubi");
-        marginCubajLabel.setText("Total cubaj: " + numberFormatter.format(entry.getMarginVolume()) + " metri cubi");
+        marginCubajLabel.setText("Coaja cubaj: " + numberFormatter.format(entry.getMarginVolume()) + " metri cubi");
     }
 
     private void initData() {
@@ -498,7 +499,6 @@ public class ReceiveFrame extends GeneralFrame implements ActionListener {
                 }
                 entry.setFinished(false);
             }
-            entry.setLumberLogs(pendingLogs);
             entry.addLumberLogs(pendingLogs);
             isNew = false;
         }

@@ -19,6 +19,7 @@ public class LumberLogTransportEntryCostMatrix {
     private transient Set<Integer> types = new TreeSet<>();
 
     private transient Double totalCost = 0D;
+    private transient Double mediumCost = 0D;
 
 
     public void init(LumberLogTransportEntry entry) {
@@ -93,11 +94,23 @@ public class LumberLogTransportEntryCostMatrix {
 
     public double calculateTotalCost() {
         totalCost = 0D;
+        mediumCost = 0D;
+        double totalVolume = 0;
         for (Map.Entry<LumberLogTransportEntryCostMatrixKey, LumberLogTransportEntryCostMatrixValue> cell : cellData.entrySet()) {
             totalCost += cell.getValue().getVolumeCost();
+            totalVolume += cell.getValue().getVolume();
         }
         totalCost /= 100;
+        mediumCost = (totalCost / totalVolume) * totalVolume;
         return totalCost;
+    }
+
+    public Double getMediumCost() {
+        return mediumCost;
+    }
+
+    public void setMediumCost(Double mediumCost) {
+        this.mediumCost = mediumCost;
     }
 }
 

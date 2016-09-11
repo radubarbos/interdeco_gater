@@ -128,9 +128,12 @@ public class LumberLogTransportEntry {
     }
 
     public void addLumberLogs(List<LumberLog> lumberLogs) {
-        for (LumberLog lumberLog : lumberLogs) {
-            addLumberLog(lumberLog);
+        for (int i = 0; i < lumberLogs.size(); i++) {
+            addLumberLog(lumberLogs.get(i));
         }
+      /*  for (LumberLog lumberLog : lumberLogs) {
+            addLumberLog(lumberLog);
+        }*/
     }
 
     public void addLumberLog(LumberLog lumberLog) {

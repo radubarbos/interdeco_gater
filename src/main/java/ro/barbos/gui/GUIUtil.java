@@ -19,6 +19,7 @@ public class GUIUtil {
     public static String LENGTH_STOCK_KEY = "lengthstock";
     public static String CLASS_STOCKS_KEY="classstock";
 	public static String SUPPLIER_STOCKS_KEY="supplierstock";
+    public static String SUPPLIERS_KEY = "suppliers";
     public static String LUMBER_TRANSPORT_STOCK_EY = "lumber_transport_stock";
     public static String TRANSPORT_STOCK_ENTRIES_KEY = "TRANSPORT_STOCK_ENTRIES";
     public static String PROCESSED_HISTORY_KEY="prochistory";

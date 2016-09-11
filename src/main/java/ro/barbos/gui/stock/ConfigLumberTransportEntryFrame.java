@@ -77,7 +77,7 @@ public class ConfigLumberTransportEntryFrame extends JPanel implements Component
         JLabel tempLabel = new JLabel("Receptia din data de " + format.format(entry.getEntryDate()));
         tempLabel.setFont(new Font("arial", Font.BOLD, 16));
         infoPanel.add(tempLabel);
-        totalCostLabel = new JLabel("Cost total : " + numberFormatter.format(matrix.getTotalCost()) + " RON");
+        totalCostLabel = new JLabel("Cost mediu : " + numberFormatter.format(matrix.getTotalCost()) + " RON");
         totalCostLabel.setFont(new Font("arial", Font.BOLD, 16));
         infoPanel.add(totalCostLabel);
         north.add(infoPanel, BorderLayout.SOUTH);
@@ -130,7 +130,7 @@ public class ConfigLumberTransportEntryFrame extends JPanel implements Component
     }
 
     public void costChanged(double cost) {
-        totalCostLabel.setText("Cost total : " + numberFormatter.format(cost) + " RON");
+        totalCostLabel.setText("Cost mediu : " + numberFormatter.format(cost) + " RON");
     }
 
 

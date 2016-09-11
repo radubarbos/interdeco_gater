@@ -136,8 +136,14 @@ public class AddLogLumberPanel extends JPanel implements ActionListener, Propert
 		classCombo.setPreferredSize(new Dimension(80, classCombo.getPreferredSize().height));
 		panel.add(classCombo);
 		add(panel);
-		
-		setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 20));
+
+        panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        panel.add(GUIFactory.createLabel("Procent margine:", 180));
+        JFormattedTextField margin = GUIFactory.createNumberInput(StockSettings.LUMBER_LOG_MARGIN.longValue(), 0L, 1000000L, 80);
+        panel.add(margin);
+        add(panel);
+
+        setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 20));
 	}
 	
 	
@@ -283,8 +289,16 @@ public class AddLogLumberPanel extends JPanel implements ActionListener, Propert
 			status = false;
 			classLabel.setForeground(Color.red);
 		}
-		
-		if(!status) {
+
+        JLabel marginLabel = (JLabel) ((JPanel) getComponent(7)).getComponent(0);
+        JFormattedTextField margin = (JFormattedTextField) ((JPanel) getComponent(7)).getComponent(1);
+        marginLabel.setForeground(Color.black);
+        if (margin.getValue() == null || (Long) margin.getValue() < 0) {
+            status = false;
+            marginLabel.setForeground(Color.red);
+        }
+
+        if(!status) {
 			return null;
 		}
 		
@@ -332,8 +346,10 @@ public class AddLogLumberPanel extends JPanel implements ActionListener, Propert
 		
 		JComboBox<String> classCombo = (JComboBox<String>)((JPanel)getComponent(6)).getComponent(1);
 		lumberLog.setLumberClass((long)classCombo.getSelectedIndex());
-		
-		//extra validation
+
+        lumberLog.setMarginPercent(((Long) margin.getValue()).intValue());
+
+        //extra validation
 		String warning = "";
 		if(lengthValue < StockSettings.RECEIVE_MIN_LENGTH) {
 			warning += "Lungime i mai mica ca limita admisa" + System.lineSeparator();

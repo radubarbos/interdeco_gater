@@ -4,9 +4,8 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 
 
-
-public class DataAccess 
-{
+public class
+        DataAccess {
 
 	private static DataAccess instance;
 	private String server="127.0.0.1";

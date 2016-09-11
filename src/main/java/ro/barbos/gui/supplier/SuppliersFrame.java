@@ -186,7 +186,7 @@ public class SuppliersFrame extends GeneralFrame implements ActionListener {
 
     @Override
     public String getFrameCode() {
-        return GUIUtil.SUPPLIER_STOCKS_KEY;
+        return GUIUtil.SUPPLIERS_KEY;
     }
 
     @Override
