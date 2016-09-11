@@ -408,7 +408,7 @@ public class ReceiveFrame extends GeneralFrame implements ActionListener {
                 return;
             }
             entry.setFinished(true);
-            boolean status = new LumberLogTransportEntryDAO().update(entry);
+            boolean status = new LumberLogTransportEntryDAO().update(entry, null);
             if (!status) {
                 showMessage("A aparut o eroare. Reincercati.");
             } else {

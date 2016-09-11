@@ -4,20 +4,24 @@ import ro.barbos.gater.data.METRIC;
 import ro.barbos.gater.data.MetricTools;
 import ro.barbos.gater.model.LumberLog;
 import ro.barbos.gater.model.LumberLogStockEntry;
+import ro.barbos.gui.ConfigLocalManager;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 public class FullStockModel extends StockModel {
-	
-    String[] columns = {"Stiva", "Placa", "Diametru mic", "Diametru mare", "Volum", "Lungime", "Tip", "Clasa", "Operator", "Data", "Adaugat plan"};
-	
-	public int currentPage =0;
+
+    String[] columns = {"Stiva", "Placa", "Diametru mic", "Diametru mare", "Volum", "Lungime", "Tip", "Clasa", "Operator", "Data", "Adaugat plan", "Cost unitate m.cub"};
+
+    public int currentPage =0;
 	public int count =0;
 	public int pages =0;
 	public int pageCount=100;
-	
-	private List<StockRecord> records = new ArrayList<StockRecord>(); 
+
+    private NumberFormat numberFormatter = NumberFormat.getInstance(ConfigLocalManager.locale);
+
+    private List<StockRecord> records = new ArrayList<StockRecord>();
 	double volume = 0D;
 	
 	/* (non-Javadoc)
@@ -52,7 +56,8 @@ public class FullStockModel extends StockModel {
 	 */
 	@Override
 	public Object getValueAt(int row, int col) {
-		StockRecord record = records.get(row);
+        numberFormatter.setMaximumFractionDigits(2);
+        StockRecord record = records.get(row);
 		if(col == 0 ) {
 			return record.getStackLabel();
 		}
@@ -85,8 +90,10 @@ public class FullStockModel extends StockModel {
 		} 
 		else if(col == 10) {
 			return record.getCutPlanName();
-		}
-		return null;
+		} else if (col == 11) {
+            return numberFormatter.format(record.getCostPerUnit());
+        }
+        return null;
 	}
 	
 	public Double setLumberLogs(List<LumberLogStockEntry> lumberLogs) {

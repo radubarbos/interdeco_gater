@@ -21,7 +21,7 @@ public class StockDAO {
 		Logger logger = Logger.getLogger("dao");
 		
 		List<LumberLogStockEntry> lumberLogs = null;
-        StringBuilder sql = new StringBuilder("select l.id, l.idplate, i.label, l.small_diameter, l.big_diameter, l.length, l.volume, l.lumbertype, l.lumberclass, st.name, stoe.entryDate, u.FullName, l.planId, l.reallength, l.realvolume from lumberlog l left join idplate i on l.idplate = i.id left join lumberstack st on l.stack = st.id join lumberentry_to_lumberlog le on l.id = le.lumberlogid join lumberentry stoe on le.entryid = stoe.id join user u on stoe.user = u.ID where l.Status=0 ");
+        StringBuilder sql = new StringBuilder("select l.id, l.idplate, i.label, l.small_diameter, l.big_diameter, l.length, l.volume, l.lumbertype, l.lumberclass, st.name, stoe.entryDate, u.FullName, l.planId, l.reallength, l.realvolume, l.CostPerUnit from lumberlog l left join idplate i on l.idplate = i.id left join lumberstack st on l.stack = st.id join lumberentry_to_lumberlog le on l.id = le.lumberlogid join lumberentry stoe on le.entryid = stoe.id join user u on stoe.user = u.ID where l.Status=0 ");
         if(filter != null) {
             sql.append(" ");
             if(filter.getStacks() != null && filter.getStacks().size() > 0) {
@@ -59,7 +59,8 @@ public class StockDAO {
 	    		lumberLog.setLumberType(rs.getLong(8));
 	    		lumberLog.setLumberClass(rs.getLong(9));
 	    		lumberLog.setCutPlanId(rs.getLong(13));
-	    		LumberStack stack = new LumberStack();
+                lumberLog.setCostPerUnit(rs.getLong(16));
+                LumberStack stack = new LumberStack();
 	    		stack.setName(rs.getString(10));
 	    		lumberLog.setStack(stack);
 	    		LumberLogStockEntry stockEntry = new LumberLogStockEntry();

@@ -26,8 +26,9 @@ public class StockRecord {
 	private String userFullName;
 	private String dateLabel;
 	private String cutPlanName;
-	
-	private NumberFormat numberFormatter = NumberFormat.getInstance(ConfigLocalManager.locale);
+    private Double costPerUnit;
+
+    private NumberFormat numberFormatter = NumberFormat.getInstance(ConfigLocalManager.locale);
 	private SimpleDateFormat dateFormatter = new SimpleDateFormat("dd,M yyyy HH:mm:ss", ConfigLocalManager.locale);
 	
 	public StockRecord(LumberLog lumberLog) {
@@ -54,7 +55,8 @@ public class StockRecord {
 		type = GUIUtil.types[lumberLog.getLumberType().intValue()-1];
 		lumberClass = GUIUtil.lumberClass[lumberLog.getLumberClass().intValue()-1];
 		cutPlanName = lumberLog.getCutPlanId() != null && lumberLog.getCutPlanId() != 0 ? "Da": "Nu";
-	}
+        costPerUnit = new Double(lumberLog.getCostPerUnit() / 100);
+    }
 
 	/**
 	 * @return the lumberLog
@@ -237,7 +239,12 @@ public class StockRecord {
 	public void setCutPlanName(String cutPlanName) {
 		this.cutPlanName = cutPlanName;
 	}
-	
-	
-	
+
+    public Double getCostPerUnit() {
+        return costPerUnit;
+    }
+
+    public void setCostPerUnit(Double costPerUnit) {
+        this.costPerUnit = costPerUnit;
+    }
 }

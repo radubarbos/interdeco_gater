@@ -40,6 +40,10 @@ public class LumberLogTransportEntryCostMatrix {
         }
         for (Map.Entry<LumberLogTransportEntryCostMatrixKey, LumberLogTransportEntryCostMatrixValue> cell : previousMatrix.getCellData().entrySet()) {
             LumberLogTransportEntryCostMatrixKey key = cell.getKey();
+            LumberLogTransportEntryCostMatrixValue currentCell = cellData.get(key);
+            if (cell.getValue().getLumberLogsIds() == null || cell.getValue().getLumberLogsIds().isEmpty()) {
+                cell.getValue().setLumberLogsIds(currentCell.getLumberLogsIds());
+            }
             cellData.put(key, cell.getValue());
             lengths.add(key.getLength().intValue());
             qualityClasses.add(key.getQualityClass().intValue());
@@ -56,6 +60,7 @@ public class LumberLogTransportEntryCostMatrix {
                 cellData.put(key, value);
             }
             value.addVolume(MetricTools.toMeterCubs(lumberLog.getVolume()));
+            value.addLumberId(lumberLog.getId());
             lengths.add(lumberLog.getLength().intValue());
             qualityClasses.add(lumberLog.getLumberClass().intValue());
             types.add(lumberLog.getLumberType().intValue());

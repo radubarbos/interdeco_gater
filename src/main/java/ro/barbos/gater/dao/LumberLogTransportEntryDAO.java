@@ -1,6 +1,9 @@
 package ro.barbos.gater.dao;
 
 import ro.barbos.gater.model.LumberLogTransportEntry;
+import ro.barbos.gater.model.LumberLogTransportEntryCostMatrix;
+import ro.barbos.gater.model.LumberLogTransportEntryCostMatrixKey;
+import ro.barbos.gater.model.LumberLogTransportEntryCostMatrixValue;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -9,6 +12,7 @@ import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -163,7 +167,7 @@ public class LumberLogTransportEntryDAO extends EntityDAO<LumberLogTransportEntr
         return entity;
     }
 
-    public boolean update(LumberLogTransportEntry entity) {
+    public boolean update(LumberLogTransportEntry entity, LumberLogTransportEntryCostMatrix matrix) {
         Logger logger = Logger.getLogger("dao");
 
         StringBuilder updateSql = new StringBuilder("update LumberLogTransportEntry set Status=");
@@ -182,16 +186,39 @@ public class LumberLogTransportEntryDAO extends EntityDAO<LumberLogTransportEntr
         Statement stm = null;
         try {
             con = DataAccess.getInstance().getDatabaseConnection();
-            con.setAutoCommit(true);
+            con.setAutoCommit(false);
             stm = con.createStatement();
             logger.fine(updateSql.toString());
             int rez = stm.executeUpdate(updateSql.toString());
             if (rez > 0) {
+                if (matrix != null) {
+                    for (Map.Entry<LumberLogTransportEntryCostMatrixKey, LumberLogTransportEntryCostMatrixValue> cell : matrix.getCellData().entrySet()) {
+                        Long costPerUnit = cell.getValue().getCost();
+                        if (!cell.getValue().getLumberLogsIds().isEmpty()) {
+                            StringBuilder updateLumberSql = new StringBuilder("update lumberlog set CostPerUnit=").append(costPerUnit).append(" where id in (");
+                            for (Long lumberId : cell.getValue().getLumberLogsIds()) {
+                                updateLumberSql.append(lumberId).append(",");
+                            }
+                            updateLumberSql.deleteCharAt(updateLumberSql.length() - 1);
+                            updateLumberSql.append(")");
+                            logger.fine(updateLumberSql.toString());
+                            stm.executeUpdate(updateLumberSql.toString());
+                        }
+
+                    }
+                }
+                con.commit();
                 status = true;
+                con.setAutoCommit(true);
             }
         } catch (Exception e) {
             logger.warning(e.getMessage());
             logger.log(Level.INFO, "Error", e);
+            try {
+                con.rollback();
+            } catch (Exception ee) {
+            }
+
             status = false;
         } finally {
             if (stm != null) try {

@@ -157,7 +157,7 @@ public class LumberLogTransportEntryFrame extends GeneralFrame implements Action
         entry.setCost(matrix.getMediumCost());
         entry.setCostConfig(matrixJson);
         entry.setFinished(true);
-        boolean status = new LumberLogTransportEntryDAO().update(entry);
+        boolean status = new LumberLogTransportEntryDAO().update(entry, matrix);
         this.getLayeredPane().remove(configFrame);
         this.repaint(0);
         if (status) {

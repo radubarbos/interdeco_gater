@@ -30,6 +30,8 @@ public class LumberLog implements Serializable {
     private Double marginVolume;
     private Double marginRealVolume;
     private Long transportEntryId;
+    private Long costPerUnit;
+    private Double cost;
 
 
     public Double getMarginRealVolume() {
@@ -256,5 +258,21 @@ public class LumberLog implements Serializable {
 
     public void setTransportEntryId(Long transportEntryId) {
         this.transportEntryId = transportEntryId;
+    }
+
+    public Long getCostPerUnit() {
+        return costPerUnit;
+    }
+
+    public void setCostPerUnit(Long costPerUnit) {
+        this.costPerUnit = costPerUnit;
+    }
+
+    public Double getCost() {
+        return cost;
+    }
+
+    public void setCost(Double cost) {
+        this.cost = cost;
     }
 }
