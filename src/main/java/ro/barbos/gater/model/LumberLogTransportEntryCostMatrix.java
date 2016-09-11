@@ -101,7 +101,7 @@ public class LumberLogTransportEntryCostMatrix {
             totalVolume += cell.getValue().getVolume();
         }
         totalCost /= 100;
-        mediumCost = (totalCost / totalVolume) * totalVolume;
+        mediumCost = (totalCost / totalVolume);// * totalVolume;
         return totalCost;
     }
 
