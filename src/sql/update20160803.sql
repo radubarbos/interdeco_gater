@@ -91,6 +91,8 @@ alter table lumberlog add MarginVolume decimal(20,2);
 alter table lumberlog add RealMarginVolume decimal(20,2);
 alter table lumberlog add CostPerUnit bigint default 0, add Cost decimal(10,2);
 alter table lumberlog_processed add CostPerUnit bigint default 0, add Cost decimal(10,2);
+alter table lumberlog add MarginCostPerUnit bigint default 0, add MarginCost decimal(10,2);
+alter table lumberlog_processed add MarginCostPerUnit bigint default 0, add MarginCost decimal(10,2);
 
 alter table lumberlog_processed add reallength decimal(10,2), add realvolume decimal(20,2), add status int, add SupplierId bigint, add TransportCertificateId bigint,add  add Margin int, add MarginVolume decimal(20,2),add RealMarginVolume decimal (20,2), add TransportEntryId bigint;
 

@@ -195,7 +195,7 @@ public class LumberLogTransportEntryDAO extends EntityDAO<LumberLogTransportEntr
                     for (Map.Entry<LumberLogTransportEntryCostMatrixKey, LumberLogTransportEntryCostMatrixValue> cell : matrix.getCellData().entrySet()) {
                         Long costPerUnit = cell.getValue().getCost();
                         if (!cell.getValue().getLumberLogsIds().isEmpty()) {
-                            StringBuilder updateLumberSql = new StringBuilder("update lumberlog set CostPerUnit=").append(costPerUnit).append(" where id in (");
+                            StringBuilder updateLumberSql = new StringBuilder("update lumberlog set CostPerUnit=").append(costPerUnit).append(",MarginCostPerUnit=").append(matrix.getMarginCost()).append(" where id in (");
                             for (Long lumberId : cell.getValue().getLumberLogsIds()) {
                                 updateLumberSql.append(lumberId).append(",");
                             }

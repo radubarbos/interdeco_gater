@@ -38,6 +38,8 @@ public class ConfigLumberTransportEntryFrame extends JPanel implements Component
 
     private NumberFormat numberFormatter = NumberFormat.getInstance(ConfigLocalManager.locale);
 
+    JFormattedTextField marginCost;
+
     public ConfigLumberTransportEntryFrame(LumberLogTransportEntryFrame parentFrame, LumberLogTransportEntry entry) {
         super();
         this.parentFrame = parentFrame;
@@ -77,13 +79,21 @@ public class ConfigLumberTransportEntryFrame extends JPanel implements Component
         JLabel tempLabel = new JLabel("Receptia din data de " + format.format(entry.getEntryDate()));
         tempLabel.setFont(new Font("arial", Font.BOLD, 16));
         infoPanel.add(tempLabel);
-        totalCostLabel = new JLabel("Cost mediu : " + numberFormatter.format(matrix.getTotalCost()) + " RON");
+        totalCostLabel = new JLabel("Cost mediu : " + numberFormatter.format(matrix.getMediumCost()) + " RON");
         totalCostLabel.setFont(new Font("arial", Font.BOLD, 16));
         infoPanel.add(totalCostLabel);
         north.add(infoPanel, BorderLayout.SOUTH);
         dataPanel.add(north, BorderLayout.NORTH);
 
         //button bar
+        JPanel southPanel = new JPanel(new BorderLayout());
+        //margin cost:
+        JPanel southTop = new JPanel(new FlowLayout(FlowLayout.LEADING));
+        marginCost = GUIFactory.createDecimalNumberInput(matrix.getMarginCost() / (100D), 0D, 1000000D, 200);
+        marginCost.addActionListener(this);
+        marginCost.setActionCommand("MARGIN_COST_CHANGED");
+        southTop.add(GUIFactory.createFieldPanel(new JLabel("Cost coaja:"), marginCost));
+
         JPanel toolbar = new JPanel(new FlowLayout(FlowLayout.LEADING));
 
         JButton but = new JButton("Salveaza cost", new ImageIcon(
@@ -107,7 +117,9 @@ public class ConfigLumberTransportEntryFrame extends JPanel implements Component
         but.setActionCommand("EXIT");
         but.addActionListener(this);
         toolbar.add(but);
-        dataPanel.add(toolbar, BorderLayout.SOUTH);
+        southPanel.add(southTop, BorderLayout.NORTH);
+        southPanel.add(toolbar, BorderLayout.SOUTH);
+        dataPanel.add(southPanel, BorderLayout.SOUTH);
 
 
         setLayout(null);
@@ -162,6 +174,14 @@ public class ConfigLumberTransportEntryFrame extends JPanel implements Component
             parentFrame.repaint(0);
         } else if (command.equals("SET_COST_CONFIG")) {
             parentFrame.setNewCost(this.matrix, this.entry);
+        } else if (command.equals("MARGIN_COST_CHANGED")) {
+            if (marginCost.getValue() == null) {
+                //marginCost.setBackground(Color.red);
+                return;
+            }
+            matrix.setMarginCost(Math.round((Double) marginCost.getValue() * 100));
+            matrix.calculateTotalCost();
+            costChanged(matrix.getMediumCost());
         }
     }
 }

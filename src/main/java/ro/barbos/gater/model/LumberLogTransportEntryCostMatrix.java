@@ -12,6 +12,10 @@ import java.util.*;
 public class LumberLogTransportEntryCostMatrix {
 
     private Map<LumberLogTransportEntryCostMatrixKey, LumberLogTransportEntryCostMatrixValue> cellData = new HashMap<>();
+    private int lumberLogsCount = 0;
+
+    private Double marginVolume = 0D;
+    private Long marginCost = 0L;
 
     //
     private transient Set<Integer> lengths = new TreeSet<>();
@@ -28,7 +32,7 @@ public class LumberLogTransportEntryCostMatrix {
     }
 
     private void setPreviousConfig(LumberLogTransportEntry entry) {
-        totalCost = entry.getCost();
+        mediumCost = entry.getCost();
         if (entry.getCostConfig() == null || entry.getCostConfig().length() == 0) {
             return;
         }
@@ -49,6 +53,15 @@ public class LumberLogTransportEntryCostMatrix {
             qualityClasses.add(key.getQualityClass().intValue());
             types.add(key.getType().intValue());
         }
+        if (lumberLogsCount < previousMatrix.getLumberLogsCount()) {
+            lumberLogsCount = previousMatrix.getLumberLogsCount();
+        }
+        if (marginVolume < previousMatrix.getMarginVolume()) {
+            marginVolume = previousMatrix.getMarginVolume();
+        }
+        if (marginCost < previousMatrix.getMarginCost()) {
+            marginCost = previousMatrix.getMarginCost();
+        }
     }
 
     private void analizeLumber(List<LumberLog> lumberLogs) {
@@ -61,10 +74,13 @@ public class LumberLogTransportEntryCostMatrix {
             }
             value.addVolume(MetricTools.toMeterCubs(lumberLog.getVolume()));
             value.addLumberId(lumberLog.getId());
+            marginVolume += MetricTools.toMeterCubs(lumberLog.getMarginVolume());
             lengths.add(lumberLog.getLength().intValue());
             qualityClasses.add(lumberLog.getLumberClass().intValue());
             types.add(lumberLog.getLumberType().intValue());
+
         }
+        lumberLogsCount = lumberLogs.size();
     }
 
     private LumberLogTransportEntryCostMatrixKey createKey(LumberLog lumberLog) {
@@ -105,6 +121,10 @@ public class LumberLogTransportEntryCostMatrix {
             totalCost += cell.getValue().getVolumeCost();
             totalVolume += cell.getValue().getVolume();
         }
+        //margin
+        totalCost += (marginVolume * marginCost);
+        totalVolume += marginVolume;
+
         totalCost /= 100;
         mediumCost = (totalCost / totalVolume);// * totalVolume;
         return totalCost;
@@ -116,6 +136,30 @@ public class LumberLogTransportEntryCostMatrix {
 
     public void setMediumCost(Double mediumCost) {
         this.mediumCost = mediumCost;
+    }
+
+    public int getLumberLogsCount() {
+        return lumberLogsCount;
+    }
+
+    public void setLumberLogsCount(int lumberLogsCount) {
+        this.lumberLogsCount = lumberLogsCount;
+    }
+
+    public Long getMarginCost() {
+        return marginCost;
+    }
+
+    public void setMarginCost(Long marginCost) {
+        this.marginCost = marginCost;
+    }
+
+    public Double getMarginVolume() {
+        return marginVolume;
+    }
+
+    public void setMarginVolume(Double marginVolume) {
+        this.marginVolume = marginVolume;
     }
 }
 
