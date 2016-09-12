@@ -4,15 +4,19 @@ import ro.barbos.gui.renderer.GeneralTableRenderer;
 import ro.barbos.gui.tablemodel.GeneralAbstractTableModel;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.File;
 
 /**
  * Created by radu on 9/4/2016.
  */
-public abstract class GeneralTableDataFrame extends GeneralFrame implements ActionListener {
+public abstract class GeneralTableDataFrame extends GeneralFrame implements ActionListener, ListSelectionListener, MouseListener {
 
     private static final long serialVersionUID = 1L;
 
@@ -30,6 +34,9 @@ public abstract class GeneralTableDataFrame extends GeneralFrame implements Acti
         JPanel toolbar = initToolbar();
         initDataModel();
         dataTable = new JTable(dataModel);
+
+        dataTable.getSelectionModel().addListSelectionListener(this);
+        dataTable.addMouseListener(this);
 
         GeneralTableRenderer renderer = new GeneralTableRenderer();
         for (int i = 0; i < dataTable.getColumnModel().getColumnCount(); i++) {
@@ -86,7 +93,54 @@ public abstract class GeneralTableDataFrame extends GeneralFrame implements Acti
         }
     }
 
-    public abstract JPanel initToolbar();
+    public JPanel initToolbar() {
+        JPanel toolbar = new JPanel(new FlowLayout(FlowLayout.LEADING));
+        toolbar.add(createCSVExportButton());
+        toolbar.add(createPrintButton());
+        return toolbar;
+    }
+
+
+    @Override
+    public void valueChanged(ListSelectionEvent e) {
+
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent eve) {
+        if (eve.getClickCount() == 2) {
+            int row = dataTable.getSelectedRow();
+            if (row != -1) {
+                //T data = dataModel.get(row);
+                // new StackLumberLogFrame(stack);
+                rowAction(row);
+            }
+        }
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+
+    }
+
+    public void rowAction(int row) {
+
+    }
 
     public abstract void initDataModel();
 

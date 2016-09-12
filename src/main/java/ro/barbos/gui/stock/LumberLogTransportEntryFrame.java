@@ -12,16 +12,13 @@ import ro.barbos.gater.model.LumberLogTransportEntryCostMatrix;
 import ro.barbos.gater.model.Supplier;
 import ro.barbos.gui.GUITools;
 import ro.barbos.gui.GUIUtil;
-import ro.barbos.gui.GeneralFrame;
-import ro.barbos.gui.renderer.GeneralTableRenderer;
+import ro.barbos.gui.GeneralTableDataFrame;
 import ro.barbos.gui.tablemodel.stock.LumberLogTransportEntryModel;
 
 import javax.swing.*;
 import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,21 +26,24 @@ import java.util.Map;
 /**
  * Created by radu on 8/23/2016.
  */
-public class LumberLogTransportEntryFrame extends GeneralFrame implements ActionListener {
+public class LumberLogTransportEntryFrame extends GeneralTableDataFrame {
 
-    private LumberLogTransportEntryModel dataModel;
-    private JTable dataTable;
+    // private LumberLogTransportEntryModel dataModel;
     private ConfigLumberTransportEntryFrame configFrame;
 
     public LumberLogTransportEntryFrame() {
-        super();
-
         setTitle("Receptii");
-        setResizable(true);
-        setMaximizable(true);
-        setIconifiable(true);
-        setClosable(true);
+        initGui();
+        fetchData();
 
+        TableColumn col1 = dataTable.getColumnModel().getColumn(0);
+        col1.setMinWidth(10);
+        col1.setPreferredWidth(20);
+        col1.setWidth(20);
+    }
+
+    @Override
+    public JPanel initToolbar() {
         JPanel toolbar = new JPanel(new FlowLayout(FlowLayout.LEADING));
 
         JButton but = new JButton("Cost", new ImageIcon(
@@ -57,62 +57,32 @@ public class LumberLogTransportEntryFrame extends GeneralFrame implements Action
         but.addActionListener(this);
         toolbar.add(but);
 
+        toolbar.add(createCSVExportButton());
+        toolbar.add(createPrintButton());
+        return toolbar;
+    }
 
-        JButton csvExport = new JButton("Exporta", new ImageIcon(
-                GUITools.getImage("resources/csv24.png")));
-        csvExport.setToolTipText("Exporta tabelul in fisier csv");
-        csvExport.setVerticalTextPosition(SwingConstants.BOTTOM);
-        csvExport.setHorizontalTextPosition(SwingConstants.CENTER);
-        csvExport.setActionCommand("CSV");
-        csvExport.addActionListener(this);
-        csvExport.setFocusPainted(false);
-        csvExport.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        toolbar.add(csvExport);
-
-        JButton print = new JButton("Print", new ImageIcon(
-                GUITools.getImage("resources/printb24.png")));
-        print.setVerticalTextPosition(SwingConstants.BOTTOM);
-        print.setHorizontalTextPosition(SwingConstants.CENTER);
-        print.setToolTipText("Printeaza tabel");
-        print.setActionCommand("PRINT");
-        print.addActionListener(this);
-        print.setFocusPainted(false);
-        print.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        toolbar.add(print);
-
+    @Override
+    public void initDataModel() {
         dataModel = new LumberLogTransportEntryModel();
         List<Supplier> supplierList = SupplierDAO.getSuppliers();
         Map<Long, Supplier> suppliers = new HashMap();
         for (Supplier supplier : supplierList) {
             suppliers.put(supplier.getId(), supplier);
         }
-        dataModel.setSuppliers(suppliers);
+        ((LumberLogTransportEntryModel) dataModel).setSuppliers(suppliers);
         List<LumberLogTransportCertificate> certificatesList = new LumberLogTransportCertificateDAO().findAll();
         Map<Long, LumberLogTransportCertificate> certificates = new HashMap();
         for (LumberLogTransportCertificate certificate : certificatesList) {
             certificates.put(certificate.getId(), certificate);
         }
-        dataModel.setSuppliers(suppliers);
-        dataModel.setCertificates(certificates);
-        dataTable = new JTable(dataModel);
-
-        TableColumn col1 = dataTable.getColumnModel().getColumn(0);
-        col1.setMinWidth(10);
-        col1.setPreferredWidth(20);
-        col1.setWidth(20);
-        GeneralTableRenderer renderer = new GeneralTableRenderer();
-        for (int i = 0; i < dataTable.getColumnModel().getColumnCount(); i++) {
-            dataTable.getColumnModel().getColumn(i).setCellRenderer(renderer);
-        }
-
-        getContentPane().add(toolbar, BorderLayout.NORTH);
-        getContentPane().add(new JScrollPane(dataTable), BorderLayout.CENTER);
-
-        extractData();
+        ((LumberLogTransportEntryModel) dataModel).setSuppliers(suppliers);
+        ((LumberLogTransportEntryModel) dataModel).setCertificates(certificates);
     }
 
-    private void extractData() {
-        dataModel.setData(new LumberLogTransportEntryDAO().getEntries());
+    @Override
+    public void fetchData() {
+        ((LumberLogTransportEntryModel) dataModel).setData(new LumberLogTransportEntryDAO().getEntries());
     }
 
     @Override
@@ -125,7 +95,7 @@ public class LumberLogTransportEntryFrame extends GeneralFrame implements Action
                         "Selectati o receptie");
                 return;
             }
-            LumberLogTransportEntry entry = dataModel.getRecord(row);
+            LumberLogTransportEntry entry = ((LumberLogTransportEntryModel) dataModel).getRecord(row);
             if (entry.getLumberLogs().isEmpty()) {
                 LumberLogFilterDTO filter = new LumberLogFilterDTO();
                 filter.setTransportEntryId(entry.getId());
@@ -133,22 +103,7 @@ public class LumberLogTransportEntryFrame extends GeneralFrame implements Action
             }
             configFrame = new ConfigLumberTransportEntryFrame(this, entry);
             this.getLayeredPane().add(configFrame, JLayeredPane.PALETTE_LAYER, 0);
-        } else if (command.equals("CSV")) {
-            JFileChooser chooser = new JFileChooser();
-            int option = chooser.showSaveDialog(GUIUtil.container);
-            if (option == JFileChooser.APPROVE_OPTION) {
-                if (chooser.getSelectedFile() != null) {
-                    File theFileToSave = chooser.getSelectedFile();
-                    dataModel.toCsv(theFileToSave);
-                }
-            }
-        } else if (command.equals("PRINT")) {
-            try {
-                dataTable.print();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
+        } else super.actionPerformed(e);
     }
 
     public void setNewCost(LumberLogTransportEntryCostMatrix matrix, LumberLogTransportEntry entry) {
@@ -165,6 +120,12 @@ public class LumberLogTransportEntryFrame extends GeneralFrame implements Action
         } else {
             JOptionPane.showMessageDialog(null, "A aparut o eroare. Reincercati.");
         }
+    }
+
+    @Override
+    public void rowAction(int row) {
+        LumberLogTransportEntry entry = ((LumberLogTransportEntryModel) dataModel).getRecord(row);
+        new TransportEntryLumberLogFrame(entry);
     }
 
 

@@ -22,6 +22,7 @@ public class GUIUtil {
     public static String SUPPLIERS_KEY = "suppliers";
     public static String LUMBER_TRANSPORT_STOCK_EY = "lumber_transport_stock";
     public static String TRANSPORT_STOCK_ENTRIES_KEY = "TRANSPORT_STOCK_ENTRIES";
+    public static String TRANSPORT_LUMBER_ENTRIES_KEY = "TRANSPORT_LUMBER_ENTRIES_KEY";
     public static String PROCESSED_HISTORY_KEY="prochistory";
 	public static String SETTINGS_KEY="settings";
 	public static String STACKS_LUMBERS_KEY="stackslumbers";

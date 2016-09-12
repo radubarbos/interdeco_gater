@@ -30,7 +30,10 @@ public class StockDAO {
 			if(filter.getIdPlates() != null && filter.getIdPlates().size() > 0) {
                 sql.append("and  l.idplate = ").append(filter.getIdPlates().get(0));
             }
-		}
+            if (filter.getTransportEntryId() != null) {
+                sql.append("and  l.TransportEntryId = ").append(filter.getTransportEntryId());
+            }
+        }
 		sql.append(" order by i.label");
 		
 		Connection con =null;
