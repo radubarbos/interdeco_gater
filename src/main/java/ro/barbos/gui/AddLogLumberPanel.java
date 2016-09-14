@@ -140,6 +140,9 @@ public class AddLogLumberPanel extends JPanel implements ActionListener, Propert
         panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         panel.add(GUIFactory.createLabel("Procent margine:", 180));
         JFormattedTextField margin = GUIFactory.createNumberInput(StockSettings.LUMBER_LOG_MARGIN.longValue(), 0L, 1000000L, 80);
+        if (lumberLog != null) {
+            margin.setValue((long) lumberLog.getMarginPercent());
+        }
         panel.add(margin);
         add(panel);
 
@@ -348,6 +351,9 @@ public class AddLogLumberPanel extends JPanel implements ActionListener, Propert
 		lumberLog.setLumberClass((long)classCombo.getSelectedIndex());
 
         lumberLog.setMarginPercent(((Long) margin.getValue()).intValue());
+        if (editLumberLog != null) {
+            lumberLog.setCostPerUnit(editLumberLog.getCostPerUnit());
+        }
 
         //extra validation
 		String warning = "";

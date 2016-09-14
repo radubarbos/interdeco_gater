@@ -1,14 +1,13 @@
 package ro.barbos.gui.stock;
 
-import net.sourceforge.jdatepicker.JDatePicker;
 import ro.barbos.gater.dao.SupplierDAO;
 import ro.barbos.gater.model.LumberLogTransportCertificate;
 import ro.barbos.gater.model.Supplier;
 import ro.barbos.gui.GUIFactory;
+import ro.barbos.gui.exswing.JDateTimePicker;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.Calendar;
 import java.util.Vector;
 
 /**
@@ -41,8 +40,8 @@ public class AddLumberTransportCertificatePanel extends JPanel {
     private void initGui() {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
-        int labelWidth = 120;
-        entryDate = GUIFactory.createDatePicker();
+        int labelWidth = 180;
+        entryDate = GUIFactory.createDateTimePicker();//GUIFactory.createDatePicker();
         add(GUIFactory.createFieldPanel(GUIFactory.createLabel("Data emiterii:", labelWidth), entryDate));
         serialCode = new JTextField(18);
         add(GUIFactory.createFieldPanel(GUIFactory.createLabel("Seria:", labelWidth), serialCode));
@@ -54,17 +53,17 @@ public class AddLumberTransportCertificatePanel extends JPanel {
         add(GUIFactory.createFieldPanel(GUIFactory.createLabel("Furnizor:", labelWidth), suppliers));
         uniqueCode = new JTextField(18);
         add(GUIFactory.createFieldPanel(GUIFactory.createLabel("Cod unic:", labelWidth), uniqueCode));
-        codeCreationDate = GUIFactory.createDatePicker();
+        codeCreationDate = GUIFactory.createDateTimePicker();//GUIFactory.createDatePicker();
         add(GUIFactory.createFieldPanel(GUIFactory.createLabel("Data generarii codului:", labelWidth), codeCreationDate));
         document = new JTextField(18);
         add(GUIFactory.createFieldPanel(GUIFactory.createLabel("Do provenienta:", labelWidth), document));
         loadPlace = new JTextField(18);
         add(GUIFactory.createFieldPanel(GUIFactory.createLabel("Punct incarcare:", labelWidth), loadPlace));
-        loadDate = GUIFactory.createDatePicker();
+        loadDate = GUIFactory.createDateTimePicker();//GUIFactory.createDatePicker();
         add(GUIFactory.createFieldPanel(GUIFactory.createLabel("Data incarcari:", labelWidth), loadDate));
         unloadPlace = new JTextField(18);
         add(GUIFactory.createFieldPanel(GUIFactory.createLabel("Punct descarcare:", labelWidth), unloadPlace));
-        unloadDate = GUIFactory.createDatePicker();
+        unloadDate = GUIFactory.createDateTimePicker();//GUIFactory.createDatePicker();
         add(GUIFactory.createFieldPanel(GUIFactory.createLabel("Data descarcari:", labelWidth), unloadDate));
         docCreator = new JTextField(18);
         add(GUIFactory.createFieldPanel(GUIFactory.createLabel("Emitent:", labelWidth), docCreator));
@@ -100,19 +99,23 @@ public class AddLumberTransportCertificatePanel extends JPanel {
         }
 
         LumberLogTransportCertificate certificate = new LumberLogTransportCertificate();
-        certificate.setEntryDate(((Calendar) ((JDatePicker) entryDate).getModel().getValue()).getTime());
+        //certificate.setEntryDate(((Calendar) ((JDatePicker) entryDate).getModel().getValue()).getTime());
+        certificate.setEntryDate(((JDateTimePicker) entryDate).getDateTime());
         certificate.setSerialCode(serialCode.getText());
         certificate.setSerialNo(serialNo.getText());
         certificate.setSupplierId(((Supplier) suppliers.getSelectedItem()).getId());
         certificate.setCode(uniqueCode.getText());
-        certificate.setCodeCreationTime(((Calendar) ((JDatePicker) codeCreationDate).getModel().getValue()).getTime());
+        //certificate.setCodeCreationTime(((Calendar) ((JDatePicker) codeCreationDate).getModel().getValue()).getTime());
+        certificate.setCodeCreationTime(((JDateTimePicker) codeCreationDate).getDateTime());
         if (document.getText().trim().length() > 0) {
             certificate.setDocument(document.getText());
         }
         certificate.setLoadPlace(loadPlace.getText());
-        certificate.setTransportLeaveDate(((Calendar) ((JDatePicker) loadDate).getModel().getValue()).getTime());
+        certificate.setTransportLeaveDate(((JDateTimePicker) loadDate).getDateTime());
+        //certificate.setTransportLeaveDate(((Calendar) ((JDatePicker) loadDate).getModel().getValue()).getTime());
         certificate.setUnloadPlace(unloadPlace.getText());
-        certificate.setTransportArrivalDate(((Calendar) ((JDatePicker) unloadDate).getModel().getValue()).getTime());
+        //certificate.setTransportArrivalDate(((Calendar) ((JDatePicker) unloadDate).getModel().getValue()).getTime());
+        certificate.setTransportArrivalDate(((JDateTimePicker) unloadDate).getDateTime());
         if (docCreator.getText().trim().length() > 0) {
             certificate.setDocCreator(docCreator.getText());
         }
@@ -147,8 +150,8 @@ public class AddLumberTransportCertificatePanel extends JPanel {
     private boolean checkDateField(JPanel panel) {
         boolean valid = true;
         JLabel label = (JLabel) (panel).getComponent(0);
-        JDatePicker start = (JDatePicker) (panel).getComponent(1);
-        if (start.getModel().getValue() == null) {
+        JDateTimePicker start = (JDateTimePicker) (panel).getComponent(1);
+        if (start.getDateTime() == null) {
             label.setForeground(Color.red);
             valid = false;
         } else {

@@ -66,7 +66,7 @@ public class LumberLogTransportCertificateDAO extends EntityDAO<LumberLogTranspo
     public LumberLogTransportCertificate store(LumberLogTransportCertificate entity) {
         Logger logger = Logger.getLogger("dao");
 
-        SimpleDateFormat dateTimeFormatter = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        SimpleDateFormat dateTimeFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
         StringBuilder insertSql = new StringBuilder("insert into LumberLogTransportCertificate(EntryDate,SerialCode, SerialNo,SupplierId,Code,CodeCreationTime,Document,LoadPlace,TransportLeaveDate,UnloadPlace,TransportArrivalDate,DocCreator,DocCreatorName,TransportName,TransportPlate,DriverName,DriverId) values(");
         insertSql.append("'").append(dateTimeFormatter.format(entity.getEntryDate())).append("',");

@@ -46,6 +46,17 @@ public class LumberLogTransportEntryFrame extends GeneralTableDataFrame {
     public JPanel initToolbar() {
         JPanel toolbar = new JPanel(new FlowLayout(FlowLayout.LEADING));
 
+        JButton edit = new JButton("Busteni", new ImageIcon(
+                GUITools.getImage("resources/edit24.png")));
+        edit.setVerticalTextPosition(SwingConstants.BOTTOM);
+        edit.setHorizontalTextPosition(SwingConstants.CENTER);
+        edit.setToolTipText("Detali busteni din receptie");
+        edit.setActionCommand("VIEW_DETAILS");
+        edit.addActionListener(this);
+        edit.setFocusPainted(false);
+        edit.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        toolbar.add(edit);
+
         JButton but = new JButton("Cost", new ImageIcon(
                 GUITools.getImage("resources/currency-euro-icon24.png")));
         but.setVerticalTextPosition(SwingConstants.BOTTOM);
@@ -103,6 +114,14 @@ public class LumberLogTransportEntryFrame extends GeneralTableDataFrame {
             }
             configFrame = new ConfigLumberTransportEntryFrame(this, entry);
             this.getLayeredPane().add(configFrame, JLayeredPane.PALETTE_LAYER, 0);
+        } else if (command.equals("VIEW_DETAILS")) {
+            int row = dataTable.getSelectedRow();
+            if (row == -1) {
+                JOptionPane.showMessageDialog(GUIUtil.container,
+                        "Selectati o receptie");
+                return;
+            }
+            rowAction(row);
         } else super.actionPerformed(e);
     }
 

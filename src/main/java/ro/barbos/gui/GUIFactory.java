@@ -1,19 +1,14 @@
 package ro.barbos.gui;
 
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.text.DateFormatSymbols;
-import java.text.NumberFormat;
-import java.util.Properties;
-
-import javax.swing.JComponent;
-import javax.swing.JFormattedTextField;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.text.NumberFormatter;
-
 import net.sourceforge.jdatepicker.JDateComponentFactory;
 import net.sourceforge.jdatepicker.JDatePicker;
+import ro.barbos.gui.exswing.JDateTimePicker;
+
+import javax.swing.*;
+import javax.swing.text.NumberFormatter;
+import java.awt.*;
+import java.text.NumberFormat;
+import java.util.Properties;
 
 public class GUIFactory {
 	
@@ -43,8 +38,12 @@ public class GUIFactory {
 		datePicker.getModel().setSelected(true);
 		return (JComponent)datePicker;
 	}
-	
-	public static JPanel createFieldPanel(JLabel label, JComponent component) {
+
+    public static JPanel createDateTimePicker() {
+        return new JDateTimePicker();
+    }
+
+    public static JPanel createFieldPanel(JLabel label, JComponent component) {
 		JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		panel.add(label);
 		panel.add(component);

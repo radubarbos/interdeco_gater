@@ -306,7 +306,10 @@ public class LumberLogDAO {
 		updateLumberLog.append(",realvolume=").append(lumberLog.getRealVolume());
 		updateLumberLog.append(",lumbertype=").append(lumberLog.getLumberType());
 		updateLumberLog.append(",lumberclass=").append(lumberLog.getLumberClass());
-		updateLumberLog.append(",stack=").append(lumberLog.getStack().getId());
+        updateLumberLog.append(",margin=").append(lumberLog.getMarginPercent());
+        updateLumberLog.append(",MarginVolume=").append(lumberLog.getMarginVolume());
+        updateLumberLog.append(",RealMarginVolume=").append(lumberLog.getMarginRealVolume());
+        updateLumberLog.append(",stack=").append(lumberLog.getStack().getId());
 		updateLumberLog.append(" where id=").append(lumberLog.getId());
 		
 		StringBuilder insertLumberLogDiameter = new StringBuilder("insert into lumberlog_diameter(lumberlog_id, diameter, metric) values(?, ?, 1)");

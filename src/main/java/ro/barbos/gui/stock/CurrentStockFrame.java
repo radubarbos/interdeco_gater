@@ -243,7 +243,12 @@ public class CurrentStockFrame extends GeneralFrame implements ActionListener {
 				lumberLog.setRealVolume(lumberLog.getVolume());
 				LumberLogUtil.trimAndSetLength(lumberLog);
 				LumberLogUtil.calculateVolume(lumberLog);
-				boolean update = LumberLogDAO.updateLumberLog(lumberLog);
+                lumberLog.setMarginRealVolume(lumberLog.getRealVolume() * (lumberLog.getMarginPercent() / 100D));
+                lumberLog.setMarginVolume(lumberLog.getVolume() * (lumberLog.getMarginPercent() / 100D));
+                //adjust volume
+                lumberLog.setVolume(lumberLog.getVolume() - lumberLog.getMarginVolume());
+                lumberLog.setRealVolume(lumberLog.getRealVolume() - lumberLog.getMarginRealVolume());
+                boolean update = LumberLogDAO.updateLumberLog(lumberLog);
 				if(!update) {
 					JOptionPane.showMessageDialog(GUIUtil.container, "Error", "Busteanul nu a fost schimbat.", JOptionPane.ERROR_MESSAGE);
 				}
