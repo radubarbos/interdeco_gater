@@ -23,10 +23,13 @@ public class FullStockModel extends StockModel {
 
     private List<StockRecord> records = new ArrayList<StockRecord>();
 	double volume = 0D;
-	
-	/* (non-Javadoc)
-	 * @see javax.swing.table.TableModel#getColumnCount()
-	 */
+    double marginVolume = 0D;
+    double averageVolumeCost = 0D;
+    double averageMarginCost = 0D;
+
+    /* (non-Javadoc)
+     * @see javax.swing.table.TableModel#getColumnCount()
+     */
 	@Override
 	public int getColumnCount() {
 		return columns.length;
@@ -111,21 +114,30 @@ public class FullStockModel extends StockModel {
 	public List<Double> setLumberLogsData(List<LumberLogStockEntry> lumberLogs) {
 		List<Double> data = new ArrayList<>();
 		double unuseable = 0;
-		if(lumberLogs != null) {
+        double totalUnitsCost = 0D;
+        double totalMarginCosts = 0D;
+        if(lumberLogs != null) {
 			for(LumberLogStockEntry lumberLogEntry: lumberLogs) {
 				LumberLog lumberLog = lumberLogEntry.getLumberLog();
 				records.add(new StockRecord(lumberLogEntry));
 				double lumberVolume = MetricTools.toMeterCubs(lumberLog.getVolume(), METRIC.MILIMETER);
 				volume += lumberVolume;
-				if(lumberLog.getCutPlanId() == 0) {
+                double marginVol = MetricTools.toMeterCubs(lumberLog.getMarginVolume(), METRIC.MILIMETER);
+                marginVolume += marginVol;
+                if(lumberLog.getCutPlanId() == 0) {
 					unuseable += lumberVolume;
 				}
-			}
+                totalUnitsCost += (lumberVolume * lumberLog.getCostPerUnit());
+                totalMarginCosts += (marginVol * lumberLog.getMarginCostPerUnit());
+            }
 		}
 		refreshOnDataChange();
 		data.add(volume);
 		data.add(unuseable);
-		return data;
+        data.add(marginVolume);
+        data.add((totalUnitsCost / volume) / 100);
+        data.add((totalMarginCosts / marginVolume) / 100);
+        return data;
 	}
 	
 	public Double updateLumberLog(LumberLog lumberLog, int index) {

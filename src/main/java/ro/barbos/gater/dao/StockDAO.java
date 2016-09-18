@@ -21,7 +21,7 @@ public class StockDAO {
 		Logger logger = Logger.getLogger("dao");
 		
 		List<LumberLogStockEntry> lumberLogs = null;
-        StringBuilder sql = new StringBuilder("select l.id, l.idplate, i.label, l.small_diameter, l.big_diameter, l.length, l.volume, l.lumbertype, l.lumberclass, st.name, stoe.entryDate, u.FullName, l.planId, l.reallength, l.realvolume, l.CostPerUnit, l.margin, l.MarginVolume, l.RealMarginVolume from lumberlog l left join idplate i on l.idplate = i.id left join lumberstack st on l.stack = st.id join lumberentry_to_lumberlog le on l.id = le.lumberlogid join lumberentry stoe on le.entryid = stoe.id join user u on stoe.user = u.ID where l.Status=0 ");
+        StringBuilder sql = new StringBuilder("select l.id, l.idplate, i.label, l.small_diameter, l.big_diameter, l.length, l.volume, l.lumbertype, l.lumberclass, st.name, stoe.entryDate, u.FullName, l.planId, l.reallength, l.realvolume, l.CostPerUnit, l.margin, l.MarginVolume, l.RealMarginVolume, l.MarginCostPerUnit from lumberlog l left join idplate i on l.idplate = i.id left join lumberstack st on l.stack = st.id join lumberentry_to_lumberlog le on l.id = le.lumberlogid join lumberentry stoe on le.entryid = stoe.id join user u on stoe.user = u.ID where l.Status=0 ");
         if(filter != null) {
             sql.append(" ");
             if(filter.getStacks() != null && filter.getStacks().size() > 0) {
@@ -66,6 +66,7 @@ public class StockDAO {
                 lumberLog.setMarginPercent(rs.getInt(17));
                 lumberLog.setMarginVolume(rs.getDouble(18));
                 lumberLog.setMarginRealVolume(rs.getDouble(19));
+                lumberLog.setMarginCostPerUnit(rs.getLong(20));
                 LumberStack stack = new LumberStack();
 	    		stack.setName(rs.getString(10));
 	    		lumberLog.setStack(stack);

@@ -31,8 +31,13 @@ public class CurrentStockFrame extends GeneralFrame implements ActionListener {
 	double totalVolume = 0;
 	JLabel useableLabel;
 	double useableVolume = 0;
-	
-	private NumberFormat numberFormatter = NumberFormat.getInstance(ConfigLocalManager.locale);
+
+    JLabel avgCostLabel;
+    double avgCost = 0;
+    JLabel avgMarginLabel;
+    double avgMargin = 0;
+
+    private NumberFormat numberFormatter = NumberFormat.getInstance(ConfigLocalManager.locale);
 	
 	MarkProcessedLumberPanel markPanel;
 	AddLogLumberPanel editLogLumberPanel;
@@ -53,8 +58,8 @@ public class CurrentStockFrame extends GeneralFrame implements ActionListener {
 		
 		north = new JPanel();
 		north.setLayout(null);
-		 north.setPreferredSize(new Dimension(70, 110));
-		 totalLabel = new JLabel();
+        north.setPreferredSize(new Dimension(70, 140));
+        totalLabel = new JLabel();
 		 totalLabel.setText("Total metric cubi: ");
 		 totalLabel.setLocation(20, 10);
 		 totalLabel.setFont(new Font("arial", Font.BOLD, 16));
@@ -62,13 +67,27 @@ public class CurrentStockFrame extends GeneralFrame implements ActionListener {
 		 north.add(totalLabel);
 		 
 		 useableLabel = new JLabel();
-		 useableLabel.setText("Volum neutilizat: ");
-		 useableLabel.setLocation(400, 10);
+        useableLabel.setText("Total coaja cubi: ");
+        useableLabel.setLocation(400, 10);
 		 useableLabel.setFont(new Font("arial", Font.BOLD, 16));
 		 useableLabel.setSize(new Dimension(useableLabel.getPreferredSize().width + 400, useableLabel.getPreferredSize().height));
 		 north.add(useableLabel);
-		 
-		 JPanel toolbar = new JPanel(new FlowLayout(FlowLayout.LEADING));
+
+        avgCostLabel = new JLabel();
+        avgCostLabel.setText("Cost mediu: ");
+        avgCostLabel.setLocation(20, 40);
+        avgCostLabel.setFont(new Font("arial", Font.BOLD, 16));
+        avgCostLabel.setSize(new Dimension(avgCostLabel.getPreferredSize().width + 400, avgCostLabel.getPreferredSize().height));
+        north.add(avgCostLabel);
+
+        avgMarginLabel = new JLabel();
+        avgMarginLabel.setText("Cost mediu coaja: ");
+        avgMarginLabel.setLocation(400, 40);
+        avgMarginLabel.setFont(new Font("arial", Font.BOLD, 16));
+        avgMarginLabel.setSize(new Dimension(avgMarginLabel.getPreferredSize().width + 400, avgMarginLabel.getPreferredSize().height));
+        north.add(avgMarginLabel);
+
+        JPanel toolbar = new JPanel(new FlowLayout(FlowLayout.LEADING));
 		 JButton edit = new JButton("Modifica", new ImageIcon(
 					GUITools.getImage("resources/edit24.png")));
 		 edit.setVerticalTextPosition(SwingConstants.BOTTOM);
@@ -114,8 +133,8 @@ public class CurrentStockFrame extends GeneralFrame implements ActionListener {
 		 
 			
 			toolbar.setSize(toolbar.getPreferredSize());
-			toolbar.setLocation(5, 40);
-			north.add(toolbar);
+        toolbar.setLocation(5, 70);
+        north.add(toolbar);
 		 
 		 stockModel = new FullStockModel();
          stockTable = new JTable(stockModel);	
@@ -141,8 +160,10 @@ public class CurrentStockFrame extends GeneralFrame implements ActionListener {
 			totalVolume = stockInfo.get(0);
 			useableVolume = stockInfo.get(1);
 			totalLabel.setText("Total cubaj: " + numberFormatter.format(totalVolume) + " metri cubi");
-			useableLabel.setText("Volum neutilizat: " + numberFormatter.format(useableVolume) + " metri cubi");
-		}
+            useableLabel.setText("Total coaja cubi: " + numberFormatter.format(stockInfo.get(2)) + " metri cubi");
+            avgCostLabel.setText("Cost mediu: " + numberFormatter.format(stockInfo.get(3)) + " RON");
+            avgMarginLabel.setText("Cost mediu coaja: " + numberFormatter.format(stockInfo.get(4)) + " RON");
+        }
 		
 	}
 	
