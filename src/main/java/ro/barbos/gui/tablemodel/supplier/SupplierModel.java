@@ -1,5 +1,6 @@
 package ro.barbos.gui.tablemodel.supplier;
 
+import ro.barbos.gater.model.Person;
 import ro.barbos.gater.model.Supplier;
 import ro.barbos.gui.ConfigLocalManager;
 import ro.barbos.gui.tablemodel.GeneralAbstractTableModel;
@@ -12,7 +13,7 @@ import java.util.List;
  */
 public class SupplierModel extends GeneralAbstractTableModel {
 
-    String[] columns = {"Nr","Data adaugari", "Nr. registru/CUI", "Titlu", "Adresa", "Judet"};
+    String[] columns = {"Nr", "Data adaugari", "Nr. registru", "CUI", "Titlu", "Adresa", "Judet", "Contact", "Contact telefon", "contact email"};
 
     private List<Supplier> records = new ArrayList<>();
 
@@ -40,6 +41,7 @@ public class SupplierModel extends GeneralAbstractTableModel {
     @Override
     public Object getValueAt(int row, int col) {
         Supplier record = records.get(row);
+        Person person = record.getContactPerson();
         if(col == 0) {
             return row+1;
         }
@@ -48,11 +50,19 @@ public class SupplierModel extends GeneralAbstractTableModel {
         } else if(col == 2) {
             return record.getRegisterNo();
         } else if(col == 3) {
+            return record.getRegisterId();
+        } else if (col == 4) {
             return record.getTitle();
-        } else if(col == 4) {
+        } else if (col == 5) {
             return record.getAddress();
-        } else if(col == 5) {
+        } else if (col == 6) {
             return record.getAreaCode();
+        } else if (col == 7) {
+            return "" + (person.getFirstName() != null ? person.getFirstName() : "") + " " + (person.getLastName() != null ? person.getLastName() : "");
+        } else if (col == 8) {
+            return person.getPhone();
+        } else if (col == 9) {
+            return person.getEmail();
         }
         return null;
     }

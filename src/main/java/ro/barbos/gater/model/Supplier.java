@@ -9,10 +9,14 @@ public class Supplier {
     private long id;
     private Date entryDate;
     private String registerNo;
+    private String registerId;
     private String title;
     private String address;
     private boolean useStatus;
     private String areaCode;
+
+    private Person contactPerson;
+
 
     public long getId() {
         return id;
@@ -68,6 +72,22 @@ public class Supplier {
 
     public void setAreaCode(String areaCode) {
         this.areaCode = areaCode;
+    }
+
+    public String getRegisterId() {
+        return registerId;
+    }
+
+    public void setRegisterId(String registerId) {
+        this.registerId = registerId;
+    }
+
+    public Person getContactPerson() {
+        return contactPerson;
+    }
+
+    public void setContactPerson(Person contactPerson) {
+        this.contactPerson = contactPerson;
     }
 
     @Override

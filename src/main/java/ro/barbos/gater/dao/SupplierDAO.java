@@ -1,5 +1,6 @@
 package ro.barbos.gater.dao;
 
+import ro.barbos.gater.model.Person;
 import ro.barbos.gater.model.Supplier;
 
 import java.sql.Connection;
@@ -17,7 +18,7 @@ public class SupplierDAO {
         Logger logger = Logger.getLogger("dao");
         List<Supplier> suppliers = null;
 
-        StringBuilder sql = new StringBuilder("select id, entrydate, registerno, title, address, areacode from supplier where usestatus = 0 order by id");
+        StringBuilder sql = new StringBuilder("select id, entrydate, registerno, RegisterId, title, address, areacode, ContactLastName, ContactFirstName, ContactPhone, ContactEmail from supplier where usestatus = 0 order by id");
 
         Connection con =null;
         Statement stm =null;
@@ -35,9 +36,16 @@ public class SupplierDAO {
                 supplier.setId(rs.getLong("id"));
                 supplier.setEntryDate(rs.getDate("entrydate"));
                 supplier.setRegisterNo(rs.getString("registerno"));
+                supplier.setRegisterId(rs.getString("RegisterId"));
                 supplier.setTitle(rs.getString("title"));
                 supplier.setAddress(rs.getString("address"));
                 supplier.setAreaCode(rs.getString("areacode"));
+                Person person = new Person();
+                person.setFirstName(rs.getString("ContactFirstName"));
+                person.setLastName(rs.getString("ContactLastName"));
+                person.setPhone(rs.getString("ContactPhone"));
+                person.setEmail(rs.getString("ContactEmail"));
+                supplier.setContactPerson(person);
                 suppliers.add(supplier);
             }
         }catch(Exception e)
@@ -58,12 +66,18 @@ public class SupplierDAO {
 
         SimpleDateFormat dateTimeFormatter = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 
-        StringBuilder insertSql = new StringBuilder("insert into supplier(entrydate, registerno, title, address, areacode) values('");
+        StringBuilder insertSql = new StringBuilder("insert into supplier(entrydate, registerno, RegisterId, title, address, areacode, ContactLastName, ContactFirstName, ContactPhone, ContactEmail) values('");
         insertSql.append(dateTimeFormatter.format(supplier.getEntryDate())).append("','");
         insertSql.append(DataAccess.escapeString(supplier.getRegisterNo())).append("','");
+        insertSql.append(DataAccess.escapeString(supplier.getRegisterId())).append("','");
         insertSql.append(supplier.getTitle()).append("','");
         insertSql.append(supplier.getAddress()).append("','");
-        insertSql.append(supplier.getAreaCode()).append("')");
+        insertSql.append(supplier.getAreaCode()).append("'");
+        Person person = supplier.getContactPerson();
+        insertSql.append(",").append(person.getLastName().length() > 0 ? "'" + person.getLastName() + "'" : "NULL");
+        insertSql.append(",").append(person.getFirstName().length() > 0 ? "'" + person.getFirstName() + "'" : "NULL");
+        insertSql.append(",").append(person.getPhone().length() > 0 ? "'" + person.getPhone() + "'" : "NULL");
+        insertSql.append(",").append(person.getEmail().length() > 0 ? "'" + person.getEmail() + "'" : "NULL").append(")");
 
         Connection con =null;
         Statement stm =null;
