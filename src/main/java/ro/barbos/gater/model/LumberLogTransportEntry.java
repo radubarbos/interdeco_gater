@@ -1,5 +1,8 @@
 package ro.barbos.gater.model;
 
+import com.google.gson.ExclusionStrategy;
+import com.google.gson.FieldAttributes;
+import com.google.gson.GsonBuilder;
 import ro.barbos.gater.data.MetricTools;
 
 import java.util.ArrayList;
@@ -131,9 +134,6 @@ public class LumberLogTransportEntry {
         for (int i = 0; i < lumberLogs.size(); i++) {
             addLumberLog(lumberLogs.get(i));
         }
-      /*  for (LumberLog lumberLog : lumberLogs) {
-            addLumberLog(lumberLog);
-        }*/
     }
 
     public void addLumberLog(LumberLog lumberLog) {
@@ -148,6 +148,27 @@ public class LumberLogTransportEntry {
         marginVolume -= MetricTools.toMeterCubs(lumberLog.getMarginVolume());
         lumberLogCount--;
         lumberLogs.remove(lumberLog);
+    }
+
+    public boolean isStartedForProduction() {
+        LumberLogTransportEntryCostMatrix matrix = new GsonBuilder().setExclusionStrategies(new CostExclStrat()).create().fromJson(getCostConfig(), LumberLogTransportEntryCostMatrix.class);
+        if (matrix.getLumberLogsCount() > lumberLogCount) {
+            return true;
+        }
+        return false;
+    }
+
+}
+
+class CostExclStrat implements ExclusionStrategy {
+
+    public boolean shouldSkipClass(Class<?> arg0) {
+        return false;
+    }
+
+    public boolean shouldSkipField(FieldAttributes f) {
+
+        return (f.getName().equals("cellData"));
     }
 
 }

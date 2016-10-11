@@ -5,46 +5,14 @@ import ro.barbos.gui.ConfigLocalManager;
 import ro.barbos.gui.MetricFormatter;
 
 import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.List;
 
-public class StackStockModel extends GeneralAbstractTableModel {
-	
-    String[] columns = {"Stiva","Minimum","Maximum","Nr. busteni","Volum",};
-	
+public class StackStockModel extends DefaultDataTableModel<LumberStackInfoDTO> {
+
 	private NumberFormat numberFormatter = NumberFormat.getInstance(ConfigLocalManager.locale);
 	
-	private List<LumberStackInfoDTO> records = new ArrayList<LumberStackInfoDTO>(); 
-	
 	public StackStockModel() {
-		numberFormatter.setMaximumFractionDigits(2);
-	}
-	
-	/* (non-Javadoc)
-	 * @see javax.swing.table.TableModel#getColumnCount()
-	 */
-	@Override
-	public int getColumnCount() {
-		return columns.length;
-	}
-	
-	@Override
-	public String getColumnName(int column) {
-		return columns[column];
-	}
-
-	/* (non-Javadoc)
-	 * @see javax.swing.table.TableModel#getRowCount()
-	 */
-	@Override
-	public int getRowCount() {
-		// TODO Auto-generated method stub
-		return records.size();
-	}
-	
-	@Override
-	public Class<?> getColumnClass(int col) {
-		return super.getColumnClass(col);
+        columns = new String[]{"Stiva", "Minimum", "Maximum", "Nr. busteni", "Volum"};
+        numberFormatter.setMaximumFractionDigits(2);
 	}
 	
 	/* (non-Javadoc)
@@ -69,21 +37,6 @@ public class StackStockModel extends GeneralAbstractTableModel {
 			return MetricFormatter.formatVolume(record.getTotalVolume());
 		} 
 		return null;
-	}
-	
-	public void setLumberStacksInfo(List<LumberStackInfoDTO> lumberStacks) {
-		records.clear();
-		records.addAll(lumberStacks);
-		refreshOnDataChange();
-	}
-	
-	public LumberStackInfoDTO getLumberStackInfoDTO(int row) {
-		return records.get(row);
-	}
-	
-	public void removeLumberLog(int index) {
-		records.remove(index);
-		refreshOnDataChange();
 	}
 
 }

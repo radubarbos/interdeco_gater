@@ -28,7 +28,6 @@ import java.util.Map;
  */
 public class LumberLogTransportEntryFrame extends GeneralTableDataFrame {
 
-    // private LumberLogTransportEntryModel dataModel;
     private ConfigLumberTransportEntryFrame configFrame;
 
     public LumberLogTransportEntryFrame() {
@@ -111,6 +110,11 @@ public class LumberLogTransportEntryFrame extends GeneralTableDataFrame {
                 LumberLogFilterDTO filter = new LumberLogFilterDTO();
                 filter.setTransportEntryId(entry.getId());
                 entry.setLumberLogs(new LumberLogDAO().findAll(filter));
+            }
+            if (entry.getCostConfig() != null && entry.isStartedForProduction()) {
+                JOptionPane.showMessageDialog(GUIUtil.container,
+                        "Costul nu mai poate fi schimbat. Sa taiat deja din busteni.");
+                return;
             }
             configFrame = new ConfigLumberTransportEntryFrame(this, entry);
             this.getLayeredPane().add(configFrame, JLayeredPane.PALETTE_LAYER, 0);

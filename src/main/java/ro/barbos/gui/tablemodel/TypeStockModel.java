@@ -1,50 +1,18 @@
 package ro.barbos.gui.tablemodel;
 
 import ro.barbos.gater.dto.TypeStockDTO;
+import ro.barbos.gui.ConfigLocalManager;
 import ro.barbos.gui.MetricFormatter;
 
 import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
 
-public class TypeStockModel extends GeneralAbstractTableModel {
-	
-    String[] columns = {"Tip bustean","Nr. busteni","Volum",};
-	
-	private NumberFormat numberFormatter = NumberFormat.getInstance(new Locale("ro"));
-	
-	private List<TypeStockDTO> records = new ArrayList<TypeStockDTO>(); 
-	
-	public TypeStockModel() {
-		numberFormatter.setMaximumFractionDigits(2);
-	}
-	
-	/* (non-Javadoc)
-	 * @see javax.swing.table.TableModel#getColumnCount()
-	 */
-	@Override
-	public int getColumnCount() {
-		return columns.length;
-	}
-	
-	@Override
-	public String getColumnName(int column) {
-		return columns[column];
-	}
+public class TypeStockModel extends DefaultDataTableModel<TypeStockDTO> {
 
-	/* (non-Javadoc)
-	 * @see javax.swing.table.TableModel#getRowCount()
-	 */
-	@Override
-	public int getRowCount() {
-		// TODO Auto-generated method stub
-		return records.size();
-	}
-	
-	@Override
-	public Class<?> getColumnClass(int col) {
-		return super.getColumnClass(col);
+    private NumberFormat numberFormatter = NumberFormat.getInstance(ConfigLocalManager.locale);
+
+    public TypeStockModel() {
+        columns = new String[]{"Tip bustean", "Nr. busteni", "Volum"};
+        numberFormatter.setMaximumFractionDigits(2);
 	}
 	
 	/* (non-Javadoc)
@@ -63,21 +31,6 @@ public class TypeStockModel extends GeneralAbstractTableModel {
 			return MetricFormatter.formatVolume(record.getTotalVolume());
 		} 
 		return null;
-	}
-	
-	public void setLumberTypeInfo(List<TypeStockDTO> typesInfo) {
-		records.clear();
-		records.addAll(typesInfo);
-		refreshOnDataChange();
-	}
-	
-	public TypeStockDTO getTypeInfo(int row) {
-		return records.get(row);
-	}
-	
-	public void removeLumberLog(int index) {
-		records.remove(index);
-		refreshOnDataChange();
 	}
 
 }

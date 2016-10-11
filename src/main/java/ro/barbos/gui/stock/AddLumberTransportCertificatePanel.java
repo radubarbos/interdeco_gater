@@ -32,89 +32,97 @@ public class AddLumberTransportCertificatePanel extends JPanel {
     private JTextField transportPlate;
     private JTextField driverName;
     private JTextField driverId;
+    JPanel docTab;
+    JPanel transportTab;
+
 
     public AddLumberTransportCertificatePanel() {
         initGui();
     }
 
     private void initGui() {
-        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+
+        JTabbedPane tab = new JTabbedPane();
+        docTab = new JPanel();
+        docTab.setLayout(new BoxLayout(docTab, BoxLayout.Y_AXIS));
+        transportTab = new JPanel();
+        transportTab.setLayout(new BoxLayout(transportTab, BoxLayout.Y_AXIS));
 
         int labelWidth = 180;
-        entryDate = GUIFactory.createDateTimePicker();//GUIFactory.createDatePicker();
-        add(GUIFactory.createFieldPanel(GUIFactory.createLabel("Data emiterii:", labelWidth), entryDate));
+        entryDate = GUIFactory.createDateTimePicker();
+        docTab.add(GUIFactory.createFieldPanel(GUIFactory.createLabel("Data emiterii:", labelWidth), entryDate));
         serialCode = new JTextField(18);
-        add(GUIFactory.createFieldPanel(GUIFactory.createLabel("Seria:", labelWidth), serialCode));
+        docTab.add(GUIFactory.createFieldPanel(GUIFactory.createLabel("Seria:", labelWidth), serialCode));
         serialNo = new JTextField(18);
-        add(GUIFactory.createFieldPanel(GUIFactory.createLabel("Nr:", labelWidth), serialNo));
+        docTab.add(GUIFactory.createFieldPanel(GUIFactory.createLabel("Nr:", labelWidth), serialNo));
         Vector<Supplier> supplierModel = new Vector<>(SupplierDAO.getSuppliers());
         suppliers = new JComboBox<>(supplierModel);
         suppliers.setPreferredSize(new Dimension(200, (int) suppliers.getPreferredSize().getHeight()));
-        add(GUIFactory.createFieldPanel(GUIFactory.createLabel("Furnizor:", labelWidth), suppliers));
+        docTab.add(GUIFactory.createFieldPanel(GUIFactory.createLabel("Furnizor:", labelWidth), suppliers));
         uniqueCode = new JTextField(18);
-        add(GUIFactory.createFieldPanel(GUIFactory.createLabel("Cod unic:", labelWidth), uniqueCode));
-        codeCreationDate = GUIFactory.createDateTimePicker();//GUIFactory.createDatePicker();
-        add(GUIFactory.createFieldPanel(GUIFactory.createLabel("Data generarii codului:", labelWidth), codeCreationDate));
+        docTab.add(GUIFactory.createFieldPanel(GUIFactory.createLabel("Cod unic:", labelWidth), uniqueCode));
+        codeCreationDate = GUIFactory.createDateTimePicker();
+        docTab.add(GUIFactory.createFieldPanel(GUIFactory.createLabel("Data generarii codului:", labelWidth), codeCreationDate));
         document = new JTextField(18);
-        add(GUIFactory.createFieldPanel(GUIFactory.createLabel("Do provenienta:", labelWidth), document));
+        docTab.add(GUIFactory.createFieldPanel(GUIFactory.createLabel("Do provenienta:", labelWidth), document));
         loadPlace = new JTextField(18);
-        add(GUIFactory.createFieldPanel(GUIFactory.createLabel("Punct incarcare:", labelWidth), loadPlace));
-        loadDate = GUIFactory.createDateTimePicker();//GUIFactory.createDatePicker();
-        add(GUIFactory.createFieldPanel(GUIFactory.createLabel("Data incarcari:", labelWidth), loadDate));
+        transportTab.add(GUIFactory.createFieldPanel(GUIFactory.createLabel("Punct incarcare:", labelWidth), loadPlace));
+        loadDate = GUIFactory.createDateTimePicker();
+        transportTab.add(GUIFactory.createFieldPanel(GUIFactory.createLabel("Data incarcari:", labelWidth), loadDate));
         unloadPlace = new JTextField(18);
-        add(GUIFactory.createFieldPanel(GUIFactory.createLabel("Punct descarcare:", labelWidth), unloadPlace));
-        unloadDate = GUIFactory.createDateTimePicker();//GUIFactory.createDatePicker();
-        add(GUIFactory.createFieldPanel(GUIFactory.createLabel("Data descarcari:", labelWidth), unloadDate));
+        transportTab.add(GUIFactory.createFieldPanel(GUIFactory.createLabel("Punct descarcare:", labelWidth), unloadPlace));
+        unloadDate = GUIFactory.createDateTimePicker();
+        transportTab.add(GUIFactory.createFieldPanel(GUIFactory.createLabel("Data descarcari:", labelWidth), unloadDate));
         docCreator = new JTextField(18);
-        add(GUIFactory.createFieldPanel(GUIFactory.createLabel("Emitent:", labelWidth), docCreator));
+        docTab.add(GUIFactory.createFieldPanel(GUIFactory.createLabel("Emitent:", labelWidth), docCreator));
         docCreatorName = new JTextField(18);
-        add(GUIFactory.createFieldPanel(GUIFactory.createLabel("Nume imputernicire:", labelWidth), docCreatorName));
+        docTab.add(GUIFactory.createFieldPanel(GUIFactory.createLabel("Nume imputernicire:", labelWidth), docCreatorName));
         transportName = new JTextField(18);
-        add(GUIFactory.createFieldPanel(GUIFactory.createLabel("Mijloc transport:", labelWidth), transportName));
+        transportTab.add(GUIFactory.createFieldPanel(GUIFactory.createLabel("Mijloc transport:", labelWidth), transportName));
         transportPlate = new JTextField(18);
-        add(GUIFactory.createFieldPanel(GUIFactory.createLabel("Nr masina:", labelWidth), transportPlate));
+        transportTab.add(GUIFactory.createFieldPanel(GUIFactory.createLabel("Nr masina:", labelWidth), transportPlate));
         driverName = new JTextField(18);
-        add(GUIFactory.createFieldPanel(GUIFactory.createLabel("Sofer:", labelWidth), driverName));
+        transportTab.add(GUIFactory.createFieldPanel(GUIFactory.createLabel("Sofer:", labelWidth), driverName));
         driverId = new JTextField(18);
-        add(GUIFactory.createFieldPanel(GUIFactory.createLabel("Sofer CNP:", labelWidth), driverId));
+        transportTab.add(GUIFactory.createFieldPanel(GUIFactory.createLabel("Sofer CNP:", labelWidth), driverId));
+
+        tab.add("Document", docTab);
+        tab.add("Transport", transportTab);
+        add(tab);
     }
 
     public LumberLogTransportCertificate validateData() {
         boolean status = true;
-        status &= checkDateField((JPanel) getComponent(0));
-        status &= checkTextField((JPanel) getComponent(1));
-        status &= checkTextField((JPanel) getComponent(2));
-        status &= checkComboboxField((JPanel) getComponent(3));
-        status &= checkTextField((JPanel) getComponent(4));
-        status &= checkDateField((JPanel) getComponent(5));
-        status &= checkTextField((JPanel) getComponent(7));
-        status &= checkDateField((JPanel) getComponent(8));
-        status &= checkTextField((JPanel) getComponent(9));
-        status &= checkDateField((JPanel) getComponent(10));
-        status &= checkTextField((JPanel) getComponent(14));
-        status &= checkTextField((JPanel) getComponent(15));
+        status &= checkDateField((JPanel) docTab.getComponent(0));
+        status &= checkTextField((JPanel) docTab.getComponent(1));
+        status &= checkTextField((JPanel) docTab.getComponent(2));
+        status &= checkComboboxField((JPanel) docTab.getComponent(3));
+        status &= checkTextField((JPanel) docTab.getComponent(4));
+        status &= checkDateField((JPanel) docTab.getComponent(5));
+        status &= checkTextField((JPanel) transportTab.getComponent(0));
+        status &= checkDateField((JPanel) transportTab.getComponent(1));
+        status &= checkTextField((JPanel) transportTab.getComponent(2));
+        status &= checkDateField((JPanel) transportTab.getComponent(3));
+        status &= checkTextField((JPanel) transportTab.getComponent(6));
+        status &= checkTextField((JPanel) transportTab.getComponent(7));
 
         if (!status) {
             return null;
         }
 
         LumberLogTransportCertificate certificate = new LumberLogTransportCertificate();
-        //certificate.setEntryDate(((Calendar) ((JDatePicker) entryDate).getModel().getValue()).getTime());
         certificate.setEntryDate(((JDateTimePicker) entryDate).getDateTime());
         certificate.setSerialCode(serialCode.getText());
         certificate.setSerialNo(serialNo.getText());
         certificate.setSupplierId(((Supplier) suppliers.getSelectedItem()).getId());
         certificate.setCode(uniqueCode.getText());
-        //certificate.setCodeCreationTime(((Calendar) ((JDatePicker) codeCreationDate).getModel().getValue()).getTime());
         certificate.setCodeCreationTime(((JDateTimePicker) codeCreationDate).getDateTime());
         if (document.getText().trim().length() > 0) {
             certificate.setDocument(document.getText());
         }
         certificate.setLoadPlace(loadPlace.getText());
         certificate.setTransportLeaveDate(((JDateTimePicker) loadDate).getDateTime());
-        //certificate.setTransportLeaveDate(((Calendar) ((JDatePicker) loadDate).getModel().getValue()).getTime());
         certificate.setUnloadPlace(unloadPlace.getText());
-        //certificate.setTransportArrivalDate(((Calendar) ((JDatePicker) unloadDate).getModel().getValue()).getTime());
         certificate.setTransportArrivalDate(((JDateTimePicker) unloadDate).getDateTime());
         if (docCreator.getText().trim().length() > 0) {
             certificate.setDocCreator(docCreator.getText());

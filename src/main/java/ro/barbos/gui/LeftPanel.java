@@ -45,7 +45,7 @@ public class LeftPanel extends JPanel implements ActionListener {
         setLayout(new BorderLayout());
         north.setLayout(new BoxLayout(north, BoxLayout.Y_AXIS));
         center.setLayout(new BoxLayout(center, BoxLayout.Y_AXIS));
-        center.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
+        center.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 10));
         south.setLayout(new BoxLayout(south, BoxLayout.Y_AXIS));
         setPreferredSize(new Dimension(buttonWidth, buttonHeight));
         setMinimumSize(new Dimension(buttonWidth, buttonHeight));
@@ -65,6 +65,8 @@ public class LeftPanel extends JPanel implements ActionListener {
         receptie.addActionListener(this);
         receptie.setAlignmentX(0);
         receptie.setMaximumSize(buttonDimension);
+        Color subMenuColor = new Color(receptie.getBackground().getRed() - 20, receptie.getBackground().getGreen() - 20, receptie.getBackground().getBlue());
+        receptie.setBackground(subMenuColor);
         stockMenu.add(receptie);
 
         JButton stockCurrent = new JButton("Stock current");
@@ -72,6 +74,7 @@ public class LeftPanel extends JPanel implements ActionListener {
         stockCurrent.addActionListener(this);
         stockCurrent.setAlignmentX(0);
         stockCurrent.setMaximumSize(buttonDimension);
+        stockCurrent.setBackground(subMenuColor);
         stockMenu.add(stockCurrent);
 
         JButton stockCurrent2 = new JButton("Stock per stiva");
@@ -79,6 +82,7 @@ public class LeftPanel extends JPanel implements ActionListener {
         stockCurrent2.addActionListener(this);
         stockCurrent2.setAlignmentX(0);
         stockCurrent2.setMaximumSize(buttonDimension);
+        stockCurrent2.setBackground(subMenuColor);
         stockMenu.add(stockCurrent2);
 
         JButton stockCurrent3 = new JButton("Stock per tip");
@@ -86,6 +90,7 @@ public class LeftPanel extends JPanel implements ActionListener {
         stockCurrent3.addActionListener(this);
         stockCurrent3.setAlignmentX(0);
         stockCurrent3.setMaximumSize(buttonDimension);
+        stockCurrent3.setBackground(subMenuColor);
         stockMenu.add(stockCurrent3);
 
         JButton stockCurrent4 = new JButton("Stock per class");
@@ -93,6 +98,7 @@ public class LeftPanel extends JPanel implements ActionListener {
         stockCurrent4.addActionListener(this);
         stockCurrent4.setAlignmentX(0);
         stockCurrent4.setMaximumSize(buttonDimension);
+        stockCurrent4.setBackground(subMenuColor);
         stockMenu.add(stockCurrent4);
 
         JButton stockCurrent9 = new JButton("Furnizori");
@@ -100,6 +106,7 @@ public class LeftPanel extends JPanel implements ActionListener {
         stockCurrent9.addActionListener(this);
         stockCurrent9.setAlignmentX(0);
         stockCurrent9.setMaximumSize(buttonDimension);
+        stockCurrent9.setBackground(subMenuColor);
         stockMenu.add(stockCurrent9);
 
         JButton stockCurrent10 = new JButton("Avize");
@@ -107,6 +114,7 @@ public class LeftPanel extends JPanel implements ActionListener {
         stockCurrent10.addActionListener(this);
         stockCurrent10.setAlignmentX(0);
         stockCurrent10.setMaximumSize(buttonDimension);
+        stockCurrent10.setBackground(subMenuColor);
         stockMenu.add(stockCurrent10);
 
         JButton stockCurrent11 = new JButton("Situatii receptii");
@@ -114,6 +122,7 @@ public class LeftPanel extends JPanel implements ActionListener {
         stockCurrent11.addActionListener(this);
         stockCurrent11.setAlignmentX(0);
         stockCurrent11.setMaximumSize(buttonDimension);
+        stockCurrent11.setBackground(subMenuColor);
         stockMenu.add(stockCurrent11);
 
         /*JButton stockCurrent12 = new JButton("Stock per furnizor");
@@ -169,6 +178,7 @@ public class LeftPanel extends JPanel implements ActionListener {
         cutPlan.addActionListener(this);
         cutPlan.setAlignmentX(0);
         cutPlan.setMaximumSize(buttonDimension);
+        cutPlan.setBackground(subMenuColor);
         cutPlansMenu.add(cutPlan);
 
         JButton cutPlanHistory = new JButton("Planuri");
@@ -176,6 +186,7 @@ public class LeftPanel extends JPanel implements ActionListener {
         cutPlanHistory.addActionListener(this);
         cutPlanHistory.setAlignmentX(0);
         cutPlanHistory.setMaximumSize(buttonDimension);
+        cutPlanHistory.setBackground(subMenuColor);
         cutPlansMenu.add(cutPlanHistory);
 
         List<JButton> taiereMenu = new ArrayList<>();
@@ -191,6 +202,7 @@ public class LeftPanel extends JPanel implements ActionListener {
         cut.addActionListener(this);
         cut.setAlignmentX(0);
         cut.setMaximumSize(buttonDimension);
+        cut.setBackground(subMenuColor);
         taiereMenu.add(cut);
 
         JButton mprocessed = new JButton("Marcheaza procesat");
@@ -198,6 +210,7 @@ public class LeftPanel extends JPanel implements ActionListener {
         mprocessed.addActionListener(this);
         mprocessed.setAlignmentX(0);
         mprocessed.setMaximumSize(buttonDimension);
+        mprocessed.setBackground(subMenuColor);
         taiereMenu.add(mprocessed);
 
         JButton optionCutDiagram = new JButton("Optiuni taiere bustean");
@@ -205,6 +218,7 @@ public class LeftPanel extends JPanel implements ActionListener {
         optionCutDiagram.addActionListener(this);
         optionCutDiagram.setAlignmentX(0);
         optionCutDiagram.setMaximumSize(buttonDimension);
+        optionCutDiagram.setBackground(subMenuColor);
         taiereMenu.add(optionCutDiagram);
 
         JButton logout = new JButton("Iesire");
@@ -233,6 +247,7 @@ public class LeftPanel extends JPanel implements ActionListener {
             machineMenu.addActionListener(this);
             machineMenu.setAlignmentX(0);
             machineMenu.setMaximumSize(buttonDimension);
+            machineMenu.setBackground(subMenuColor);
             processedMenu.add(machineMenu);
         }
 
@@ -249,6 +264,7 @@ public class LeftPanel extends JPanel implements ActionListener {
         inventoryMachines.addActionListener(this);
         inventoryMachines.setAlignmentX(0);
         inventoryMachines.setMaximumSize(buttonDimension);
+        inventoryMachines.setBackground(subMenuColor);
         inventoryMenu.add(inventoryMachines);
 
         JButton users = new JButton("Utilizatori");
@@ -268,6 +284,7 @@ public class LeftPanel extends JPanel implements ActionListener {
         db.addActionListener(this);
         db.setAlignmentX(0);
         db.setMaximumSize(buttonDimension);
+        db.setBackground(subMenuColor);
         taiereMenu.add(db);
 
 
@@ -276,6 +293,7 @@ public class LeftPanel extends JPanel implements ActionListener {
         diameterAnalisis.addActionListener(this);
         diameterAnalisis.setAlignmentX(0);
         diameterAnalisis.setMaximumSize(buttonDimension);
+        diameterAnalisis.setBackground(subMenuColor);
         taiereMenu.add(diameterAnalisis);
 
         menu.add(stock);
@@ -308,7 +326,7 @@ public class LeftPanel extends JPanel implements ActionListener {
                 menu.add(stockCurrent5);
                 menu.add(cutPlans);
             }
-			
+
 			/*add(idplates);
 			add(Box.createVerticalStrut(3));
 			add(stacks);
