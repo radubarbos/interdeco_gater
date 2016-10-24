@@ -1,5 +1,6 @@
 package ro.barbos.gui;
 
+import org.apache.shiro.SecurityUtils;
 import ro.barbos.gater.dao.*;
 import ro.barbos.gater.dto.LumberLogFilterDTO;
 import ro.barbos.gater.model.IDPlate;
@@ -107,7 +108,7 @@ public class LeftPanel extends JPanel implements ActionListener {
         stockCurrent9.setAlignmentX(0);
         stockCurrent9.setMaximumSize(buttonDimension);
         stockCurrent9.setBackground(subMenuColor);
-        stockMenu.add(stockCurrent9);
+
 
         JButton stockCurrent10 = new JButton("Avize");
         stockCurrent10.setActionCommand("LUMBER_TRANSPORT_STOCK");
@@ -115,7 +116,12 @@ public class LeftPanel extends JPanel implements ActionListener {
         stockCurrent10.setAlignmentX(0);
         stockCurrent10.setMaximumSize(buttonDimension);
         stockCurrent10.setBackground(subMenuColor);
-        stockMenu.add(stockCurrent10);
+
+
+        if (SecurityUtils.getSubject().hasRole("administrator")) {
+            stockMenu.add(stockCurrent9);
+            stockMenu.add(stockCurrent10);
+        }
 
         JButton stockCurrent11 = new JButton("Situatii receptii");
         stockCurrent11.setActionCommand("TRANSPORT_STOCK_ENTRIES");
@@ -125,19 +131,6 @@ public class LeftPanel extends JPanel implements ActionListener {
         stockCurrent11.setBackground(subMenuColor);
         stockMenu.add(stockCurrent11);
 
-        /*JButton stockCurrent12 = new JButton("Stock per furnizor");
-        stockCurrent12.setActionCommand("SUPPLIER_STOCK");
-        stockCurrent12.addActionListener(this);
-        stockCurrent12.setAlignmentX(0);
-        stockCurrent12.setMaximumSize(buttonDimension);
-        stockMenu.add(stockCurrent12);
-
-        JButton stockCurrent13 = new JButton("Stock per lungime");
-        stockCurrent13.setActionCommand("LENGTH_STOCK");
-        stockCurrent13.addActionListener(this);
-        stockCurrent13.setAlignmentX(0);
-        stockCurrent13.setMaximumSize(buttonDimension);
-        stockMenu.add(stockCurrent13);*/
 
         JButton idplates = new JButton("Placi");
         idplates.setActionCommand("IDPLATES");
@@ -297,70 +290,17 @@ public class LeftPanel extends JPanel implements ActionListener {
         taiereMenu.add(diameterAnalisis);
 
         menu.add(stock);
-        menu.add(stockCurrent5);
-        menu.add(cutPlans);
-        menu.add(taiere);
-        menu.add(idplates);
-        menu.add(stacks);
-        menu.add(products);
-        menu.add(processed);
-        menu.add(inventory);
-        menu.add(users);
-        menu.add(settings);
-        if (1 > 9) {
-            /*add(receptie);
-            add(Box.createVerticalStrut(3));
-			add(stockCurrent);
-			add(Box.createVerticalStrut(3));
-			add(stockCurrent2);
-			add(Box.createVerticalStrut(3));
-			add(stockCurrent3);
-			add(Box.createVerticalStrut(3));
-			add(stockCurrent4);
-			add(Box.createVerticalStrut(3));*/
-            menu.add(stock);
-            if (rights == 0) {
-
-                //add(stockCurrent5);
-                //add(Box.createVerticalStrut(3));
-                menu.add(stockCurrent5);
-                menu.add(cutPlans);
-            }
-
-			/*add(idplates);
-			add(Box.createVerticalStrut(3));
-			add(stacks);
-			add(Box.createVerticalStrut(3));*/
+        if (SecurityUtils.getSubject().hasRole("administrator")) {
+            menu.add(stockCurrent5);
+            menu.add(cutPlans);
+            menu.add(taiere);
             menu.add(idplates);
             menu.add(stacks);
-        }
-        if (rights == 0) {
-	/*add(settings);
-	add(Box.createVerticalStrut(3));
-	add(products);
-	add(Box.createVerticalStrut(3));
-	add(cutPlan);
-	add(Box.createVerticalStrut(3));
-	add(cut);
-	add(Box.createVerticalStrut(3));
-	add(cutPlanHistory);
-	add(Box.createVerticalStrut(3));
-	add(users);
-	add(Box.createVerticalStrut(3));*/
-   /* menu.add(products);
-    menu.add(users);
-    menu.add(settings);*/
-        }
-        if (rights == 0 || rights == 2) {
-
-			/*add(mprocessed);
-			add(Box.createVerticalStrut(3));
-			add(optionCutDiagram);
-			add(Box.createVerticalStrut(3));
-            add(db);
-            add(Box.createVerticalStrut(3));
-            add(diameterAnalisis);
-            add(Box.createVerticalStrut(3));*/
+            menu.add(products);
+            menu.add(processed);
+            menu.add(inventory);
+            menu.add(users);
+            menu.add(settings);
         }
 
         //menu.add(db2);

@@ -1,5 +1,7 @@
 package ro.barbos.gui;
 
+import org.apache.shiro.SecurityUtils;
+import ro.barbos.auth.LocalSecurityManager;
 import ro.barbos.gater.cutprocessor.CutterSettings;
 import ro.barbos.gater.cutprocessor.strategy.CutStrategyType;
 import ro.barbos.gater.dao.*;
@@ -68,31 +70,26 @@ public class MainFrame extends JFrame implements WindowListener, ActionListener 
 		}
 		else
 		{
-			
-			User userobj = LoginDAO.login(user, pwd);
-			if(userobj ==null) 
-			{
+
+            User userobj = null;
+            LocalSecurityManager.loginUser(user, pwd);
+            if (SecurityUtils.getSubject().isAuthenticated()) {
+                userobj = LoginDAO.login(user, pwd);
+            }
+            if (!SecurityUtils.getSubject().isAuthenticated()) {
 				displayLoginFrame();
 			}
 			else
 			{
-			LoginDAO.loadRights(userobj);
-			ConfigLocalManager.currentUser = userobj;
+                //LoginDAO.loadRights(userobj);
+                ConfigLocalManager.currentUser = userobj;
 			ConfigLocalManager.locale = new Locale("ro");
 			applicationStart();
 			}
 		}
-		
-		/*User test = new User();
-		test.setID(1);
-		test.setName("test");
-		test.setUserName("");
-		ConfigLocalManager.currentUser = test;
-		ConfigLocalManager.locale = new Locale("ro");
-		
-		applicationStart();*/
-		
-		addWindowListener(this);
+
+
+        addWindowListener(this);
 		setLocationRelativeTo(null);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setVisible(true);
@@ -118,9 +115,8 @@ public class MainFrame extends JFrame implements WindowListener, ActionListener 
 	
 	private void applicationStart()
 	{
-	   setTitle(appTitle+" "+ConfigLocalManager.currentUser.getName());	
-       //setJMenuBar(MenuBarCreator.createMainMenuBar());
-	   Logger logger = Logger.getLogger("gui");
+        setTitle(appTitle + " " + ConfigLocalManager.currentUser.getName());
+        Logger logger = Logger.getLogger("gui");
 		
 		((JPanel)getContentPane()).revalidate();
 		
@@ -290,13 +286,16 @@ public class MainFrame extends JFrame implements WindowListener, ActionListener 
 			String user = pp.getUser();
 			String pwd = pp.getPassword();
 			if(user.trim().length()==0 || pwd.trim().length()==0) pp.showLoginFailed();
-			User userobj = LoginDAO.login(user, pwd);
-			if(userobj ==null) 
+            User userobj = null;
+            LocalSecurityManager.loginUser(user, pwd);
+            if (SecurityUtils.getSubject().isAuthenticated()) {
+                userobj = LoginDAO.login(user, pwd);
+            }
+            if(userobj ==null)
 			{
 				pp.showLoginFailed();
 				return;
 			}
-			//LoginDAO.loadRights(userobj);
 			ConfigLocalManager.currentUser = userobj;
 			ConfigLocalManager.locale = new Locale("ro");
 			loginFrame.dispose();
@@ -314,7 +313,8 @@ public class MainFrame extends JFrame implements WindowListener, ActionListener 
 			setJMenuBar(null);
 			GUIUtil.container.add(background,Integer.MIN_VALUE);
 			displayLoginFrame();
-			repaint();
+            SecurityUtils.getSubject().logout();
+            repaint();
 			if(backgroundRefresher != null) {
 				backgroundRefresher.shutdown();
 			}
@@ -322,15 +322,6 @@ public class MainFrame extends JFrame implements WindowListener, ActionListener 
 		//Huzu
 		else if(command.equals("CHANGE"))
 		{
-			/*JInternalFrame[] frames = GUIUtil.container.getAllFrames();
-			if(frames!=null)
-			{
-				for(JInternalFrame frame:frames)
-				{
-					frame.dispose();
-				}
-			}
-			setJMenuBar(null);*/
 			displayChangeUser();
 		}//ends
 		else if(command.equals("CANCEL_DIALOG")) {

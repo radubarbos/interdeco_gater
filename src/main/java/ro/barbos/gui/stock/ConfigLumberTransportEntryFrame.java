@@ -46,11 +46,12 @@ public class ConfigLumberTransportEntryFrame extends JPanel implements Component
         this.entry = entry;
         numberFormatter.setMaximumFractionDigits(2);
 
-//setBackground(new Color(200,200,200,200));
+        setBackground(new Color(0, 0, 0, 0));
 
         dataPanel = new JPanel();
         dataPanel.setLayout(new BorderLayout());
-        dataPanel.setOpaque(true);
+        // dataPanel.setOpaque(true);
+        dataPanel.setBackground(new Color(0, 0, 0, 0));
 
         matrix = new LumberLogTransportEntryCostMatrix();
         matrix.init(entry);

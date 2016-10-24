@@ -1,6 +1,7 @@
 package ro.barbos.gui.stock;
 
 import com.google.gson.GsonBuilder;
+import org.apache.shiro.SecurityUtils;
 import ro.barbos.gater.dao.LumberLogDAO;
 import ro.barbos.gater.dao.LumberLogTransportCertificateDAO;
 import ro.barbos.gater.dao.LumberLogTransportEntryDAO;
@@ -65,7 +66,10 @@ public class LumberLogTransportEntryFrame extends GeneralTableDataFrame {
         but.setToolTipText("Seteaza matrice cost");
         but.setActionCommand("SET_COST_CONFIG");
         but.addActionListener(this);
-        toolbar.add(but);
+        if (SecurityUtils.getSubject().hasRole("administrator")) {
+            toolbar.add(but);
+        }
+
 
         toolbar.add(createCSVExportButton());
         toolbar.add(createPrintButton());
